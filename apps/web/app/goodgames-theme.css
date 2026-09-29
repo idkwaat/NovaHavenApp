@@ -1,0 +1,2096 @@
+/* ==========================================================================
+   GoodGames & Opera GX Gaming Design Theme for Nova Haven
+   Inspired by: GoodGames (https://github.com/idkwaat/GoodGames-live) & Opera GX
+   Color Palette:
+     - Main 1 (Crimson Gamer Red): #dd163b / #ff2d55
+     - Main 2 (Cyber Cyan):        #00f0ff / #22a2b1
+     - Main 3 (Gold / Trophy):     #ef9e2b / #d1ae71
+     - Dark 1 (Canvas Void):       #0e1317 / #11161a
+     - Dark 2 (Card Surface):      #182127 / #1e2830
+     - Dark 3 (Hover / Border):    #273540 / #324452
+     - Text Primary:               #ffffff
+     - Text Muted:                 #9eaab3
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --gg-red: #dd163b;
+  --gg-red-glow: rgba(221, 22, 59, 0.45);
+  --gg-red-hover: #ff2a51;
+  --gg-cyan: #00e5ff;
+  --gg-cyan-glow: rgba(0, 229, 255, 0.35);
+  --gg-gold: #f5a623;
+  --gg-bg-main: #0e1317;
+  --gg-bg-card: #182127;
+  --gg-bg-card-hover: #1f2a32;
+  --gg-border: #26343e;
+  --gg-border-light: #344654;
+  --gg-text-bright: #ffffff;
+  --gg-text-body: #a8b5c0;
+  --gg-text-muted: #74838f;
+  --gg-font-heading: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --gg-font-body: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --gg-clip-corner: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+
+  /* Purge all legacy Wynn brown/earth CSS variables site-wide */
+  --nh-ink: #ffffff;
+  --nh-text: #d8e2ea;
+  --nh-muted: #8b9baa;
+  --nh-paper: #141b21;
+  --nh-paper-light: #18222a;
+  --nh-green: #00ff73;
+  --nh-green-dark: #dd163b;
+  --nh-cta-green: #dd163b;
+  --nh-cta-blue: #00e5ff;
+  --nh-blue: #00e5ff;
+  --nh-line: #26343e;
+  --nh-forest: #0e1317;
+  --nh-sage: #141b21;
+  --nh-sky: #10161c;
+  --nh-page-muted: #8b9baa;
+  --nh-copper: #dd163b;
+  --nh-harvest: #00e5ff;
+  --nh-berry: #dd163b;
+
+  --void: #0e1317;
+  --void-2: #141b21;
+  --wood: #dd163b;
+  --wood-dark: #26343e;
+  --paper: #ffffff;
+  --paper-dark: #8b9baa;
+  --leaf: #00e5ff;
+  --leaf-dark: #00ff73;
+  --water: #00e5ff;
+  --ember: #dd163b;
+  --ink: #ffffff;
+  --muted: #8b9baa;
+  --line: #26343e;
+}
+
+/* Global Gaming Canvas */
+body {
+  background-color: var(--gg-bg-main) !important;
+  color: var(--gg-text-body);
+  font-family: var(--gg-font-body);
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(221, 22, 59, 0.08) 0%, transparent 60%),
+    linear-gradient(rgba(14, 19, 23, 0.98), rgba(14, 19, 23, 0.98)),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.25) 2px, rgba(0, 0, 0, 0.25) 4px);
+  background-attachment: fixed;
+}
+
+/* Headings in GoodGames Montserrat style */
+h1, h2, h3, h4, .home-section-heading h2, .hero-copy h1 {
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em;
+}
+
+/* Opera GX / GoodGames Navigation Bar */
+.site-header {
+  background: rgba(13, 17, 21, 0.92) !important;
+  backdrop-filter: blur(12px);
+  border-top: 2px solid var(--gg-red) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(221, 22, 59, 0.2);
+}
+
+.site-header .menu-button,
+.site-header .signin-button,
+.site-header .search-button,
+.site-header .server-pill,
+.site-header .home-button,
+.home-button {
+  background: #141b20 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #d1dde6 !important;
+  box-shadow: none !important;
+  border-radius: 4px !important;
+  transition: all .2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-header .menu-button:hover,
+.site-header .signin-button:hover,
+.site-header .search-button:hover,
+.site-header .home-button:hover,
+.home-button:hover {
+  background: #1c262e !important;
+  border-color: var(--gg-red) !important;
+  color: #fff !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+}
+
+.site-header .server-pill {
+  background: #13191f !important;
+  border-color: #2b3945 !important;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.site-header .server-pill:hover {
+  border-color: var(--gg-cyan) !important;
+  box-shadow: 0 0 12px var(--gg-cyan-glow) !important;
+}
+
+.site-header .online-dot,
+.server-pill .online-dot,
+.hero-server .online-dot {
+  background: #00ff73 !important;
+  box-shadow: 0 0 8px #00ff73, 0 0 16px rgba(0, 255, 115, 0.6) !important;
+  animation: gg-pulse 2s infinite ease-in-out;
+}
+
+@keyframes gg-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.15); }
+}
+
+/* Hero Section Gamer Polish */
+.hero.hero-home {
+  position: relative;
+  border-bottom: 1px solid var(--gg-border);
+  box-shadow: inset 0 -60px 80px rgba(14, 19, 23, 0.95);
+}
+
+.hero-home .hero-image-shade {
+  background: linear-gradient(180deg, rgba(14,19,23,0.3) 0%, rgba(14,19,23,0.7) 65%, #0e1317 100%) !important;
+}
+
+.hero-home .hero-signboard {
+  background: linear-gradient(135deg, #182229 0%, #0d1216 100%) !important;
+  border: 2px solid var(--gg-red) !important;
+  box-shadow: 0 0 25px var(--gg-red-glow), inset 0 0 15px rgba(221, 22, 59, 0.25) !important;
+  clip-path: var(--gg-clip-corner);
+}
+
+.hero-home .hero-brand {
+  font-family: var(--gg-font-heading) !important;
+  color: #fff !important;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4), 0 0 25px var(--gg-red-glow) !important;
+  letter-spacing: 0.08em;
+}
+
+.hero-home h1 {
+  font-family: var(--gg-font-heading) !important;
+  text-transform: uppercase;
+  color: #fff !important;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(221, 22, 59, 0.35) !important;
+}
+
+.hero-home .hero-tagline {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2em !important;
+  text-shadow: 0 0 10px var(--gg-cyan-glow);
+}
+
+.hero-home .hero-server {
+  background: rgba(19, 27, 33, 0.85) !important;
+  border: 1px solid var(--gg-border-light) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Opera GX / GoodGames Action Buttons */
+.hero-home .actions .button,
+.hero-copy .button {
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 12px 24px;
+  border-radius: 3px;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  transition: all .2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.hero-home .button.button-green,
+.button.button-green {
+  background: linear-gradient(135deg, #dd163b, #b30f2c) !important;
+  color: #fff !important;
+  border: 1px solid #ff3b61 !important;
+  box-shadow: 0 4px 15px var(--gg-red-glow) !important;
+}
+
+.hero-home .button.button-green:hover,
+.button.button-green:hover {
+  background: linear-gradient(135deg, #ff2a51, #dd163b) !important;
+  box-shadow: 0 0 25px var(--gg-red-glow), 0 6px 20px rgba(0,0,0,0.5) !important;
+  transform: translateY(-2px);
+}
+
+.hero-home .button.button-blue,
+.button.button-blue {
+  background: linear-gradient(135deg, #18232b, #121a20) !important;
+  color: #e1edf5 !important;
+  border: 1px solid var(--gg-cyan) !important;
+  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.18) !important;
+}
+
+.hero-home .button.button-blue:hover,
+.button.button-blue:hover {
+  background: linear-gradient(135deg, #202e38, #18242c) !important;
+  color: #fff !important;
+  box-shadow: 0 0 20px var(--gg-cyan-glow) !important;
+  transform: translateY(-2px);
+}
+
+.hero-home .button.button-coral,
+.button.button-coral {
+  background: linear-gradient(135deg, #d48a1c, #9e6410) !important;
+  color: #fff !important;
+  border: 1px solid #ffbe53 !important;
+  box-shadow: 0 4px 15px rgba(245, 166, 35, 0.25) !important;
+}
+
+/* Telemetry Stats Bar */
+.home-telemetry-band {
+  background: #12181d !important;
+  border-top: 1px solid var(--gg-border);
+  border-bottom: 1px solid var(--gg-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.telemetry-item {
+  position: relative;
+}
+
+.telemetry-item::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--gg-border-light), transparent);
+}
+
+.telemetry-item:last-child::after {
+  display: none;
+}
+
+.telemetry-number {
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 900 !important;
+  color: #fff !important;
+  text-shadow: 0 0 16px var(--gg-red-glow);
+}
+
+.telemetry-label {
+  font-family: var(--gg-font-heading) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gg-text-muted) !important;
+  font-size: 0.76rem !important;
+}
+
+/* GoodGames Section Headings */
+.home-section-heading {
+  border-left: 4px solid var(--gg-red);
+  padding-left: 16px;
+  margin-bottom: 24px;
+}
+
+.home-section-heading h2 {
+  color: #fff !important;
+  text-transform: uppercase;
+  font-size: 1.65rem !important;
+  letter-spacing: 0.03em;
+}
+
+.home-section-heading .eyebrow,
+.eyebrow {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase;
+}
+
+/* Category Grid Tiles (GoodGames & Opera GX Element Boxes) */
+.home-categories {
+  padding-top: 10px !important;
+  padding-bottom: 30px !important;
+  background: transparent !important;
+}
+
+.home-categories .tile-grid {
+  gap: 18px !important;
+  margin-top: 0 !important;
+}
+
+.home-categories .tile,
+.home-categories .tile:nth-child(3n+1),
+.home-categories .tile:nth-child(3n+2),
+.home-categories .tile:nth-child(3n) {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-top: 3px solid var(--gg-red) !important;
+  border-radius: 6px !important;
+  padding: 22px 24px 20px !important;
+  min-height: 145px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+  transition: all .28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Remove old multi-color pseudo bars */
+.home-categories .tile::before,
+.home-categories .tile:nth-child(n)::before,
+.tile::before {
+  display: none !important;
+}
+
+/* Top corner tech badge for tile number */
+.home-categories .tile .tile-number {
+  position: absolute !important;
+  right: 18px !important;
+  top: 18px !important;
+  color: var(--gg-red) !important;
+  background: rgba(221, 22, 59, 0.1) !important;
+  border: 1px solid rgba(221, 22, 59, 0.3) !important;
+  border-radius: 4px !important;
+  padding: 3px 8px !important;
+  font-family: var(--gg-font-heading) !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 8px var(--gg-red-glow) !important;
+}
+
+/* Cyber Star Icon */
+.home-categories .tile .tile-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 10px 0 !important;
+  color: var(--gg-cyan) !important;
+  background: rgba(0, 229, 255, 0.08) !important;
+  border: 1px solid rgba(0, 229, 255, 0.25) !important;
+  border-radius: 4px !important;
+  font-size: 0.95rem !important;
+  line-height: 1 !important;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.15) !important;
+  transition: all .25s ease !important;
+}
+
+/* Category Title */
+.home-categories .tile strong {
+  display: block !important;
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-size: 1.35rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  margin: 4px 0 8px 0 !important;
+  transition: color .2s ease !important;
+}
+
+/* Category Subtitle / Article Count */
+.home-categories .tile small {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin-top: auto !important;
+  padding-top: 14px !important;
+  border-top: 1px solid rgba(38, 52, 62, 0.6) !important;
+  color: var(--gg-text-muted) !important;
+  font-family: var(--gg-font-body) !important;
+  font-size: 0.86rem !important;
+  font-weight: 600 !important;
+}
+
+.home-categories .tile small span {
+  color: var(--gg-cyan) !important;
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  transition: transform .2s ease, color .2s ease !important;
+}
+
+/* Hover State */
+.home-categories .tile:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-border-light) !important;
+  border-top-color: var(--gg-red-hover) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65), 0 0 20px var(--gg-red-glow) !important;
+  transform: translateY(-4px) !important;
+}
+
+.home-categories .tile:hover strong {
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+}
+
+.home-categories .tile:hover .tile-icon {
+  background: rgba(0, 229, 255, 0.18) !important;
+  border-color: var(--gg-cyan) !important;
+  box-shadow: 0 0 14px var(--gg-cyan-glow) !important;
+  transform: scale(1.1);
+}
+
+.home-categories .tile:hover small span {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px var(--gg-cyan-glow) !important;
+  transform: translate(3px, -3px) !important;
+}
+
+/* Feature Cards (GoodGames Feature Blocks) */
+.home-feature-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-top: 3px solid var(--gg-red) !important;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: all .25s ease !important;
+}
+
+.home-feature-card:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-border-light) !important;
+  border-top-color: var(--gg-red-hover) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--gg-red-glow) !important;
+  transform: translateY(-5px);
+}
+
+.feature-card-header .feature-icon {
+  background: rgba(221, 22, 59, 0.12) !important;
+  border: 1px solid rgba(221, 22, 59, 0.35) !important;
+  color: var(--gg-red) !important;
+}
+
+.feature-badge {
+  background: #11171c !important;
+  color: var(--gg-cyan) !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.home-feature-card h3 {
+  color: #fff !important;
+}
+
+.feature-card-link {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.84rem;
+}
+
+.feature-card-link:hover {
+  color: var(--gg-red-hover) !important;
+  text-shadow: 0 0 8px var(--gg-red-glow);
+}
+
+/* 3-Step Guide (Opera GX Gamer Tech Cards) */
+.home-guide-step {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+  position: relative;
+  transition: all .2s ease;
+}
+
+.home-guide-step:hover {
+  border-color: var(--gg-cyan) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px var(--gg-cyan-glow) !important;
+}
+
+.home-guide-step .step-number {
+  background: linear-gradient(135deg, var(--gg-red), #940a23) !important;
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 900;
+  clip-path: var(--gg-clip-corner);
+}
+
+.home-guide-step h3 {
+  color: #fff !important;
+}
+
+.step-ip-box {
+  background: #101519 !important;
+  border: 1px solid var(--gg-border) !important;
+}
+
+.step-ip-box code {
+  color: var(--gg-cyan) !important;
+  font-weight: 700;
+}
+
+/* Map Spotlight Gamer HUD */
+.home-map-spotlight-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+}
+
+.home-map-spotlight-card h2 {
+  color: #fff !important;
+}
+
+.map-stat-badge {
+  background: #11171c !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 3px solid var(--gg-cyan) !important;
+}
+
+.map-stat-badge strong {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+}
+
+.map-stat-badge span {
+  color: #fff !important;
+  font-weight: 700;
+}
+
+.map-frame {
+  border: 2px solid var(--gg-border-light) !important;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.map-spawn-pin .pin-pulse {
+  background: var(--gg-red) !important;
+  box-shadow: 0 0 12px var(--gg-red) !important;
+}
+
+.map-spawn-pin .pin-label {
+  background: rgba(14, 19, 23, 0.95) !important;
+  border: 1px solid var(--gg-red) !important;
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+}
+
+/* Story Cards (Wiki & News & Atlas) */
+.home-story-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all .25s ease !important;
+}
+
+.home-story-card:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-red) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px var(--gg-red-glow) !important;
+  transform: translateY(-4px);
+}
+
+.home-story-card h3 a {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  transition: color .2s ease;
+}
+
+.home-story-card h3 a:hover {
+  color: var(--gg-red-hover) !important;
+}
+
+.home-card-meta span {
+  background: #11171c !important;
+  color: var(--gg-red) !important;
+  border: 1px solid rgba(221, 22, 59, 0.3) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.home-card-read {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+.home-card-read:hover {
+  color: var(--gg-red-hover) !important;
+  text-shadow: 0 0 8px var(--gg-red-glow);
+}
+
+/* Discord Gaming Box */
+.home-discord-box {
+  background: linear-gradient(135deg, #1c2132, #141824) !important;
+  border: 1px solid #3b4870 !important;
+  border-top: 3px solid #5865f2 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(88, 101, 242, 0.2) !important;
+}
+
+.home-discord-box .discord-box-header strong {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+}
+
+.discord-join-btn {
+  background: linear-gradient(135deg, #5865f2, #4752c4) !important;
+  color: #fff !important;
+  border: 1px solid #7983f5 !important;
+  box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+}
+
+.discord-join-btn:hover {
+  background: linear-gradient(135deg, #6774f4, #5865f2) !important;
+  box-shadow: 0 0 25px rgba(88, 101, 242, 0.6) !important;
+  transform: translateY(-2px);
+}
+
+/* Directory Destinations (GoodGames Tournament Matches Grid) */
+.home-destination-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+  transition: all .25s ease !important;
+}
+
+.home-destination-card:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-red) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px var(--gg-red-glow) !important;
+  transform: translateY(-3px);
+}
+
+.home-destination-card .home-destination-number {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 900;
+}
+
+.home-destination-card strong {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.home-destination-card:hover .home-destination-arrow {
+  color: var(--gg-red) !important;
+  transform: translate(2px, -2px);
+}
+
+/* GoodGames & Opera GX Dark Footer */
+.site-footer {
+  background: #090c0f !important;
+  border-top: 2px solid var(--gg-red) !important;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.8);
+}
+
+.footer-brand strong {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 15px var(--gg-red-glow);
+}
+
+.footer-links a {
+  color: #92a3b0 !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  transition: color .2s ease, text-shadow .2s ease;
+}
+
+.footer-links a:hover {
+  color: var(--gg-red-hover) !important;
+  text-shadow: 0 0 10px var(--gg-red-glow);
+}
+
+.footer-meta span {
+  color: var(--gg-text-muted) !important;
+}
+
+/* GoodGames Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #090d10;
+}
+::-webkit-scrollbar-thumb {
+  background: #25333e;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gg-red);
+}
+
+/* GoodGames Store & Commerce Enhancements */
+.shop-page {
+  background: transparent !important;
+}
+
+.shop-notice {
+  background: #141c22 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-red) !important;
+  color: var(--gg-text-body) !important;
+  border-radius: 4px;
+}
+
+.shop-notice strong {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+}
+
+.shop-notice span {
+  color: var(--gg-text-body) !important;
+}
+
+.shop-toolbar {
+  color: var(--gg-text-muted) !important;
+}
+
+.shop-toolbar .button-outline {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+  transition: all .2s ease;
+}
+
+.shop-toolbar .button-outline:hover {
+  border-color: var(--gg-red) !important;
+  color: var(--gg-red-hover) !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+}
+
+.shop-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+  transition: all .25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.shop-card:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-red) !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7), 0 0 20px var(--gg-red-glow) !important;
+  transform: translateY(-4px);
+}
+
+.shop-card-art {
+  background: linear-gradient(135deg, #11171c 0%, #1e2830 100%) !important;
+  border-right: 1px solid var(--gg-border) !important;
+}
+
+.shop-card-art small {
+  font-size: 0.62rem !important;
+  letter-spacing: 0.05em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #8da2b0 !important;
+}
+
+.shop-card-copy h2 a {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  transition: color .2s ease;
+}
+
+.shop-card-copy h2 a:hover {
+  color: var(--gg-red-hover) !important;
+}
+
+.shop-card-meta {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+}
+
+.shop-add-button,
+.shop-primary-link {
+  background: linear-gradient(135deg, var(--gg-red), #b5102e) !important;
+  border: 1px solid #ff3b61 !important;
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  box-shadow: 0 4px 15px var(--gg-red-glow) !important;
+  transition: all .2s ease !important;
+}
+
+.shop-add-button:hover,
+.shop-primary-link:hover {
+  background: linear-gradient(135deg, #ff2a51, var(--gg-red)) !important;
+  box-shadow: 0 0 20px var(--gg-red-glow) !important;
+  transform: translateY(-2px);
+}
+
+.shop-card-bottom strong {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-size: 1.15rem !important;
+}
+
+.cart-status-link {
+  background: #141b20 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  transition: all .2s ease;
+}
+
+.cart-status-link:hover {
+  border-color: var(--gg-red) !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+}
+
+.cart-status-link span {
+  background: var(--gg-red) !important;
+  color: #fff !important;
+  font-weight: 800;
+}
+
+.cart-line, .cart-summary, .cart-empty {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+}
+
+.cart-summary strong {
+  color: #fff !important;
+}
+
+/* =====================================================================
+   GOODGAMES & OPERA GX - WIKI, NEWS, CATALOG & COMMUNITY PAGES
+   ===================================================================== */
+
+.content.wiki-page,
+.content.news-page,
+.content.catalog-page,
+.content.community-page,
+.content.community-overview,
+.content.community-kind-page,
+.content.checkout-page,
+.content.quote-panel {
+  background: transparent !important;
+}
+
+/* =====================================================================
+   GOODGAMES & OPERA GX - COMMUNITY OVERVIEW & CARDS
+   ===================================================================== */
+
+/* Community Intro Masthead Banner */
+.community-intro {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-red) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5) !important;
+  padding: 24px 28px !important;
+}
+
+.community-intro h1 {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: -0.01em !important;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.2) !important;
+}
+
+.community-intro .eyebrow {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.15em !important;
+}
+
+.community-intro > div:first-child > p:last-child {
+  color: var(--gg-text-body) !important;
+  line-height: 1.65 !important;
+}
+
+.community-count {
+  border-left: 1px solid var(--gg-border) !important;
+  padding-left: 24px !important;
+}
+
+.community-count strong {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-size: 2.2rem !important;
+  font-weight: 900 !important;
+  text-shadow: 0 0 12px var(--gg-cyan-glow) !important;
+}
+
+.community-count span {
+  color: var(--gg-text-muted) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Community Cards Grid */
+.community-overview-grid {
+  gap: 18px !important;
+  margin-top: 24px !important;
+}
+
+.community-overview-grid .community-card,
+.community-overview-grid .community-card:nth-child(3n + 1),
+.community-overview-grid .community-card:nth-child(3n + 2),
+.community-overview-grid .community-card:nth-child(3n) {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-top: 3px solid var(--gg-red) !important;
+  border-radius: 6px !important;
+  padding: 22px 24px 20px !important;
+  min-height: 175px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+  transition: all .28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.community-overview-grid a.community-card:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-border-light) !important;
+  border-top-color: var(--gg-red-hover) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65), 0 0 20px var(--gg-red-glow) !important;
+  transform: translateY(-4px) !important;
+}
+
+/* Tech category badge & number */
+.community-card-top small {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+.community-card-top > span {
+  color: var(--gg-red) !important;
+  background: rgba(221, 22, 59, 0.1) !important;
+  border: 1px solid rgba(221, 22, 59, 0.3) !important;
+  border-radius: 4px !important;
+  padding: 2px 7px !important;
+  font-family: var(--gg-font-heading) !important;
+  font-size: 0.8rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 8px var(--gg-red-glow) !important;
+}
+
+.community-overview-grid .community-card h2 {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-size: 1.35rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em !important;
+  margin: 6px 0 4px 0 !important;
+}
+
+.community-overview-grid .community-card p {
+  color: var(--gg-text-muted) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.6 !important;
+}
+
+.community-overview-grid .community-card .community-card-link {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  transition: all .2s ease !important;
+}
+
+.community-overview-grid a.community-card:hover .community-card-link {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px var(--gg-cyan-glow) !important;
+}
+
+.community-overview-grid a.community-card:hover .community-card-link > span {
+  transform: translateX(4px) !important;
+}
+
+/* Community State Alerts */
+.community-state {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-red) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.community-state h2 {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+}
+
+.community-state p {
+  color: var(--gg-text-body) !important;
+}
+
+.community-state-actions a,
+.community-state a,
+.community-retry-link {
+  background: #1b242c !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  border-radius: 3px !important;
+  transition: all .2s ease !important;
+}
+
+.community-state-actions a:hover,
+.community-state a:hover,
+.community-retry-link:hover {
+  background: linear-gradient(135deg, var(--gg-red), #b5102e) !important;
+  border-color: #ff3b61 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px var(--gg-red-glow) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Community Kind Detail Page */
+.community-kind-page > a:first-child {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  transition: all .2s ease !important;
+}
+
+.community-kind-page > a:first-child:hover {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px var(--gg-cyan-glow) !important;
+  transform: translateX(-3px) !important;
+}
+
+.community-kind-page h1 {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.2) !important;
+}
+
+.community-kind-page .article-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-top: 3px solid var(--gg-red) !important;
+  border-radius: 4px !important;
+}
+
+.community-kind-page .article-card:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-border-light) !important;
+  border-top-color: var(--gg-red-hover) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 20px var(--gg-red-glow) !important;
+  transform: translateY(-4px) !important;
+}
+
+.community-kind-page .article-card h2 {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+}
+
+.community-kind-page .article-card p {
+  color: var(--gg-text-muted) !important;
+}
+
+.community-kind-page .article-card span {
+  color: var(--gg-cyan) !important;
+}
+
+body > main > .content {
+  background: transparent !important;
+}
+
+/* Wiki & News Page Heading */
+.page-heading h1,
+.wiki-page > h1,
+.news-page > h1,
+.catalog-page > h1 {
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: -0.01em !important;
+  color: #fff !important;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Wiki Filters Aside */
+.wiki-filters {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.wiki-filters .search-bar label {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+}
+
+.wiki-filters .search-bar input {
+  background: #0f1519 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #fff !important;
+  border-radius: 3px;
+  transition: all .2s ease;
+}
+
+.wiki-filters .search-bar input:focus {
+  border-color: var(--gg-red) !important;
+  box-shadow: 0 0 10px var(--gg-red-glow) !important;
+  outline: none;
+}
+
+.wiki-filters .search-bar button {
+  background: linear-gradient(135deg, var(--gg-red), #b5102e) !important;
+  border: 1px solid #ff3b61 !important;
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.wiki-filters .search-bar button:hover {
+  background: linear-gradient(135deg, #ff2a51, var(--gg-red)) !important;
+  box-shadow: 0 0 15px var(--gg-red-glow) !important;
+}
+
+.wiki-filters h2 {
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  color: #fff !important;
+  border-bottom: 2px solid var(--gg-red) !important;
+  padding-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.category-list a,
+.tag-list a {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: var(--gg-text-muted) !important;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+
+.category-list a:hover,
+.tag-list a:hover {
+  border-color: var(--gg-red) !important;
+  color: #fff !important;
+  transform: translateX(3px);
+}
+
+.category-list a.selected,
+.tag-list a.selected {
+  background: linear-gradient(135deg, var(--gg-red), #b5102e) !important;
+  border-color: #ff3b61 !important;
+  color: #fff !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+}
+
+.category-list a span,
+.tag-list a span {
+  background: rgba(0, 0, 0, 0.4) !important;
+  color: #fff !important;
+  font-weight: 700;
+}
+
+/* Article & Editorial Cards */
+.article-card.editorial-card,
+.news-card.editorial-news-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+  transition: all .3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.article-card.editorial-card::before,
+.news-card.editorial-news-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gg-red), transparent);
+  opacity: 0;
+  transition: opacity .3s ease;
+  z-index: 2;
+}
+
+.article-card.editorial-card:hover,
+.news-card.editorial-news-card:hover {
+  border-color: var(--gg-red) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px var(--gg-red-glow) !important;
+  transform: translateY(-4px);
+}
+
+.article-card.editorial-card:hover::before,
+.news-card.editorial-news-card:hover::before {
+  opacity: 1;
+}
+
+.editorial-preview {
+  background: #141b21 !important;
+  border-bottom: none !important;
+}
+
+.editorial-preview-frame {
+  background: #0e1317 !important;
+}
+
+.editorial-preview figcaption {
+  background: #10161c !important;
+  border-top: 1px solid var(--gg-border) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+  color: var(--gg-text-muted) !important;
+}
+
+.editorial-preview figcaption a,
+.editorial-preview figcaption span {
+  color: #9eaab3 !important;
+  font-family: var(--gg-font-body) !important;
+}
+
+.editorial-preview figcaption a:hover {
+  background: #18222a !important;
+  color: #ffffff !important;
+  text-decoration: underline !important;
+}
+
+.editorial-card-copy {
+  background: var(--gg-bg-card) !important;
+}
+
+.editorial-card-copy h2,
+.editorial-card-copy h3 {
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+}
+
+.editorial-card-copy h2 a,
+.editorial-card-copy h3 a,
+.news-copy h2 a {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  transition: color .2s ease;
+}
+
+.editorial-card-copy h2 a:hover,
+.editorial-card-copy h3 a:hover,
+.news-copy h2 a:hover {
+  color: var(--gg-red-hover) !important;
+}
+
+.editorial-card-copy small,
+.news-copy small {
+  color: var(--gg-red) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.editorial-card-copy .editorial-card-tags {
+  color: var(--gg-red) !important;
+  font-weight: 700 !important;
+}
+
+.editorial-read-link,
+.news-read-link {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  transition: all .2s ease !important;
+}
+
+.editorial-read-link:hover,
+.editorial-read-link:focus-visible,
+.news-read-link:hover,
+.news-read-link:focus-visible {
+  color: #fff !important;
+  text-shadow: 0 0 8px var(--gg-cyan-glow) !important;
+  transform: translateX(4px);
+}
+
+/* News Aside */
+.news-aside {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+}
+
+.news-aside h2 {
+  font-family: var(--gg-font-heading) !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+
+.news-aside nav a {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+
+.news-aside nav a:hover {
+  border-color: var(--gg-red) !important;
+  color: var(--gg-red-hover) !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+  transform: translateX(3px);
+}
+
+/* Checkout Page */
+.checkout-page input,
+.checkout-page select,
+.checkout-page textarea {
+  background: #0f1519 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #fff !important;
+  border-radius: 3px;
+}
+
+.checkout-page input:focus,
+.checkout-page select:focus,
+.checkout-page textarea:focus {
+  border-color: var(--gg-red) !important;
+  box-shadow: 0 0 10px var(--gg-red-glow) !important;
+  outline: none;
+}
+
+.checkout-page button[type="submit"] {
+  background: linear-gradient(135deg, var(--gg-red), #b5102e) !important;
+  border: 1px solid #ff3b61 !important;
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  box-shadow: 0 4px 20px var(--gg-red-glow) !important;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.checkout-page button[type="submit"]:hover {
+  background: linear-gradient(135deg, #ff2a51, var(--gg-red)) !important;
+  box-shadow: 0 0 25px var(--gg-red-glow) !important;
+  transform: translateY(-2px);
+}
+
+/* =====================================================================
+   PURGE ALL LEGACY BROWN / EARTH TONES ACROSS HOMEPAGE & SUBPAGES
+   ===================================================================== */
+
+/* Global Main & Content Wrapper Backgrounds */
+main,
+body > main,
+.content,
+.quote-panel {
+  background: transparent !important;
+}
+
+/* 1. Home Intro Exploration Band (previously #362d24 / var(--nh-paper)) */
+.home-intro-band {
+  background: #10151a !important;
+  border-top: 1px solid var(--gg-border) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+  color: #fff !important;
+}
+
+.home-intro-band .content.home-intro {
+  background: transparent !important;
+}
+
+.home-intro-band .eyebrow {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+}
+
+.home-intro-band h2 {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.home-intro-band .section-lede {
+  color: var(--gg-text-body) !important;
+}
+
+.home-intro-band .text-link {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  transition: all .2s ease;
+}
+
+.home-intro-band .text-link:hover {
+  color: #fff !important;
+  text-shadow: 0 0 10px var(--gg-cyan-glow) !important;
+  transform: translateX(4px);
+}
+
+/* 2. Home Categories (Wiki Tiles) */
+.content.home-categories {
+  background: #0e1317 !important;
+}
+
+/* 3. Home Editorial Sections (previously #312b22, #30271f, #332d26, #211d19, var(--nh-forest), var(--nh-paper)) */
+.home-editorial-section {
+  background: #0e1317 !important;
+  border-top: 1px solid var(--gg-border) !important;
+  color: var(--gg-text-body) !important;
+}
+
+.home-features-section {
+  background: #11171d !important;
+  border-top: 1px solid var(--gg-border) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+}
+
+.home-join-guide-section {
+  background: #0e1317 !important;
+  border-top: 1px solid var(--gg-border) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+}
+
+.home-map-spotlight-section {
+  background: #11171d !important;
+  border-top: 1px solid var(--gg-border) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+}
+
+.home-wiki-section {
+  background: #0e1317 !important;
+  border-top: 1px solid var(--gg-border) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+}
+
+.home-atlas-section {
+  background: #11171d !important;
+  border-top: 1px solid var(--gg-border) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+}
+
+.home-news-section {
+  background: #0e1317 !important;
+  border-top: 1px solid var(--gg-border) !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+}
+
+.home-directory-section {
+  background: #080c0f !important;
+  border-top: 1px solid var(--gg-border) !important;
+}
+
+/* 4. Story & Directory Cards - Remove old #6b553e brown borders and paper-light backgrounds */
+.home-story-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+}
+
+.home-story-copy {
+  background: transparent !important;
+}
+
+.home-destination-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+}
+
+.home-destination-card .home-destination-description {
+  color: var(--gg-text-body) !important;
+}
+
+.home-destination-card .home-destination-status {
+  color: var(--gg-text-muted) !important;
+}
+
+/* 5. Community Panel on Homepage (previously #6b553e / var(--nh-paper-light)) */
+.home-community-panel {
+  background: #131a21 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.home-community-panel h2 {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+}
+
+.home-community-panel > .eyebrow {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+}
+
+.home-community-feature {
+  background: #0d1217 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 3px solid var(--gg-cyan) !important;
+  border-radius: 4px;
+}
+
+.home-community-feature span {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.home-community-feature h3 a {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+}
+
+.home-community-feature h3 a:hover {
+  color: var(--gg-red-hover) !important;
+}
+
+.home-community-feature p {
+  color: var(--gg-text-body) !important;
+}
+
+.home-community-note {
+  color: var(--gg-text-muted) !important;
+}
+
+.home-community-link {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+  transition: all .2s ease;
+}
+
+.home-community-link:hover {
+  color: #fff !important;
+  text-shadow: 0 0 10px var(--gg-cyan-glow) !important;
+  transform: translateX(4px);
+}
+
+/* 6. Section Action Links & Empty Notices (replace old gold-brown #e2c88f) */
+.home-section-link {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+  transition: all .2s ease;
+}
+
+.home-section-link:hover {
+  color: #fff !important;
+  text-shadow: 0 0 10px var(--gg-cyan-glow) !important;
+  transform: translateX(3px);
+}
+
+.home-section-empty {
+  background: #12181f !important;
+  border: 1px solid var(--gg-border) !important;
+  color: var(--gg-text-muted) !important;
+  border-radius: 4px;
+}
+
+.home-editorial-note {
+  color: var(--gg-text-muted) !important;
+}
+
+/* 7. Notice Boxes (Store, Wiki, Checkout, Admin - replace old #3a3124 brown) */
+.notice,
+.demo-data-notice {
+  background: #12181f !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-red) !important;
+  color: var(--gg-text-body) !important;
+  border-radius: 4px;
+}
+
+.notice strong,
+.demo-data-notice strong {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+}
+
+.notice p,
+.demo-data-notice p {
+  color: var(--gg-text-body) !important;
+}
+
+/* 8. Side Navigation Drawer (replace old #28221c & #5b3d2b brown) */
+.site-nav-drawer {
+  background: #0d1217 !important;
+  border-right: 2px solid var(--gg-red) !important;
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.9) !important;
+}
+
+.site-nav-backdrop {
+  background: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(4px);
+}
+
+.site-nav-heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-bottom: 1px solid var(--gg-border) !important;
+  padding-bottom: 20px !important;
+}
+
+.site-nav-close {
+  display: grid !important;
+  place-items: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-radius: 4px !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  transition: all .2s ease !important;
+}
+
+.site-nav-close:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-red) !important;
+  color: var(--gg-red-hover) !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+  transform: translateY(-1px) scale(1.05);
+}
+
+.site-nav-close .ui-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.site-nav-heading .eyebrow {
+  color: var(--gg-red) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+}
+
+.site-nav-heading strong {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800;
+}
+
+.site-nav-links a {
+  background: #131920 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #fff !important;
+  border-radius: 3px;
+  transition: all .2s ease;
+}
+
+.site-nav-links a:hover {
+  border-color: var(--gg-red) !important;
+  background: #1b232c !important;
+  color: #fff !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+  transform: translateX(4px);
+}
+
+.site-nav-links a span {
+  color: #fff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700;
+}
+
+.site-nav-links a small {
+  color: var(--gg-text-muted) !important;
+}
+
+.site-nav-links a .nav-arrow {
+  color: var(--gg-red) !important;
+}
+
+.site-nav-footer {
+  border-top: 1px solid var(--gg-border) !important;
+  color: var(--gg-text-muted) !important;
+}
+
+/* 9. Feature Card Detail Accents - Remove remaining #6b553e / #70583f brown borders */
+.feature-card-footer {
+  border-top: 1px solid var(--gg-border) !important;
+}
+
+.step-content strong {
+  color: #fff !important;
+}
+
+/* =====================================================================
+   FIX COPY IP BUTTON, PUBLIC RECOVERY BANNER & ELIMINATE 100vmax SHADOW
+   ===================================================================== */
+
+/* 1. Copy IP Button (Hero Server & Step 02 in Join Guide) */
+.copy-ip-btn {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  transition: all .2s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.copy-ip-btn:hover {
+  background: var(--gg-bg-card-hover) !important;
+  border-color: var(--gg-red) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+  transform: translateY(-1px);
+}
+
+.copy-ip-btn.copied {
+  background: linear-gradient(135deg, #00c853, #009624) !important;
+  border-color: #00e676 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(0, 230, 118, 0.4) !important;
+}
+
+.copy-ip-btn .btn-icon {
+  color: var(--gg-cyan) !important;
+}
+
+.copy-ip-btn.copied .btn-icon {
+  color: #ffffff !important;
+}
+
+/* 2. Public Recovery Alert & Buttons (Offline / Error recovery) */
+.public-recovery {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-red) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6) !important;
+}
+
+.public-recovery h2 {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 800 !important;
+}
+
+.public-recovery p {
+  color: var(--gg-text-body) !important;
+}
+
+.public-recovery-actions a {
+  background: #1b242c !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+  border-radius: 3px !important;
+  transition: all .2s ease !important;
+}
+
+.public-recovery-actions a:hover {
+  background: linear-gradient(135deg, var(--gg-red), #b5102e) !important;
+  border-color: #ff3b61 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px var(--gg-red-glow) !important;
+  transform: translateY(-2px);
+}
+
+/* 3. Kill all legacy 100vmax brown shadows across all public pages */
+body > main > .content,
+.content,
+.content.wiki-page,
+.content.catalog-page,
+.content.news-page,
+.content.community-kind-page,
+.content.knowledge-overview,
+.content.bookmarks-page,
+.content.recent-page {
+  box-shadow: none !important;
+}
+
+html, body {
+  background-color: var(--gg-bg-main) !important;
+}
+
+main, body > main {
+  background-color: var(--gg-bg-main) !important;
+  min-height: calc(100vh - 140px);
+}
+
+/* 4. Article detail, markdown, and notices */
+.content.detail,
+.detail {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.detail > a:first-child {
+  color: var(--gg-cyan) !important;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+
+.detail > a:first-child:hover {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px var(--gg-cyan-glow) !important;
+}
+
+.markdown,
+.knowledge-metadata,
+.recipe-components {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  color: var(--gg-text-body) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+}
+
+.markdown pre {
+  background: #0b0f13 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #00e5ff !important;
+}
+
+.markdown a,
+.recipe-components a,
+.knowledge-metadata a {
+  color: var(--gg-cyan) !important;
+}
+
+.markdown a:hover {
+  color: #ffffff !important;
+  text-decoration: underline !important;
+}
+
+.wiki-page .notice,
+.catalog-page .notice,
+.community-kind-page .notice,
+.detail .notice,
+.notice {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-red) !important;
+  color: var(--gg-text-body) !important;
+}
+
+.demo-data-notice {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-cyan) !important;
+  color: var(--gg-text-body) !important;
+}
+
+/* 5. Navigation Drawer (Cyber Slate) */
+.site-nav-drawer {
+  background: #0e1317 !important;
+  border-right: 1px solid var(--gg-border) !important;
+  box-shadow: 10px 0 35px rgba(0, 0, 0, 0.85) !important;
+}
+
+.site-nav-heading {
+  border-bottom-color: var(--gg-border) !important;
+}
+
+.site-nav-heading strong,
+.site-nav-links span {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+}
+
+.site-nav-links a {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-red) !important;
+  color: #ffffff !important;
+  border-radius: 3px !important;
+}
+
+.site-nav-links a:nth-child(4n + 2),
+.site-nav-links a:nth-child(4n + 3),
+.site-nav-links a:nth-child(4n + 4) {
+  background: #141b21 !important;
+}
+
+.site-nav-links a:hover {
+  background: #1c262e !important;
+  border-color: var(--gg-red) !important;
+  border-left-color: var(--gg-cyan) !important;
+  box-shadow: 0 0 15px var(--gg-red-glow) !important;
+}
+
+.site-nav-links small {
+  color: var(--gg-text-muted) !important;
+}
+
+.site-nav-links .nav-arrow {
+  color: var(--gg-cyan) !important;
+}
+
+.site-nav-footer {
+  border-top-color: var(--gg-border) !important;
+  color: var(--gg-text-muted) !important;
+}
+
+/* 6. Footer (Opera GX Dark) */
+.site-footer {
+  background: #090d10 !important;
+  border-top: 2px solid var(--gg-red) !important;
+  color: var(--gg-text-muted) !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.site-footer .footer-brand strong {
+  color: #ffffff !important;
+  font-family: var(--gg-font-heading) !important;
+}
+
+.footer-brand span,
+.footer-meta span,
+.footer-meta a {
+  color: var(--gg-text-muted) !important;
+}
+
+.footer-links a {
+  color: var(--gg-text-body) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+
+.footer-links a:hover,
+.footer-meta a:hover {
+  color: var(--gg-red-hover) !important;
+  text-shadow: 0 0 10px var(--gg-red-glow) !important;
+}
+
+/* 7. Bookmarks & Recent Reading (Gamer Carbon) */
+.wiki-bookmark-button,
+.bookmark-primary-link,
+.bookmark-search button {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+  transition: all .2s ease !important;
+}
+
+.wiki-bookmark-button:hover,
+.bookmark-primary-link:hover,
+.bookmark-search button:hover {
+  background: #1c262e !important;
+  border-color: var(--gg-red) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px var(--gg-red-glow) !important;
+}
+
+.wiki-bookmark-button[aria-pressed="true"] {
+  background: linear-gradient(135deg, var(--gg-red), #9e0e29) !important;
+  border-color: #ff3358 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px var(--gg-red-glow) !important;
+}
+
+.bookmark-state {
+  background: #141b21 !important;
+  border: 1px solid var(--gg-border) !important;
+  border-left: 4px solid var(--gg-cyan) !important;
+  color: var(--gg-text-body) !important;
+}
+
+.bookmark-unavailable {
+  background: #141b21 !important;
+  border-left: 3px solid var(--gg-red) !important;
+  color: var(--gg-text-body) !important;
+}
+
+.bookmark-search input {
+  background: #10161c !important;
+  border: 1px solid var(--gg-border) !important;
+  color: #ffffff !important;
+  border-radius: 3px !important;
+}
+
+.bookmark-card {
+  background: var(--gg-bg-card) !important;
+  border: 1px solid var(--gg-border) !important;
+  border-top: 3px solid var(--gg-red) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 4px !important;
+}
+
+.bookmark-card:nth-child(3n + 2) {
+  border-top-color: var(--gg-cyan) !important;
+  background: var(--gg-bg-card) !important;
+}
+
+.bookmark-card:nth-child(3n) {
+  border-top-color: var(--gg-gold) !important;
+  background: var(--gg-bg-card) !important;
+}
+
+.bookmark-card-footer {
+  border-top-color: var(--gg-border) !important;
+}
+
+.bookmark-read-link {
+  color: var(--gg-cyan) !important;
+  font-family: var(--gg-font-heading) !important;
+  font-weight: 700 !important;
+}
+
+.bookmark-read-link:hover {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px var(--gg-cyan-glow) !important;
+}
+
+
+

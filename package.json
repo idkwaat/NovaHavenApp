@@ -1,0 +1,15 @@
+{
+  "name": "nova-haven-platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/web/*.test.mjs",
+    "smoke:wiki": "node scripts/wiki-smoke.mjs",
+    "smoke:all": "node scripts/all-systems-smoke.mjs",
+    "smoke:defense": "node scripts/defense-readiness-smoke.mjs",
+    "seed:demo": "node scripts/demo-seed.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

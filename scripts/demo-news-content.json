@@ -1,0 +1,28 @@
+{
+  "posts": [
+    {
+      "title": "Thư viện Wiki mở rộng cẩm nang tiếng Việt",
+      "slug": "thu-vien-wiki-mo-rong-cam-nang-tieng-viet",
+      "summary": "Mười hai bài viết mới bổ sung hướng dẫn nhập môn, ghi chép hành trình và lore về các địa danh quanh Thung lũng Sao.",
+      "markdown": "# Thư viện Wiki mở rộng cẩm nang tiếng Việt\n\nThư viện Nova Haven được bổ sung các bài hướng dẫn cho người mới, ghi chép về hành trình và câu chuyện quanh Thung lũng Sao. Nội dung được chia theo Khởi hành, Lớp nhân vật và Vùng đất để người đọc tìm chủ đề nhanh hơn.\n\n## Nội dung được bổ sung\n\nCác bài mới giải thích cách ghi lại dấu mốc, phối hợp trong một chuyến đi và đóng góp cho Wiki. Phần địa danh mở rộng những mảnh lore về Bến Nguyệt, Rừng Thông Mù Sương, Làng Ven Sông và Mỏm Đèn. Các câu chuyện do dự án biên soạn được ghi rõ, không trình bày như dữ liệu đã xác nhận từ plugin máy chủ.\n\n## Cách đóng góp\n\nNgười chơi có thể dùng biểu mẫu đóng góp trong khu vực quản trị nếu được cấp quyền biên tập. Khi gửi thông tin gameplay, hãy kèm nguồn hoặc thời điểm kiểm tra; phần chưa xác nhận nên được ghi là câu hỏi, không biến thành hướng dẫn chắc chắn.\n\n## Tiếp tục khám phá\n\nBắt đầu từ trang Wiki, chọn một chuyên mục rồi mở bài phù hợp với chuyến đi của bạn. Các bài liên quan giúp nối kiến thức giữa hướng dẫn và câu chuyện địa danh."
+    },
+    {
+      "title": "Tìm bài viết theo chuyên mục và thẻ",
+      "slug": "tim-bai-viet-theo-chuyen-muc-va-the",
+      "summary": "Thư viện Wiki hỗ trợ lọc bài đã xuất bản theo danh mục và tag, bên cạnh tìm kiếm tiêu đề và phần tóm tắt.",
+      "markdown": "# Tìm bài viết theo chuyên mục và thẻ\n\nKhi thư viện có nhiều hướng dẫn và ghi chép, tìm đúng trang quan trọng không kém việc viết nội dung. Trang Wiki Nova Haven cho phép tìm theo tiêu đề hoặc phần tóm tắt, sau đó thu hẹp danh sách bằng danh mục và tag đang được dùng trên bài đã xuất bản.\n\n## Chọn bộ lọc phù hợp\n\nDanh mục giúp phân biệt nhóm nội dung lớn như Khởi hành, Lớp nhân vật và Vùng đất. Tag là nhãn chủ đề nhỏ hơn, chẳng hạn Cẩm nang, Khám phá hoặc Nhật ký. Có thể kết hợp tìm kiếm với một bộ lọc để rút ngắn danh sách bài phù hợp.\n\n## Dữ liệu công khai có kiểm soát\n\nDanh sách và kết quả tìm kiếm chỉ lấy metadata từ phiên bản đã xuất bản. Bản nháp và tag chỉ gắn trong quá trình biên tập không xuất hiện ở phía công khai. Cách này giúp bộ lọc phản ánh cùng một nội dung mà người đọc mở ở trang chi tiết.\n\n## Nếu chưa thấy kết quả\n\nThử bỏ bớt từ khóa hoặc chọn “Tất cả” để xem lại thư viện. Nếu bài đang ở trạng thái nháp, người biên tập cần hoàn tất và xuất bản trước khi bài xuất hiện công khai."
+    },
+    {
+      "title": "Giữ lại bài hay với dấu trang và đọc gần đây",
+      "slug": "dau-trang-va-doc-gan-day",
+      "summary": "Website giúp lưu danh sách bài muốn đọc và xem lại tối đa hai mươi bài Wiki gần đây trên chính trình duyệt.",
+      "markdown": "# Giữ lại bài hay với dấu trang và đọc gần đây\n\nNgười đọc có thể lưu bài Wiki vào danh sách dấu trang hoặc quay lại những trang vừa mở. Hai tiện ích này hoạt động trong trình duyệt hiện tại, không yêu cầu đăng nhập và không đồng bộ thành dữ liệu tài khoản.\n\n## Dấu trang của bạn\n\nTừ một bài đã xuất bản, chọn thao tác lưu để thêm bài vào danh sách. Trang dấu trang cho phép tìm trong các bài đã lưu và bỏ những trang không còn cần thiết. Khi một bài không còn công khai, danh sách sẽ không tiếp tục hiển thị bản nội dung đã cũ.\n\n## Đọc gần đây\n\nLịch sử ghi lại tối đa hai mươi slug bài đã mở. Khi xem danh sách, website kiểm tra lại các slug với API công khai để chỉ hiện nội dung hiện còn xuất bản. Bạn có thể xóa lịch sử mà không làm thay đổi dấu trang.\n\n## Quyền riêng tư và thiết bị\n\nDữ liệu được lưu ở bộ nhớ cục bộ của trình duyệt, vì vậy sẽ không tự chuyển sang điện thoại hoặc một trình duyệt khác. Xóa dữ liệu trang web trên thiết bị cũng có thể xóa danh sách. Đây là tiện ích đọc cá nhân, không phải chức năng tài khoản hay đồng bộ server."
+    },
+    {
+      "title": "Vì sao Wiki tách bản nháp khỏi bài đã xuất bản",
+      "slug": "wiki-tach-ban-nhap-khoi-noi-dung-cong-khai",
+      "summary": "Quy trình biên tập giữ nguyên bài đang công khai trong lúc người biên tập chuẩn bị và rà soát nội dung cập nhật.",
+      "markdown": "# Vì sao Wiki tách bản nháp khỏi bài đã xuất bản\n\nMột lỗi sửa nhỏ không nên âm thầm thay đổi nội dung mà độc giả đang đọc. CMS của Nova Haven giữ phần nháp riêng với phiên bản công khai; người biên tập có thể chuẩn bị chỉnh sửa, kiểm tra trước rồi mới quyết định xuất bản.\n\n## Mỗi lần xuất bản có phiên bản\n\nKhi bài được xuất bản, hệ thống lưu một bản ghi phiên bản và gắn nó làm nội dung hiện hành. Những lần sửa tiếp theo chưa xuất bản không làm thay đổi bản người đọc đang xem. Nếu cần quay lại nội dung trước, người biên tập có thể khôi phục phiên bản cũ thành bản nháp rồi rà soát lại.\n\n## Hai người sửa cùng lúc\n\nCác thao tác quản trị dùng điều kiện phiên bản để phát hiện dữ liệu đã thay đổi kể từ lúc mở biểu mẫu. Khi bản cũ không còn hợp lệ, CMS từ chối lưu thay vì ghi đè thay đổi mới hơn. Người biên tập tải lại rồi áp dụng phần cần thiết.\n\n## Điều người đọc nhìn thấy\n\nAPI công khai chỉ trả về bài đã xuất bản. Điều này áp dụng cho danh sách, tìm kiếm và trang chi tiết; nội dung nháp vẫn cần quyền quản trị. Cơ chế giúp người biên tập sửa kỹ mà không làm lộ nội dung chưa sẵn sàng."
+    }
+  ]
+}

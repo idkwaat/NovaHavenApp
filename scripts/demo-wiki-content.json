@@ -1,0 +1,107 @@
+{
+  "description": "Twelve original Vietnamese lore and player-guide articles authored for the Nova Haven local showcase. They are not synchronized with, or claims about, Minecraft plugin data or game mechanics.",
+  "tags": [
+    { "name": "Khám phá", "slug": "kham-pha" },
+    { "name": "Cẩm nang", "slug": "cam-nang" },
+    { "name": "Cộng đồng", "slug": "cong-dong" },
+    { "name": "Nhật ký", "slug": "nhat-ky" }
+  ],
+  "articles": [
+    {
+      "title": "Đọc bản đồ trước khi rời làng",
+      "slug": "doc-ban-do-truoc-khi-roi-lang",
+      "summary": "Một cách đọc bản đồ có hệ thống: nhận ra mốc quen thuộc, chọn tuyến đi và để lại dấu vết đủ rõ cho lần trở về.",
+      "categorySlug": "khoi-hanh",
+      "tagSlugs": ["cam-nang", "kham-pha"],
+      "markdown": "# Đọc bản đồ trước khi rời làng\n\nBản đồ hữu ích nhất không phải bản đồ có nhiều dấu chấm nhất, mà là bản đồ giúp cả nhóm trả lời được ba câu hỏi: mình đang ở đâu, định đi đâu và sẽ quay về bằng đường nào. Trước khi xuất phát, hãy dành một phút nhìn các địa danh đã được ghi nhận quanh khu vực khởi hành.\n\n## Bắt đầu từ một mốc dễ nhận ra\n\nChọn một nơi có thể mô tả bằng mắt thường như bờ sông, cổng làng hay ngã rẽ lớn. Dùng mốc đó để định hướng những địa điểm còn lại, thay vì ghi nhớ một chuỗi chỉ dẫn mơ hồ kiểu “đi mãi về phía trước”. Nếu chưa chắc tên một địa danh, hãy ghi chú là chưa xác nhận thay vì tự đặt tên rồi khiến người khác hiểu nhầm.\n\n## Chia tuyến đường thành chặng\n\nMột chuyến đi dài sẽ dễ theo dõi hơn khi được chia thành các chặng ngắn: từ làng tới bờ nước, từ bờ nước tới rìa rừng, rồi mới tới điểm cần tìm. Ở mỗi chặng, ghi lại lối rẽ, vật cản nhìn thấy và hướng có thể quay lui. Cách ghi này vẫn hữu ích khi bản đồ thay đổi hoặc một con đường bị che khuất.\n\n## Ghi rõ điều mình chưa biết\n\nDùng các nhãn như “đã đi qua”, “nghe kể” và “cần kiểm tra lại” trong nhật ký. Nhờ vậy, người đọc sau phân biệt được quan sát trực tiếp với lời truyền miệng. Một bản đồ cộng đồng tốt không cần giả vờ hoàn chỉnh; nó cần trung thực về độ chắc chắn của từng ghi chép."
+    },
+    {
+      "title": "Ghi chép hành trình để người sau tìm được đường",
+      "slug": "ghi-chep-hanh-trinh-cho-nguoi-sau",
+      "summary": "Mẫu ghi chép ngắn gọn giúp lưu lại tuyến đường, dấu mốc và những điều còn cần cộng đồng xác minh.",
+      "categorySlug": "khoi-hanh",
+      "tagSlugs": ["cam-nang", "cong-dong"],
+      "markdown": "# Ghi chép hành trình để người sau tìm được đường\n\nMột dòng “đã khám phá khu rừng” chưa giúp ích nhiều cho người đi sau. Hãy kể chuyến đi như thể bạn đang chỉ đường cho một người chưa từng gặp mình: bắt đầu từ địa điểm quen thuộc, mô tả các lần rẽ và kết thúc bằng một mốc có thể nhận ra.\n\n## Mẫu nhật ký dễ dùng\n\nMỗi ghi chép có thể gồm ngày khám phá, tên người tham gia, điểm xuất phát, các chặng chính và điểm kết thúc. Sau đó thêm ba mục ngắn: điều đã tận mắt thấy, điều nghe người khác kể và câu hỏi chưa có lời giải. Không cần viết dài; thông tin cụ thể quan trọng hơn những lời miêu tả chung chung.\n\n## Mô tả bằng dấu hiệu quan sát được\n\nThay vì viết “đi về phía đẹp hơn”, hãy nói “theo lối đất men bờ nước tới cây cầu gỗ”. Nếu dấu hiệu có thể thay đổi, ghi thêm đặc điểm thứ hai để người đọc nhận diện. Đừng khẳng định một lối đi luôn an toàn chỉ vì nhóm mình đã đi qua một lần.\n\n## Tôn trọng ghi chép của người khác\n\nKhi sửa bài cũ, giữ lại phần còn đúng và nói rõ điều gì đã được kiểm tra lại. Nếu hai nhật ký bất đồng, ghi nhận cả hai mốc thời gian và nêu cách xác minh, thay vì âm thầm xóa góc nhìn trước đó. Cộng đồng sẽ có một bản đồ đáng tin hơn khi mọi người hiểu ghi chép được hình thành như thế nào."
+    },
+    {
+      "title": "Cùng xây dựng thư viện Wiki Nova Haven",
+      "slug": "cung-xay-dung-wiki-nova-haven",
+      "summary": "Quy ước đóng góp bài viết: dùng nguồn rõ ràng, tách dữ kiện khỏi suy đoán và viết để người mới cũng làm theo được.",
+      "categorySlug": "khoi-hanh",
+      "tagSlugs": ["cong-dong", "cam-nang"],
+      "markdown": "# Cùng xây dựng thư viện Wiki Nova Haven\n\nWiki chỉ có giá trị khi người đọc biết đâu là thông tin đã kiểm tra và đâu là câu chuyện đang được cộng đồng bổ sung. Mỗi bài nên trả lời một câu hỏi cụ thể, dùng tiếng Việt rõ ràng và dẫn người đọc tới những chủ đề liên quan bằng tên gọi thống nhất.\n\n## Chọn một câu hỏi làm trọng tâm\n\nTrước khi viết, hãy thử tóm tắt bài trong một câu: người mới sẽ biết thêm điều gì sau khi đọc? Một địa danh nên giải thích cách nhận ra và lịch sử đã được ghi nhận; một hướng dẫn nên nêu các bước có thể kiểm tra. Nếu bài đang chứa nhiều chủ đề khác nhau, hãy tách thành những trang nhỏ hơn để dễ cập nhật.\n\n## Ghi nguồn và mức độ xác thực\n\nThông tin lấy từ tài liệu chính thức, quan sát trực tiếp và lời kể cộng đồng không có độ chắc chắn như nhau. Hãy nêu nguồn hoặc người xác nhận khi có thể. Không tự đặt chỉ số vật phẩm, tỷ lệ rơi, câu lệnh, tọa độ hay phần thưởng rồi trình bày chúng như dữ kiện của máy chủ.\n\n## Viết để dễ đọc và dễ sửa\n\nDùng tiêu đề phụ, đoạn văn ngắn và danh sách khi chúng giúp người đọc tìm ý nhanh hơn. Tránh viết hoa toàn bộ, nhồi từ khóa hoặc tạo nhiều biến thể tên cho cùng một địa danh. Khi phát hiện lỗi, đề xuất sửa cụ thể và để lại lý do để người biên tập sau hiểu bối cảnh."
+    },
+    {
+      "title": "Lên kế hoạch cho chuyến đi đầu tiên",
+      "slug": "len-ke-hoach-chuyen-di-dau-tien",
+      "summary": "Một checklist trước chuyến thám hiểm để cả nhóm thống nhất mục tiêu, điểm hẹn và cách ghi lại điều vừa khám phá.",
+      "categorySlug": "khoi-hanh",
+      "tagSlugs": ["cam-nang", "cong-dong"],
+      "markdown": "# Lên kế hoạch cho chuyến đi đầu tiên\n\nChuyến đi đầu tiên thường dễ nhớ nhất khi mọi người cùng hiểu mình đang tìm gì. Kế hoạch không cần phức tạp: chọn một mục tiêu vừa sức, thống nhất điểm xuất phát và quyết định cách báo cho nhóm nếu có người phải tách ra.\n\n## Trước khi xuất phát\n\nĐọc lại ghi chép về khu vực định tới, kiểm tra xem thông tin nào mới chỉ là lời kể và hỏi người đi cùng có muốn bổ sung điều gì không. Chọn một điểm dừng trung gian có thể mô tả rõ ràng. Nếu nhóm chưa biết đường, hãy nói thẳng điều đó và coi việc xác minh tuyến đi là một phần của chuyến thám hiểm.\n\n## Trong lúc khám phá\n\nMỗi lần gặp một ngã rẽ hoặc địa danh mới, ghi lại điều nhóm thực sự quan sát được. Nếu có bất đồng về hướng đi, dừng lại để thống nhất thay vì để từng người tự suy đoán. Người ghi chép không cần là người dẫn đường; cả nhóm có thể cùng kiểm tra tên gọi và mô tả.\n\n## Khi quay về\n\nTóm tắt nơi đã tới, các mốc giúp tìm lại đường và những câu hỏi còn bỏ ngỏ. Chia sẻ ghi chép với cộng đồng để người khác bổ sung, nhưng đừng biến một trải nghiệm đơn lẻ thành lời bảo đảm cho tất cả mọi chuyến đi. Một kế hoạch tốt giúp mọi người hiểu nhau hơn, chứ không hứa rằng mọi điều bất ngờ sẽ biến mất."
+    },
+    {
+      "title": "Kiếm sĩ: giữ nhịp thay vì lao lên",
+      "slug": "kiem-si-giu-nhip-thay-vi-lao-len",
+      "summary": "Ghi chú nhập môn cho người chọn kiếm sĩ: quan sát tình huống, kiên nhẫn và phối hợp thay vì dựa vào những lời hứa về chỉ số.",
+      "categorySlug": "lop-nhan-vat",
+      "tagSlugs": ["cam-nang", "cong-dong"],
+      "markdown": "# Kiếm sĩ: giữ nhịp thay vì lao lên\n\nKiếm sĩ là lựa chọn được nhắc tới trong những ghi chép khởi đầu của Nova Haven. Bài này không đưa ra chỉ số, kỹ năng hay cách tính sát thương vì các thông tin đó cần được xác nhận từ phiên bản máy chủ thực tế. Thay vào đó, đây là vài nguyên tắc quan sát hữu ích cho người đang làm quen với vai trò cận chiến.\n\n## Quan sát trước khi áp sát\n\nHãy dành thời gian nhận biết không gian xung quanh, đường rút lui và vị trí của đồng đội. Một quyết định bình tĩnh thường giúp người chơi hiểu tình huống rõ hơn là liên tục tiến về phía trước. Nếu chưa biết một đối thủ hoạt động ra sao, xem cách trận đấu diễn ra trước khi thử một cách tiếp cận mới.\n\n## Luyện tập có mục tiêu\n\nSau mỗi lần thử, ghi một điều mình đã làm tốt và một điều muốn thay đổi ở lần sau. Thay vì kết luận “lối chơi này yếu”, hãy mô tả hoàn cảnh cụ thể: nhóm đang ở đâu, điều gì khiến bạn mất nhịp và cách đồng đội có thể hỗ trợ. Những ghi chú này có giá trị hơn lời khuyên khẳng định một cách chơi luôn đúng.\n\n## Chia sẻ kinh nghiệm có trách nhiệm\n\nPhiên bản, trang bị và nội dung máy chủ có thể thay đổi. Khi viết hướng dẫn dựa trên trải nghiệm cá nhân, hãy ghi rõ bối cảnh và thời điểm kiểm tra. Nếu bài nói về cơ chế, cần có xác nhận từ nguồn vận hành thay vì biến cảm nhận thành quy tắc chính thức."
+    },
+    {
+      "title": "Tìm phong cách nhân vật phù hợp với mình",
+      "slug": "tim-phong-cach-nhan-vat-phu-hop",
+      "summary": "Cách chọn hướng chơi dựa trên nhịp độ, sở thích và trải nghiệm thực tế, không dựa vào bảng xếp hạng thiếu nguồn.",
+      "categorySlug": "lop-nhan-vat",
+      "tagSlugs": ["cam-nang", "cong-dong"],
+      "markdown": "# Tìm phong cách nhân vật phù hợp với mình\n\nKhông có một lớp nhân vật phù hợp với tất cả mọi người. Có người thích dành thời gian quan sát, có người muốn đồng hành cùng nhóm và có người thích tự mình khám phá. Hãy coi vài buổi chơi đầu là cơ hội tìm hiểu, không phải bài kiểm tra buộc bạn phải chọn đúng ngay lập tức.\n\n## Để ý điều khiến bạn vui\n\nSau mỗi chuyến đi, tự hỏi phần nào khiến mình muốn tiếp tục: khám phá địa danh, phối hợp với bạn bè, tìm hiểu câu chuyện hay luyện cách xử lý tình huống. Ghi lại câu trả lời giúp bạn nhận ra sở thích thật, thay vì chọn theo một lời quảng cáo hoặc bảng xếp hạng không ghi nguồn.\n\n## Thử từng thay đổi một\n\nKhi muốn tìm hiểu một lối chơi, giữ các yếu tố khác ổn định và chú ý xem trải nghiệm thay đổi thế nào. Hỏi cộng đồng về cách thử trong phiên bản hiện tại, rồi đối chiếu lời khuyên với điều bạn tự quan sát. Một mẹo hữu ích nên giải thích được vì sao nó phù hợp với hoàn cảnh nhất định.\n\n## Phân biệt trải nghiệm với dữ kiện\n\nBạn hoàn toàn có thể viết “mình thấy cách này thoải mái hơn” như một chia sẻ cá nhân. Còn những khẳng định như lớp nào mạnh nhất, trang bị nào tốt nhất hoặc kỹ năng hoạt động ra sao cần nguồn kiểm chứng rõ ràng. Viết đúng phạm vi hiểu biết sẽ giúp người đọc tin nhau hơn và giúp bài dễ cập nhật khi trò chơi thay đổi."
+    },
+    {
+      "title": "Phối hợp tổ đội trong một chuyến thám hiểm",
+      "slug": "phoi-hop-to-doi-trong-chuyen-tham-hiem",
+      "summary": "Những thói quen giao tiếp đơn giản giúp nhóm thống nhất mục tiêu, chia sẻ thông tin và không bỏ quên người đi cùng.",
+      "categorySlug": "lop-nhan-vat",
+      "tagSlugs": ["cong-dong", "cam-nang"],
+      "markdown": "# Phối hợp tổ đội trong một chuyến thám hiểm\n\nMột tổ đội tốt không chỉ gồm những nhân vật có cách chơi khác nhau; họ còn chia sẻ cùng một kế hoạch. Trước khi rời điểm hẹn, nói rõ mục tiêu chuyến đi, địa danh dự định ghé qua và cách cả nhóm sẽ xử lý nếu có người mất dấu.\n\n## Nói điều cần thiết, đúng lúc\n\nTin nhắn ngắn và cụ thể thường hữu ích hơn nhiều lời gọi chung chung. Nêu tên mốc dễ nhận ra, hướng đang đi và điều vừa quan sát. Nếu bạn không chắc, hãy nói “chưa xác nhận” để đồng đội biết đó là giả thuyết. Đừng dùng biệt danh riêng mà nhóm mới chưa hiểu.\n\n## Tôn trọng nhịp độ của cả nhóm\n\nKhông phải ai cũng muốn đi nhanh hoặc khám phá cùng một thứ. Thống nhất điểm chờ và cho mọi người cơ hội đọc lại thông tin trước khi quyết định. Nếu nhóm chia thành hai hướng, hãy chọn thời điểm và nơi gặp lại trước, thay vì để việc liên lạc trở thành điều phải đoán.\n\n## Tổng kết để lần sau tốt hơn\n\nCuối chuyến đi, hỏi cả nhóm điều gì hiệu quả và điều gì gây nhầm lẫn. Một ghi chép chung nên ghi nhận đóng góp của mọi người, không chỉ người dẫn đầu. Cách phối hợp này áp dụng được cho hoạt động cộng đồng nói chung mà không phụ thuộc vào một cơ chế hay công cụ riêng của máy chủ."
+    },
+    {
+      "title": "Sổ tay luyện tập của người cầm kiếm",
+      "slug": "so-tay-luyen-tap-nguoi-cam-kiem",
+      "summary": "Một mẫu nhật ký ngắn để theo dõi quyết định, tình huống và bài học sau mỗi lần làm quen với lối chơi kiếm sĩ.",
+      "categorySlug": "lop-nhan-vat",
+      "tagSlugs": ["nhat-ky", "cam-nang"],
+      "markdown": "# Sổ tay luyện tập của người cầm kiếm\n\nMột cuốn sổ hữu ích không cần ghi mọi thứ. Chỉ cần đủ chi tiết để vài ngày sau bạn hiểu mình đã thử điều gì và vì sao kết quả lại như vậy. Hãy ghi theo trải nghiệm của chính mình, bởi một buổi chơi đơn lẻ không thể đại diện cho mọi nhân vật hay phiên bản.\n\n## Ghi tình huống trước kết luận\n\nBắt đầu bằng địa điểm, người đi cùng và mục tiêu của lần thử. Mô tả điều bạn nhìn thấy trước khi đưa ra nhận xét. Chẳng hạn, thay vì viết “đối đầu rất khó”, hãy ghi “mình tiến vào khi chưa biết lối rút và phải dừng lại để tìm đồng đội”. Chi tiết đó cho bạn một điều cụ thể để điều chỉnh.\n\n## Đặt một mục tiêu nhỏ\n\nMỗi lần chơi chỉ nên tập trung vào một thói quen: quan sát khu vực, trao đổi với nhóm trước khi đổi hướng hoặc ghi lại điều chưa hiểu. Mục tiêu nhỏ giúp bạn nhận ra tiến bộ và tránh thay đổi quá nhiều thứ cùng lúc. Nếu cần biết một cơ chế cụ thể, hãy hỏi người vận hành hoặc tra nguồn chính thức.\n\n## Chia sẻ mà không biến thành luật\n\nKhi đăng kinh nghiệm lên Wiki, giữ nguyên bối cảnh và thời điểm thử. Dùng cách diễn đạt như “trong lần chơi của mình” nếu đó là trải nghiệm cá nhân. Chỉ chuyển thành hướng dẫn chung khi có nhiều lần xác nhận hoặc có tài liệu đáng tin cậy hỗ trợ."
+    },
+    {
+      "title": "Bến Nguyệt, nơi những con đường gặp biển",
+      "slug": "ben-nguyet-noi-nhung-con-duong-gap-bien",
+      "summary": "Một địa danh ven biển trong những ghi chép mở rộng của Nova Haven, nơi người lữ hành trao đổi câu chuyện trước khi đi tiếp.",
+      "categorySlug": "vung-dat",
+      "tagSlugs": ["kham-pha", "nhat-ky"],
+      "markdown": "# Bến Nguyệt, nơi những con đường gặp biển\n\nTrong những trang ghi chép được kể lại ở Thung lũng Sao, Bến Nguyệt thường xuất hiện như một nơi người lữ hành dừng chân trước khi tiếp tục về phía đông. Không ai thống nhất được cái tên bắt nguồn từ ánh trăng trên mặt nước hay từ chiếc đèn cũ cuối cầu cảng. Sự khác nhau ấy đã trở thành một phần của câu chuyện địa phương.\n\n## Một điểm hẹn của người đi xa\n\nBến được nhớ tới qua tiếng dây neo va vào cột gỗ và những mảnh giấy ghi tên các đoàn thám hiểm. Người mới tới có thể hỏi thăm đường, còn người chuẩn bị rời đi thường để lại một dòng nhắn về con đường họ vừa qua. Không phải lời nhắn nào cũng còn đúng, vì vậy người đọc nên chú ý ngày ghi và hỏi lại trước khi dựa vào đó.\n\n## Những câu chuyện bên cầu cảng\n\nCó người kể rằng một con thuyền từng trở về sau nhiều ngày sương phủ; người khác bảo câu chuyện ấy chỉ là cách các thủy thủ giải thích vì sao họ không muốn rời bến lúc trời tối. Wiki ghi nhận đây là truyền thuyết được kể lại, chưa phải sự kiện đã được xác minh.\n\n## Điều còn chờ người khám phá\n\nBài viết chưa xác nhận vị trí chính xác, đường đi hay hoạt động của Bến Nguyệt trong phiên bản hiện tại. Nếu bạn gặp địa danh này trong trò chơi, hãy ghi lại mốc nhận diện và thời điểm quan sát để người biên tập có thể đối chiếu. Một câu chuyện hay càng đáng tin khi ranh giới giữa lore và dữ kiện được nói rõ."
+    },
+    {
+      "title": "Rừng Thông Mù Sương",
+      "slug": "rung-thong-mu-suong",
+      "summary": "Ghi chép truyền thuyết về khu rừng phía bắc Thung lũng Sao, nơi tiếng chuông xa thường được nhắc trong chuyện kể.",
+      "categorySlug": "vung-dat",
+      "tagSlugs": ["kham-pha", "nhat-ky"],
+      "markdown": "# Rừng Thông Mù Sương\n\nNhững người kể chuyện ở Thung lũng Sao gọi vùng cây phía bắc là Rừng Thông Mù Sương. Họ nói sương thường nằm thấp trên lối mòn vào buổi sớm, khiến những thân cây gần nhau trông như một hàng cột kéo dài tới tận chân trời. Đây là mô tả trong lore cộng đồng, không phải xác nhận bản đồ hay điều kiện thời tiết của máy chủ.\n\n## Âm thanh trong câu chuyện\n\nMột tiếng chuông được nhắc đi nhắc lại trong nhiều phiên bản của truyền thuyết. Có người cho rằng đó là chuông từ một trạm gác bỏ hoang; người khác tin âm thanh chỉ vang lên khi gió đi qua một khe đá. Chưa có ghi chép thống nhất về nguồn phát ra tiếng chuông.\n\n## Đi rừng bằng sự cẩn trọng\n\nNếu bạn khám phá một khu rừng trong trò chơi, hãy ghi lại những gì thực sự nhìn thấy và tách nó khỏi truyền thuyết. Nêu tên điểm xuất phát, các dấu mốc trên đường và thời điểm ghi chép. Đừng suy ra một lối đi an toàn chỉ từ một câu chuyện hoặc từ kinh nghiệm của người khác ở phiên bản khác.\n\n## Mời cộng đồng bổ sung\n\nBài này sẽ hữu ích hơn khi có thêm xác nhận về địa danh trong bản đồ hiện hành. Người biên tập có thể bổ sung ảnh hoặc mô tả sau khi kiểm tra nguồn phù hợp. Cho tới lúc ấy, Rừng Thông Mù Sương vẫn là một mảnh chuyện mở của Nova Haven, nơi mỗi người kể lại điều mình nghe với đúng mức độ chắc chắn."
+    },
+    {
+      "title": "Con đường ven sông",
+      "slug": "con-duong-ven-song",
+      "summary": "Tuyến đường quen thuộc trong chuyện kể về làng ven sông, với những điểm dừng giúp người đi sau mô tả hành trình rõ hơn.",
+      "categorySlug": "vung-dat",
+      "tagSlugs": ["kham-pha", "cam-nang"],
+      "markdown": "# Con đường ven sông\n\nCon đường ven sông xuất hiện trong nhiều ghi chép về vùng đất quanh Thung lũng Sao. Người đi đường nhớ nó không phải vì một tấm biển lớn, mà bởi dòng nước luôn ở gần bên và những đoạn bờ thay đổi theo từng khúc quanh. Mô tả này giúp hình dung tuyến đường trong câu chuyện; người chơi vẫn cần xác nhận lối đi trên bản đồ thực tế.\n\n## Chia tuyến theo dấu mốc\n\nKhi ghi lại hành trình, chọn các điểm mà người khác có thể nhận ra: nơi bờ sông đổi hướng, một cây cầu, hay lối mòn nhập vào con đường chính. Ghi rõ thứ tự các dấu mốc thay vì chỉ viết “đi men sông”. Nếu có nhiều ngả rẽ, nói ngả nào nhóm đã đi qua và ngả nào mới chỉ nhìn thấy từ xa.\n\n## Lưu ý khi thông tin thay đổi\n\nĐường đi có thể khác giữa các bản đồ hoặc phiên bản. Đừng sao chép một tọa độ không rõ nguồn rồi coi đó là chỉ dẫn hiện hành. Nếu một mốc đã biến mất, hãy cập nhật ngày kiểm tra và giữ lại tên cũ như ghi chú để người đọc hiểu vì sao các nhật ký trước đây mô tả khác.\n\n## Một câu hỏi còn mở\n\nCác ghi chép hiện chưa xác định con đường ven sông nối tới đâu ngoài khu vực khởi hành. Người khám phá có thể bổ sung điểm đầu, điểm cuối và những đoạn đã được kiểm tra trực tiếp. Khi cộng đồng cùng ghi rõ mức độ xác thực, tuyến đường sẽ dần trở thành tài liệu hữu ích thay vì một lời đồn khó kiểm tra."
+    },
+    {
+      "title": "Người giữ đèn ở Thung lũng Sao",
+      "slug": "nguoi-giu-den-thung-lung-sao",
+      "summary": "Một câu chuyện truyền miệng về chiếc đèn đặt trên mỏm đá và người vẫn thắp nó mỗi khi đoàn lữ hành lên đường.",
+      "categorySlug": "vung-dat",
+      "tagSlugs": ["nhat-ky", "kham-pha"],
+      "markdown": "# Người giữ đèn ở Thung lũng Sao\n\nNgười già trong làng kể rằng có một chiếc đèn nhỏ từng được thắp trên mỏm đá nhìn xuống thung lũng. Người giữ đèn không hỏi đoàn lữ hành sẽ đi đâu; ông chỉ muốn biết họ có nhớ đường quay về hay không. Câu chuyện thường được kể vào tối trước những chuyến đi xa.\n\n## Ba lời nhắn trước giờ lên đường\n\nLời nhắn thứ nhất là hãy gọi tên nơi mình xuất phát. Lời thứ hai là đừng xem lời kể chưa kiểm chứng như một tấm bản đồ. Lời cuối cùng là để lại một dấu hiệu cho người đang chờ mình. Qua nhiều lần kể, ba lời nhắn trở thành cách dân làng nhắc nhau quan tâm tới bạn đồng hành.\n\n## Chiếc đèn có thật không?\n\nChưa có ghi chép đáng tin cậy xác nhận mỏm đá hay người giữ đèn tồn tại như một địa danh hoặc nhân vật trong trò chơi. Một vài phiên bản câu chuyện gọi ông là người gác đường; phiên bản khác cho rằng ông chỉ là hình ảnh tượng trưng cho người chờ ở nhà. Wiki giữ cả hai cách kể dưới dạng truyền thuyết.\n\n## Gửi lại một lời nhắn\n\nBạn có thể viết tiếp câu chuyện bằng trải nghiệm của nhân vật mình, miễn là ghi rõ đó là phần sáng tác của người chơi. Nếu phát hiện một địa điểm tương ứng trong thế giới thực của máy chủ, hãy bổ sung bằng chứng và đề nghị người biên tập xác minh trước khi đổi trạng thái bài viết."
+    }
+  ]
+}

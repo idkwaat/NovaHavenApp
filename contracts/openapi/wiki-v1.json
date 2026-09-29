@@ -1,0 +1,1289 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Nova Haven Content API",
+    "version": "1.0.0",
+    "description": "Draft/public isolation for Wiki, News and Catalog: anonymous clients only see published revisions. Editorial operations require Admin cookie + CSRF; mutation preconditions use If-Match."
+  },
+  "paths": {
+    "/api/v1/auth/csrf": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "CSRF token"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "204": {
+            "description": "Signed in"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {"userCookie": []}
+        ],
+        "responses": {
+          "204": {
+            "description": "Signed out"
+          }
+        }
+      }
+    },
+    "/api/v1/wiki/categories": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Active categories containing published items"
+          }
+        }
+      }
+    },
+    "/api/v1/wiki/articles": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "Filter by a tag on the current published revision only"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published snapshots only",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WikiArticlePage"}}}
+          }
+        },
+        "description": "Lists current published revision, including its tags; never draft tags."
+      }
+    },
+    "/api/v1/wiki/articles/{slug}": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Published snapshot with current published tags, media and related published articles"
+          },
+          "404": {
+            "description": "Not published or unknown"
+          }
+        },
+        "description": "Returns current published revision with tag slugs; draft tags are private."
+      }
+    },
+    "/api/v1/admin/wiki/categories": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category list"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/articles": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Draft listing"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created draft"
+          },
+          "400": {
+            "description": "Validation"
+          },
+          "409": {
+            "description": "Duplicate slug or concurrent SQL write conflict"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "slug",
+                  "summary",
+                  "markdown",
+                  "categoryId"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "slug": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "summary": {
+                    "type": "string",
+                    "maxLength": 300
+                  },
+                  "markdown": {
+                    "type": "string",
+                    "maxLength": 50000
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "tagIds": {
+                    "$ref": "#/components/schemas/TagIds"
+                  },
+                  "mediaIds": {
+                    "$ref": "#/components/schemas/MediaIds"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/articles/{id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Draft with ETag"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated with new ETag"
+          },
+          "409": {
+            "description": "Classification conflict or concurrent SQL write conflict; reload and retry"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "428": {
+            "description": "Missing ETag"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "slug",
+                  "summary",
+                  "markdown",
+                  "categoryId"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "slug": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "summary": {
+                    "type": "string",
+                    "maxLength": 300
+                  },
+                  "markdown": {
+                    "type": "string",
+                    "maxLength": 50000
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "tagIds": {
+                    "$ref": "#/components/schemas/TagIds"
+                  },
+                  "mediaIds": {
+                    "$ref": "#/components/schemas/MediaIds"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/articles/{id}/publish": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published immutable revision"
+          },
+          "409": {
+            "description": "Concurrent SQL write conflict; reload and retry"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "428": {
+            "description": "Missing ETag"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/articles/{id}/unpublish": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Unpublished"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "428": {
+            "description": "Missing ETag"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/articles/{id}/revisions": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revision history"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/articles/{id}/revisions/{revisionId}/restore": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revision restored to draft"
+          },
+          "409": {
+            "description": "Concurrent SQL write conflict; reload and retry"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "428": {
+            "description": "Missing ETag"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/categories/{id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category with ETag"
+          },
+          "404": {
+            "description": "Unknown category"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated with ETag"
+          },
+          "400": {
+            "description": "Validation"
+          },
+          "404": {
+            "description": "Unknown category"
+          },
+          "409": {
+            "description": "Referenced or duplicate classification, or concurrent SQL write conflict"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "428": {
+            "description": "Missing ETag"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Category deleted"
+          },
+          "404": {
+            "description": "Unknown category"
+          },
+          "409": {
+            "description": "Category is referenced or concurrent SQL write conflict"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "428": {
+            "description": "Missing ETag"
+          }
+        }
+      }
+    },
+    "/api/v1/wiki/tags": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "description": "Only active tags currently referenced by at least one published article current revision; counts exclude draft and superseded revision membership.",
+        "responses": {
+          "200": {
+            "description": "Published-only tag catalog"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/tags": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All tags and ETags"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tag created"
+          },
+          "400": {
+            "description": "Invalid tag"
+          },
+          "409": {
+            "description": "Name or slug exists"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wiki/tags/{id}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag updated with ETag"
+          },
+          "400": {
+            "description": "Invalid tag"
+          },
+          "404": {
+            "description": "Unknown tag"
+          },
+          "409": {
+            "description": "Tag referenced or SQL conflict"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "428": {
+            "description": "Missing ETag"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "adminCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tag deleted"
+          },
+          "404": {
+            "description": "Unknown tag"
+          },
+          "409": {
+            "description": "Tag referenced or SQL conflict"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "428": {
+            "description": "Missing ETag"
+          }
+        }
+      }
+    },
+    "/api/v1/wiki/media/{id}": {
+      "get": {
+        "tags": ["Public"],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}],
+        "responses": {"200": {"description": "Image bytes referenced by the current published revision", "content": {"image/png": {}, "image/jpeg": {}, "image/webp": {}}}, "404": {"description": "Unknown or private media"}}
+      }
+    },
+    "/api/v1/admin/wiki/media": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "responses": {"200": {"description": "Local media catalog"}}},
+      "post": {
+        "tags": ["Admin"], "security": [{"adminCookie": []}],
+        "requestBody": {"required": true, "content": {"multipart/form-data": {"schema": {"type": "object", "required": ["file"], "properties": {"file": {"type": "string", "format": "binary"}}}}}},
+        "responses": {"201": {"description": "Stored local media metadata"}, "400": {"description": "Invalid image or size"}}
+      }
+    },
+    "/api/v1/admin/wiki/media/{id}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Admin media preview"}, "404": {"description": "Unknown media"}}}
+    },
+    "/api/v1/admin/audit": {
+      "get": {
+        "tags": ["Admin"], "security": [{"adminCookie": []}],
+        "parameters": [{"name": "entityType", "in": "query", "schema": {"type": "string"}}, {"name": "entityId", "in": "query", "schema": {"type": "string", "format": "uuid"}}, {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}}, {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}],
+        "responses": {"200": {"description": "Admin audit events"}}
+      }
+    },
+    "/api/v1/admin/operations/diagnostics": {
+      "get": {
+        "tags": ["Admin"], "security": [{"adminCookie": []}],
+        "responses": {
+          "200": {"description": "Read-only local operations diagnostics"},
+          "401": {"description": "Not authenticated"},
+          "403": {"description": "Not an Admin"}
+        }
+      }
+    },
+    "/api/v1/news": {
+      "get": {"tags": ["News"], "parameters": [{"name": "q", "in": "query", "schema": {"type": "string", "maxLength": 100}}, {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}}, {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}], "responses": {"200": {"description": "Published News posts only; Markdown may include the post's first image as its card preview", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/NewsPage"}}}}}}
+    },
+    "/api/v1/news/{slug}": {
+      "get": {"tags": ["News"], "parameters": [{"name": "slug", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published News post"}, "404": {"description": "Unknown or unpublished post"}}}
+    },
+    "/api/v1/catalog/items": {
+      "get": {
+        "tags": ["Catalog"],
+        "parameters": [
+          {"name": "q", "in": "query", "schema": {"type": "string", "maxLength": 100}},
+          {"name": "kind", "in": "query", "schema": {"$ref": "#/components/schemas/CatalogItemKind"}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}
+        ],
+        "responses": {"200": {"description": "Published catalog item snapshots only"}, "400": {"description": "Invalid filter"}}
+      }
+    },
+    "/api/v1/catalog/items/{slug}": {
+      "get": {
+        "tags": ["Catalog"],
+        "parameters": [{"name": "slug", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {"200": {"description": "Published catalog item snapshot"}, "404": {"description": "Unknown or unpublished item"}}
+      }
+    },
+    "/api/v1/catalog/recipes": {
+      "get": {
+        "tags": ["Catalog"],
+        "parameters": [
+          {"name": "q", "in": "query", "schema": {"type": "string", "maxLength": 100}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}
+        ],
+        "responses": {"200": {"description": "Published recipe snapshots only"}, "400": {"description": "Invalid filter"}}
+      }
+    },
+    "/api/v1/catalog/recipes/{slug}": {
+      "get": {
+        "tags": ["Catalog"],
+        "parameters": [{"name": "slug", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {"200": {"description": "Published recipe with immutable item revision components"}, "404": {"description": "Unknown or unpublished recipe"}}
+      }
+    },
+    "/api/v1/admin/catalog/items": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "responses": {"200": {"description": "Catalog draft catalog"}}},
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CatalogItemInput"}}}}, "responses": {"201": {"description": "Draft created"}, "400": {"description": "Validation"}, "409": {"description": "Duplicate slug"}}}
+    },
+    "/api/v1/admin/catalog/items/{id}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Catalog draft with ETag"}, "404": {"description": "Unknown item"}}},
+      "patch": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CatalogItemInput"}}}}, "responses": {"200": {"description": "Updated with ETag"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/catalog/items/{id}/publish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published immutable catalog revision"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/catalog/items/{id}/unpublish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Unpublished"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/catalog/recipes": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "responses": {"200": {"description": "Recipe draft catalog"}}},
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CatalogRecipeInput"}}}}, "responses": {"201": {"description": "Recipe draft created"}, "400": {"description": "Validation or unknown item reference"}, "409": {"description": "Duplicate slug"}}}
+    },
+    "/api/v1/admin/catalog/recipes/{id}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Recipe draft with ETag"}, "404": {"description": "Unknown recipe"}}},
+      "patch": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CatalogRecipeInput"}}}}, "responses": {"200": {"description": "Updated with ETag"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/catalog/recipes/{id}/publish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published immutable recipe revision"}, "400": {"description": "Referenced item is not published"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/catalog/recipes/{id}/unpublish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Unpublished"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/news": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "responses": {"200": {"description": "News draft catalog"}}},
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/NewsInput"}}}}, "responses": {"201": {"description": "Draft created"}, "400": {"description": "Validation"}, "409": {"description": "Duplicate slug"}}}
+    },
+    "/api/v1/admin/news/{id}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "News draft with ETag"}, "404": {"description": "Unknown post"}}},
+      "patch": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/NewsInput"}}}}, "responses": {"200": {"description": "Updated with ETag"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/news/{id}/publish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published News post"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/news/{id}/unpublish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Unpublished News post"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/knowledge": {
+      "get": {
+        "tags": ["Knowledge"],
+        "parameters": [
+          {"name": "kind", "in": "query", "schema": {"$ref": "#/components/schemas/KnowledgeKind"}},
+          {"name": "q", "in": "query", "schema": {"type": "string", "maxLength": 100}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}
+        ],
+        "responses": {"200": {"description": "Published NPC, quest, location and season snapshots only", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/KnowledgePage"}}}}, "400": {"description": "Invalid kind or pagination"}}
+      }
+    },
+    "/api/v1/knowledge/{kind}": {
+      "get": {
+        "tags": ["Knowledge"],
+        "parameters": [
+          {"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/KnowledgeKind"}},
+          {"name": "q", "in": "query", "schema": {"type": "string", "maxLength": 100}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}
+        ],
+        "responses": {"200": {"description": "Published records of the selected kind", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/KnowledgePage"}}}}, "400": {"description": "Invalid kind or pagination"}}
+      }
+    },
+    "/api/v1/knowledge/{kind}/{slug}": {
+      "get": {
+        "tags": ["Knowledge"],
+        "parameters": [
+          {"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/KnowledgeKind"}},
+          {"name": "slug", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {"200": {"description": "Published typed record with relation snapshots"}, "404": {"description": "Unknown or unpublished record"}}
+      }
+    },
+    "/api/v1/admin/knowledge/{kind}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/KnowledgeKind"}}], "responses": {"200": {"description": "Draft records of the selected kind"}, "400": {"description": "Invalid kind"}}},
+      "post": {
+        "tags": ["Admin"], "security": [{"adminCookie": []}],
+        "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/KnowledgeKind"}}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/KnowledgeInput"}}}},
+        "responses": {"201": {"description": "Draft created"}, "400": {"description": "Validation"}, "409": {"description": "Duplicate slug"}}
+      }
+    },
+    "/api/v1/admin/knowledge/{kind}/{id}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/KnowledgeKind"}}, {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Draft with typed metadata and ETag"}, "404": {"description": "Unknown record"}}},
+      "patch": {
+        "tags": ["Admin"], "security": [{"adminCookie": []}],
+        "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/KnowledgeKind"}}, {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/KnowledgeInput"}}}},
+        "responses": {"200": {"description": "Updated with ETag"}, "400": {"description": "Validation"}, "409": {"description": "Duplicate or invalid reference"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}
+      }
+    },
+    "/api/v1/admin/knowledge/{kind}/{id}/publish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/KnowledgeKind"}}, {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published immutable knowledge snapshot"}, "400": {"description": "Invalid or unpublished relation"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/knowledge/{kind}/{id}/unpublish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/KnowledgeKind"}}, {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Unpublished"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/community": {
+      "get": {"tags": ["Community"], "parameters": [{"name": "kind", "in": "query", "schema": {"$ref": "#/components/schemas/CommunityKind"}}, {"name": "q", "in": "query", "schema": {"type": "string", "maxLength": 100}}, {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}}, {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}], "responses": {"200": {"description": "Published community records only"}}}
+    },
+    "/api/v1/community/{kind}": {
+      "get": {"tags": ["Community"], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/CommunityKind"}}], "responses": {"200": {"description": "Published records of the selected kind"}, "400": {"description": "Invalid kind"}}}
+    },
+    "/api/v1/community/{kind}/{slug}": {
+      "get": {"tags": ["Community"], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/CommunityKind"}}, {"name": "slug", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published community record"}, "404": {"description": "Unknown or unpublished record"}}}
+    },
+    "/api/v1/admin/community/{kind}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/CommunityKind"}}], "responses": {"200": {"description": "Community drafts"}}},
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/CommunityKind"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CommunityInput"}}}}, "responses": {"201": {"description": "Draft created"}, "400": {"description": "Validation"}, "409": {"description": "Duplicate slug"}}}
+    },
+    "/api/v1/admin/community/{kind}/{id}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/CommunityKind"}}, {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Community draft with ETag"}}},
+      "patch": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/CommunityKind"}}, {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CommunityInput"}}}}, "responses": {"200": {"description": "Updated with ETag"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/community/{kind}/{id}/publish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/CommunityKind"}}, {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published immutable community revision"}, "400": {"description": "Invalid or unpublished Knowledge relation"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/community/{kind}/{id}/unpublish": {
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "kind", "in": "path", "required": true, "schema": {"$ref": "#/components/schemas/CommunityKind"}}, {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Unpublished"}, "412": {"description": "Stale ETag"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/community/event/{id}/registrations": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Event registrations"}}},
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RegistrationInput"}}}}, "responses": {"201": {"description": "Registration created"}, "400": {"description": "Validation"}}}
+    },
+    "/api/v1/admin/community/event/{id}/registrations/{registrationId}": {
+      "patch": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "registrationId", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RegistrationUpdate"}}}}, "responses": {"200": {"description": "Registration state updated"}, "412": {"description": "Stale registration"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/integrations/capabilities": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "responses": {"200": {"description": "Local integration capability statuses"}}}
+    },
+    "/api/v1/admin/integrations/capabilities/{key}": {
+      "patch": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "key", "in": "path", "required": true, "schema": {"type": "string", "pattern": "^[a-z0-9-]+$"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/IntegrationUpdate"}}}}, "responses": {"200": {"description": "Capability status updated"}, "400": {"description": "Invalid transition or unsafe message"}, "412": {"description": "Stale capability"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/integrations/status": {
+      "get": {"tags": ["Integration"], "responses": {"200": {"description": "Safe public integration status without credentials"}}}
+    },
+    "/api/v1/rewards": {
+      "get": {"tags": ["Rewards"], "parameters": [{"name": "q", "in": "query", "schema": {"type": "string", "maxLength": 100}}, {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}}, {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}], "responses": {"200": {"description": "Published reward definitions requiring external acknowledgement"}}}
+    },
+    "/api/v1/rewards/{slug}": {
+      "get": {"tags": ["Rewards"], "parameters": [{"name": "slug", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published reward definition requiring external acknowledgement"}, "404": {"description": "Unknown or unpublished definition"}}}
+    },
+    "/api/v1/admin/rewards": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "responses": {"200": {"description": "Reward definitions"}}},
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RewardInput"}}}}, "responses": {"201": {"description": "Definition created"}, "400": {"description": "Validation"}, "409": {"description": "Duplicate slug"}}}
+    },
+    "/api/v1/admin/rewards/{id}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Reward draft with ETag"}}},
+      "patch": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RewardInput"}}}}, "responses": {"200": {"description": "Updated with ETag"}, "412": {"description": "Stale definition"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/rewards/{id}/publish": {"post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published reward definition"}, "412": {"description": "Stale definition"}, "428": {"description": "Missing ETag"}}}},
+    "/api/v1/admin/rewards/{id}/unpublish": {"post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Unpublished"}, "412": {"description": "Stale definition"}, "428": {"description": "Missing ETag"}}}},
+    "/api/v1/commerce/offers": {
+      "get": {"tags": ["Commerce"], "parameters": [{"name": "q", "in": "query", "schema": {"type": "string", "maxLength": 100}}, {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}}, {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}], "responses": {"200": {"description": "Published offers and their published local-demo purchase flags/prices", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CommerceOfferPage"}}}}}}
+    },
+    "/api/v1/commerce/offers/{slug}": {
+      "get": {"tags": ["Commerce"], "parameters": [{"name": "slug", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published commerce offer", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CommerceOfferDetail"}}}}, "404": {"description": "Unknown or unpublished offer"}}}
+    },
+    "/api/v1/commerce/orders": {
+      "post": {"tags": ["Commerce"], "parameters": [{"name": "Idempotency-Key", "in": "header", "required": true, "description": "UUID reused for safe retry of the same cart.", "schema": {"type": "string", "format": "uuid"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CommerceCheckoutRequest"}}}}, "responses": {"201": {"description": "Local demo order stored; no real charge or game fulfillment", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LocalDemoCheckoutReceipt"}}}}, "200": {"description": "Idempotent replay of the original local demo order", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LocalDemoCheckoutReceipt"}}}}, "400": {"description": "Invalid cart or missing idempotency key", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}, "409": {"description": "Offer unavailable or idempotency key reused for a different cart", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}}}
+    },
+    "/api/v1/admin/commerce/offers": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "responses": {"200": {"description": "Commerce definitions"}}},
+      "post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CommerceInput"}}}}, "responses": {"201": {"description": "Definition created"}, "400": {"description": "Validation"}, "409": {"description": "Duplicate slug"}}}
+    },
+    "/api/v1/admin/commerce/offers/{id}": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Commerce draft with ETag"}}},
+      "patch": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CommerceInput"}}}}, "responses": {"200": {"description": "Updated with ETag"}, "412": {"description": "Stale definition"}, "428": {"description": "Missing ETag"}}}
+    },
+    "/api/v1/admin/commerce/offers/{id}/publish": {"post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Published commerce definition only"}, "412": {"description": "Stale definition"}, "428": {"description": "Missing ETag"}}}},
+    "/api/v1/admin/commerce/offers/{id}/unpublish": {"post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}}], "responses": {"204": {"description": "Unpublished"}, "412": {"description": "Stale definition"}, "428": {"description": "Missing ETag"}}}},
+    "/api/v1/admin/commerce/orders": {
+      "get": {"tags": ["Admin"], "security": [{"adminCookie": []}], "parameters": [{"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}}, {"name": "pageSize", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 50}}], "responses": {"200": {"description": "Read-only local demo orders; no buyer personal data", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AdminCommerceOrderPage"}}}}, "401": {"description": "Authentication required"}, "403": {"description": "Admin role required"}}}
+    },
+    "/api/v1/auth/register": {"post": {"tags": ["Auth"], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["email", "password"], "properties": {"email": {"type": "string", "format": "email", "maxLength": 256}, "password": {"type": "string", "minLength": 12, "maxLength": 128}}}}}}, "responses": {"202": {"description": "Confirmation email queued"}, "400": {"description": "CSRF or input validation"}, "503": {"description": "Email delivery is not configured"}}}},
+    "/api/v1/auth/confirm-email": {"post": {"tags": ["Auth"], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["email", "token"], "properties": {"email": {"type": "string", "format": "email"}, "token": {"type": "string"}}}}}}, "responses": {"204": {"description": "Email confirmed"}, "400": {"description": "Invalid or expired token"}}}},
+    "/api/v1/auth/resend-confirmation": {"post": {"tags": ["Auth"], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["email"], "properties": {"email": {"type": "string", "format": "email", "maxLength": 256}}}}}}, "responses": {"202": {"description": "Accepted without revealing account existence"}, "503": {"description": "Email delivery is not configured"}}}},
+    "/api/v1/auth/me": {"get": {"tags": ["Auth"], "security": [{"userCookie": []}], "responses": {"200": {"description": "Current signed-in player"}, "401": {"description": "Authentication required"}}}},
+    "/api/v1/notifications": {"get": {"tags": ["Notifications"], "security": [{"userCookie": []}], "responses": {"200": {"description": "Current player's notification inbox and unread count"}, "401": {"description": "Authentication required"}}}},
+    "/api/v1/notifications/{id}/read": {"put": {"tags": ["Notifications"], "security": [{"userCookie": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"204": {"description": "Marked read"}, "404": {"description": "Unknown notification"}}}},
+    "/api/v1/notifications/read-all": {"post": {"tags": ["Notifications"], "security": [{"userCookie": []}], "responses": {"204": {"description": "All current player's notifications marked read"}}}},
+    "/api/v1/notifications/push/config": {"get": {"tags": ["Notifications"], "security": [{"userCookie": []}], "responses": {"200": {"description": "VAPID public key or null when disabled"}}}},
+    "/api/v1/notifications/push/subscriptions": {"put": {"tags": ["Notifications"], "security": [{"userCookie": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["endpoint", "keys"], "properties": {"endpoint": {"type": "string", "format": "uri"}, "keys": {"type": "object", "required": ["p256dh", "auth"], "properties": {"p256dh": {"type": "string"}, "auth": {"type": "string"}}}}}}}}, "responses": {"204": {"description": "Push subscription saved"}, "400": {"description": "Unsupported endpoint"}, "503": {"description": "Push disabled"}}}, "delete": {"tags": ["Notifications"], "security": [{"userCookie": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["endpoint"], "properties": {"endpoint": {"type": "string", "format": "uri"}}}}}}, "responses": {"204": {"description": "Push subscription removed"}}}},
+    "/api/v1/admin/notifications": {"post": {"tags": ["Admin"], "security": [{"adminCookie": []}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["title", "body"], "properties": {"title": {"type": "string", "maxLength": 120}, "body": {"type": "string", "maxLength": 500}, "href": {"type": ["string", "null"], "maxLength": 200}}}}}}, "responses": {"200": {"description": "Announcement stored for confirmed accounts and Web Push attempted"}, "400": {"description": "Validation or CSRF error"}, "403": {"description": "Admin role required"}}}}
+  },
+  "components": {
+    "securitySchemes": {
+      "adminCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": ".AspNetCore.Identity.Application"
+      },
+      "userCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": ".AspNetCore.Identity.Application"
+      }
+    },
+    "schemas": {
+      "WikiArticleSummary": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "slug", "title", "summary", "category", "tags", "publishedAt", "revision", "previewImageUrl", "previewImageAlt"],
+        "properties": {
+          "id": {"type": "string", "format": "uuid"}, "slug": {"type": "string"}, "title": {"type": "string"},
+          "summary": {"type": "string"}, "category": {"type": "string"}, "tags": {"type": "array", "items": {"type": "string"}},
+          "publishedAt": {"type": "string", "format": "date-time"}, "revision": {"type": "integer"},
+          "previewImageUrl": {"type": ["string", "null"], "maxLength": 500}, "previewImageAlt": {"type": ["string", "null"], "maxLength": 200}
+        }
+      },
+      "WikiArticlePage": {
+        "type": "object", "required": ["items", "page", "pageSize", "total"],
+        "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/WikiArticleSummary"}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}
+      },
+      "NewsSummary": {
+        "type": "object", "required": ["id", "slug", "title", "summary", "markdown", "publishedAt"],
+        "properties": {"id": {"type": "string", "format": "uuid"}, "slug": {"type": "string"}, "title": {"type": "string"}, "summary": {"type": "string"}, "markdown": {"type": "string", "description": "The first safe Markdown image may be used as a preview image."}, "publishedAt": {"type": "string", "format": "date-time"}}
+      },
+      "NewsInput": {"type": "object", "additionalProperties": false, "required": ["title", "slug", "summary", "markdown"], "properties": {"title": {"type": "string", "minLength": 1, "maxLength": 160}, "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 3, "maxLength": 120}, "summary": {"type": "string", "maxLength": 500}, "markdown": {"type": "string", "minLength": 1, "maxLength": 50000}}},
+      "NewsPage": {
+        "type": "object", "required": ["items", "page", "pageSize", "total"],
+        "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/NewsSummary"}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}
+      },
+      "KnowledgeSummary": {
+        "type": "object", "required": ["id", "slug", "name", "summary", "kind", "revision", "publishedAt", "previewImageUrl"],
+        "properties": {"id": {"type": "string", "format": "uuid"}, "slug": {"type": "string"}, "name": {"type": "string"}, "summary": {"type": "string"}, "kind": {"$ref": "#/components/schemas/KnowledgeKind"}, "revision": {"type": "integer"}, "publishedAt": {"type": "string", "format": "date-time"}, "previewImageUrl": {"type": ["string", "null"], "maxLength": 500}}
+      },
+      "KnowledgePage": {
+        "type": "object", "required": ["items", "page", "pageSize", "total"],
+        "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/KnowledgeSummary"}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}
+      },
+      "CategoryUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "slug",
+          "displayOrder",
+          "isActive"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "minLength": 3,
+            "maxLength": 80
+          },
+          "displayOrder": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TagCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "slug"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "minLength": 3,
+            "maxLength": 80
+          }
+        }
+      },
+      "TagUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "slug",
+          "isActive"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "minLength": 3,
+            "maxLength": 80
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "KnowledgeKind": {
+        "type": "string",
+        "enum": ["npc", "quest", "location", "season"]
+      },
+      "KnowledgeLinkType": {
+        "type": "string",
+        "enum": ["related", "givesQuest", "locatedAt", "usesItem", "partOfSeason"]
+      },
+      "KnowledgeStep": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["position", "title", "description"],
+        "properties": {
+          "position": {"type": "integer", "minimum": 1, "maximum": 50},
+          "title": {"type": "string", "minLength": 1, "maxLength": 160},
+          "description": {"type": "string", "minLength": 1, "maxLength": 2000}
+        }
+      },
+      "KnowledgeLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["linkType", "sortOrder"],
+        "properties": {
+          "linkType": {"$ref": "#/components/schemas/KnowledgeLinkType"},
+          "targetEntryId": {"type": ["string", "null"], "format": "uuid"},
+          "targetCatalogItemId": {"type": ["string", "null"], "format": "uuid"},
+          "sortOrder": {"type": "integer", "minimum": 0, "maximum": 1000}
+        }
+      },
+      "KnowledgeInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "slug", "summary", "markdown"],
+        "properties": {
+          "name": {"type": "string", "minLength": 2, "maxLength": 160},
+          "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 2, "maxLength": 160},
+          "summary": {"type": "string", "maxLength": 500},
+          "markdown": {"type": "string", "minLength": 1, "maxLength": 100000},
+          "kind": {"$ref": "#/components/schemas/KnowledgeKind"},
+          "role": {"type": "string", "maxLength": 120},
+          "locationEntryId": {"type": ["string", "null"], "format": "uuid"},
+          "portraitUrl": {"type": ["string", "null"], "maxLength": 500},
+          "difficulty": {"type": "integer", "minimum": 1, "maximum": 5},
+          "giverNpcEntryId": {"type": ["string", "null"], "format": "uuid"},
+          "rewardDescription": {"type": "string", "maxLength": 500},
+          "steps": {"type": "array", "minItems": 1, "maxItems": 50, "items": {"$ref": "#/components/schemas/KnowledgeStep"}},
+          "region": {"type": "string", "maxLength": 120},
+          "locationType": {"type": "string", "maxLength": 80},
+          "latitude": {"type": ["number", "null"], "minimum": -90, "maximum": 90},
+          "longitude": {"type": ["number", "null"], "minimum": -180, "maximum": 180},
+          "mapImageUrl": {"type": ["string", "null"], "maxLength": 500},
+          "startsAt": {"type": ["string", "null"], "format": "date-time"},
+          "endsAt": {"type": ["string", "null"], "format": "date-time"},
+          "theme": {"type": "string", "maxLength": 160},
+          "eventDescription": {"type": ["string", "null"], "maxLength": 2000},
+          "links": {"type": "array", "maxItems": 50, "items": {"$ref": "#/components/schemas/KnowledgeLink"}}
+        }
+      },
+      "CommunityKind": {"type": "string", "enum": ["event", "guild", "player", "housing", "leaderboard"]},
+      "CommunityLeaderboardRow": {
+        "type": "object", "additionalProperties": false, "required": ["rank", "participantName", "score"],
+        "properties": {"rank": {"type": "integer", "minimum": 1}, "participantName": {"type": "string", "minLength": 1, "maxLength": 120}, "score": {"type": "number"}, "note": {"type": "string", "maxLength": 300}}
+      },
+      "CommunityInput": {
+        "type": "object", "additionalProperties": false, "required": ["name", "slug", "summary", "markdown"],
+        "properties": {
+          "name": {"type": "string", "minLength": 2, "maxLength": 160}, "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 160}, "summary": {"type": "string", "maxLength": 500}, "markdown": {"type": "string", "minLength": 1, "maxLength": 100000}, "kind": {"$ref": "#/components/schemas/CommunityKind"},
+          "startsAt": {"type": ["string", "null"], "format": "date-time"}, "endsAt": {"type": ["string", "null"], "format": "date-time"}, "locationEntryId": {"type": ["string", "null"], "format": "uuid"}, "capacity": {"type": ["integer", "null"], "minimum": 1, "maximum": 100000}, "registrationOpen": {"type": "boolean"}, "motto": {"type": "string", "maxLength": 300}, "discordUrl": {"type": "string", "maxLength": 500}, "handle": {"type": "string", "maxLength": 80}, "bio": {"type": "string", "maxLength": 2000}, "avatarUrl": {"type": "string", "maxLength": 500}, "ownerDisplayName": {"type": "string", "maxLength": 120}, "galleryMarkdown": {"type": "string", "maxLength": 10000}, "leaderboardCategory": {"type": "string", "maxLength": 120}, "seasonEntryId": {"type": ["string", "null"], "format": "uuid"}, "rows": {"type": "array", "maxItems": 100, "items": {"$ref": "#/components/schemas/CommunityLeaderboardRow"}}
+        }
+      },
+      "RegistrationInput": {"type": "object", "additionalProperties": false, "required": ["displayName"], "properties": {"displayName": {"type": "string", "minLength": 1, "maxLength": 120}, "contact": {"type": "string", "maxLength": 200}}},
+      "RegistrationUpdate": {"type": "object", "additionalProperties": false, "required": ["state"], "properties": {"state": {"type": "string", "enum": ["pending", "approved", "rejected", "cancelled"]}}},
+      "IntegrationStatus": {"type": "string", "enum": ["unavailable", "configured", "healthy", "stale"]},
+      "IntegrationUpdate": {"type": "object", "additionalProperties": false, "required": ["status"], "properties": {"status": {"$ref": "#/components/schemas/IntegrationStatus"}, "safeMessage": {"type": ["string", "null"], "maxLength": 500}}},
+      "RewardKind": {"type": "string", "enum": ["item", "currency", "permission", "title", "cosmetic", "custom"]},
+      "RewardInput": {"type": "object", "additionalProperties": false, "required": ["name", "slug", "summary", "markdown", "kind", "deliveryDescription"], "properties": {"name": {"type": "string", "maxLength": 160}, "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 120}, "summary": {"type": "string", "maxLength": 500}, "markdown": {"type": "string", "maxLength": 50000}, "kind": {"$ref": "#/components/schemas/RewardKind"}, "deliveryDescription": {"type": "string", "maxLength": 1000}}},
+      "CommerceKind": {"type": "string", "enum": ["cosmetic", "membership", "bundle", "donation", "other"]},
+      "CommerceInput": {"type": "object", "additionalProperties": false, "required": ["name", "slug", "summary", "markdown", "kind", "displayPrice"], "properties": {"name": {"type": "string", "maxLength": 160}, "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 120}, "summary": {"type": "string", "maxLength": 500}, "markdown": {"type": "string", "maxLength": 50000}, "kind": {"$ref": "#/components/schemas/CommerceKind"}, "displayPrice": {"type": "string", "maxLength": 80}, "providerProductCode": {"type": ["string", "null"], "maxLength": 120}, "isPurchasable": {"type": "boolean", "default": false}, "priceMinorUnits": {"type": ["integer", "null"], "minimum": 0, "maximum": 1000000000000, "description": "Authoritative numeric VND price; required and positive when isPurchasable is true."}}},
+      "CommerceOfferSummary": {"type": "object", "required": ["id", "slug", "name", "summary", "kind", "revision", "definitionOnly", "isPurchasable", "priceMinorUnits", "currencyCode", "checkoutMode", "updatedAt"], "properties": {"id": {"type": "string", "format": "uuid"}, "slug": {"type": "string"}, "name": {"type": "string"}, "summary": {"type": "string"}, "kind": {"$ref": "#/components/schemas/CommerceKind"}, "revision": {"type": "integer"}, "definitionOnly": {"type": "boolean", "const": true}, "isPurchasable": {"type": "boolean"}, "priceMinorUnits": {"type": ["integer", "null"]}, "currencyCode": {"type": "string", "const": "VND"}, "checkoutMode": {"type": ["string", "null"], "enum": ["localDemo", null]}, "updatedAt": {"type": "string", "format": "date-time"}}},
+      "CommerceOfferPage": {"type": "object", "required": ["items", "page", "pageSize", "total"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/CommerceOfferSummary"}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "CommerceOfferDetail": {"allOf": [{"$ref": "#/components/schemas/CommerceOfferSummary"}, {"type": "object", "required": ["markdown", "displayPrice", "publishedAt"], "properties": {"markdown": {"type": "string"}, "displayPrice": {"type": "string"}, "providerProductCode": {"type": ["string", "null"]}, "publishedAt": {"type": "string", "format": "date-time"}}}]},
+      "CommerceCheckoutLineInput": {"type": "object", "required": ["slug", "quantity"], "properties": {"slug": {"type": "string", "minLength": 3, "maxLength": 120, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"}, "quantity": {"type": "integer", "minimum": 1, "maximum": 99}}},
+      "CommerceCheckoutRequest": {"type": "object", "required": ["items"], "properties": {"items": {"type": "array", "description": "Contains no duplicate slug values.", "minItems": 1, "maxItems": 20, "items": {"$ref": "#/components/schemas/CommerceCheckoutLineInput"}}}},
+      "CommerceOrderLine": {"type": "object", "required": ["slug", "name", "revision", "quantity", "unitPriceMinorUnits", "lineTotalMinorUnits"], "properties": {"slug": {"type": "string"}, "name": {"type": "string"}, "revision": {"type": "integer"}, "quantity": {"type": "integer", "minimum": 1, "maximum": 99}, "unitPriceMinorUnits": {"type": "integer", "minimum": 1}, "lineTotalMinorUnits": {"type": "integer", "minimum": 1}}},
+      "LocalDemoCheckoutReceipt": {"type": "object", "required": ["orderNumber", "createdAt", "status", "totalMinorUnits", "currencyCode", "items", "paymentStatus", "paymentMethod", "realCharge", "fulfilment", "idempotentReplay", "message"], "properties": {"orderNumber": {"type": "string"}, "createdAt": {"type": "string", "format": "date-time"}, "status": {"type": "string", "const": "demoCompleted"}, "totalMinorUnits": {"type": "integer", "minimum": 1}, "currencyCode": {"type": "string", "const": "VND"}, "items": {"type": "array", "items": {"$ref": "#/components/schemas/CommerceOrderLine"}}, "paymentStatus": {"type": "string", "const": "simulated"}, "paymentMethod": {"type": "string", "const": "localDemo"}, "realCharge": {"type": "boolean", "const": false}, "fulfilment": {"type": "string", "const": "none"}, "idempotentReplay": {"type": "boolean"}, "message": {"type": "string"}}},
+      "AdminCommerceOrder": {"type": "object", "required": ["orderNumber", "createdAt", "status", "totalMinorUnits", "currencyCode", "paymentStatus", "paymentMethod", "realCharge", "fulfilment", "items"], "properties": {"orderNumber": {"type": "string"}, "createdAt": {"type": "string", "format": "date-time"}, "status": {"type": "string", "const": "demoCompleted"}, "totalMinorUnits": {"type": "integer"}, "currencyCode": {"type": "string", "const": "VND"}, "paymentStatus": {"type": "string", "const": "simulated"}, "paymentMethod": {"type": "string", "const": "localDemo"}, "realCharge": {"type": "boolean", "const": false}, "fulfilment": {"type": "string", "const": "none"}, "items": {"type": "array", "items": {"$ref": "#/components/schemas/CommerceOrderLine"}}}},
+      "AdminCommerceOrderPage": {"type": "object", "required": ["items", "page", "pageSize", "total"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/AdminCommerceOrder"}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "ProblemDetails": {"type": "object", "properties": {"type": {"type": "string"}, "title": {"type": "string"}, "status": {"type": "integer"}, "detail": {"type": "string"}, "instance": {"type": "string"}}},
+      "CatalogItemKind": {
+        "type": "string",
+        "enum": ["item", "weapon", "armor", "material", "fish", "crop"]
+      },
+      "CatalogItemInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "slug", "summary", "markdown", "kind"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1, "maxLength": 160},
+          "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 3, "maxLength": 120},
+          "summary": {"type": "string", "maxLength": 500},
+          "markdown": {"type": "string", "minLength": 1, "maxLength": 50000},
+          "kind": {"$ref": "#/components/schemas/CatalogItemKind"}
+        }
+      },
+      "CatalogRecipeComponent": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["itemId", "quantity"],
+        "properties": {
+          "itemId": {"type": "string", "format": "uuid"},
+          "quantity": {"type": "integer", "minimum": 1, "maximum": 999}
+        }
+      },
+      "CatalogRecipeInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "slug", "summary", "markdown", "ingredients", "outputs"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1, "maxLength": 160},
+          "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 3, "maxLength": 120},
+          "summary": {"type": "string", "maxLength": 500},
+          "markdown": {"type": "string", "minLength": 1, "maxLength": 50000},
+          "ingredients": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/components/schemas/CatalogRecipeComponent"}},
+          "outputs": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"$ref": "#/components/schemas/CatalogRecipeComponent"}}
+        }
+      },
+      "TagIds": {
+        "type": "array",
+        "maxItems": 10,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "MediaIds": {
+        "type": "array",
+        "maxItems": 20,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    }
+  }
+}

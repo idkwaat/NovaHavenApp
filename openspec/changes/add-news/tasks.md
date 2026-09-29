@@ -1,0 +1,6 @@
+- [x] Define separate News spec.
+- [x] Add NewsPost persistence and EF migration.
+- [x] Add published-only public API and Admin lifecycle API.
+- [x] Add Admin News editor UI.
+- [x] Add public News page integration test and mobile News reader.
+- [x] Render News cover previews from the first safe Markdown image, with stable credited fallback photography and mobile aspect ratios.

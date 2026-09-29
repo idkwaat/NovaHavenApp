@@ -1,0 +1,113 @@
+{
+  "description": "Twelve sourced Minecraft vanilla reference entries. Each entry is explicitly not verified as a Nova Haven server item; no server stats, recipes, drops, coordinates or custom item identities are asserted.",
+  "items": [
+    {
+      "name": "Kiếm sắt",
+      "slug": "kiem-sat-tham-khao",
+      "kind": "weapon",
+      "summary": "Mục tham khảo vanilla về kiếm sắt, dành cho người mới tra cứu nhóm vũ khí cận chiến cơ bản.",
+      "markdown": "# Kiếm sắt\n\nDữ liệu minh họa local, dùng làm mục tham khảo về Minecraft vanilla. Bài viết giới thiệu kiếm sắt như một vũ khí cận chiến quen thuộc để người đọc nhận biết tên gọi và nhóm vật phẩm trong trò chơi gốc.\n\n## Phạm vi thông tin\n\nĐây không xác nhận vật phẩm, chỉ số, độ bền, cách rơi hoặc công thức tương ứng trên máy chủ Nova Haven. Các máy chủ có thể thay đổi nội dung; hãy chờ thông tin do đội ngũ Nova Haven xác minh trước khi dùng như hướng dẫn chơi.\n\n## Nguồn và biên tập\n\nTham khảo bài giới thiệu kiếm của Minecraft.net. Mô tả được viết lại ngắn gọn cho thư viện tiếng Việt, không sao chép thông số vào một cấu hình server chưa được kiểm tra.",
+      "sourceTitle": "Taking Inventory: Sword",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--sword"
+    },
+    {
+      "name": "Kiếm kim cương",
+      "slug": "kiem-kim-cuong-tham-khao",
+      "kind": "weapon",
+      "summary": "Thẻ tham khảo vanilla về kiếm kim cương và vai trò của nó trong nhóm kiếm Minecraft.",
+      "markdown": "# Kiếm kim cương\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Kiếm kim cương là ví dụ dễ nhận ra khi so sánh các loại kiếm trong trò chơi gốc; trang này chỉ giúp định danh và đọc thêm về chủ đề.\n\n## Điều trang này không khẳng định\n\nĐây không xác nhận vật phẩm, chỉ số, cấp độ, cách rơi hoặc công thức trên máy chủ Nova Haven. Không dùng bài này để suy ra trang bị đang có, độ mạnh hay tiến trình của một nhân vật trong server.\n\n## Nguồn tham khảo\n\nBài Taking Inventory: Sword của Minecraft.net là nguồn đọc thêm về hệ thống kiếm vanilla. Các thông tin riêng của Nova Haven cần được người vận hành xác nhận độc lập theo phiên bản đang chạy.",
+      "sourceTitle": "Taking Inventory: Sword",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--sword"
+    },
+    {
+      "name": "Áo giáp ngực sắt",
+      "slug": "ao-giap-nguc-sat-tham-khao",
+      "kind": "armor",
+      "summary": "Mục tra cứu vanilla về áo giáp ngực sắt, một phần trong hệ thống giáp nhiều chất liệu.",
+      "markdown": "# Áo giáp ngực sắt\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Áo giáp ngực là một vị trí trang bị riêng trong bộ giáp; chất liệu sắt xuất hiện trong hướng dẫn chính thức về áo giáp của Minecraft.\n\n## Phạm vi sử dụng\n\nĐây không xác nhận món đồ, chỉ số phòng thủ, độ bền hay công thức đang được dùng trên máy chủ Nova Haven. Nếu server có vật phẩm tùy chỉnh, chỉ dữ liệu do đội ngũ vận hành xác minh mới mô tả được chúng.\n\n## Nguồn tham khảo\n\nBài Taking Inventory: Chestplate của Minecraft.net trình bày áo giáp ngực trong trò chơi gốc. Nội dung ở đây là lời giới thiệu biên tập, không phải bảng cân bằng của server.",
+      "sourceTitle": "Taking Inventory: Chestplate",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--chestplate"
+    },
+    {
+      "name": "Áo giáp ngực kim cương",
+      "slug": "ao-giap-nguc-kim-cuong-tham-khao",
+      "kind": "armor",
+      "summary": "Mục tham khảo vanilla về áo giáp ngực kim cương, để khám phá các chất liệu giáp trong Minecraft.",
+      "markdown": "# Áo giáp ngực kim cương\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Áo giáp ngực kim cương là một biến thể chất liệu trong nhóm giáp của trò chơi gốc và thường được nhắc đến trong các bài giới thiệu về trang bị.\n\n## Ghi chú xác minh\n\nĐây không xác nhận vật phẩm, chỉ số phòng thủ, độ bền, khả năng nâng cấp hoặc công thức áp dụng trên máy chủ Nova Haven. Không lấy nội dung tham khảo vanilla làm thông số của một hệ thống gameplay riêng.\n\n## Nguồn tham khảo\n\nMinecraft.net mô tả áo giáp ngực và các chất liệu trong bài Taking Inventory: Chestplate. Bài viết chỉ hướng người đọc tới nguồn gốc, không tuyên bố server đang bật món đồ này.",
+      "sourceTitle": "Taking Inventory: Chestplate",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--chestplate"
+    },
+    {
+      "name": "Thỏi sắt",
+      "slug": "thoi-sat-tham-khao",
+      "kind": "material",
+      "summary": "Nguyên liệu vanilla quen thuộc xuất hiện trong nhiều nhóm chế tạo và vật phẩm tiện ích.",
+      "markdown": "# Thỏi sắt\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Thỏi sắt là nguyên liệu đa dụng của trò chơi gốc, được Minecraft.net nhắc đến trong nhiều ví dụ về dụng cụ và vật dụng.\n\n## Cách đọc mục này\n\nTrang chỉ giới thiệu vai trò khái quát; không chép công thức chế tạo, tỷ lệ rơi hoặc vị trí khai thác. Đây không xác nhận nguyên liệu, giá trị hay nguồn thu thập tương ứng trên máy chủ Nova Haven.\n\n## Nguồn tham khảo\n\nBài Taking Inventory: Iron Ingot của Minecraft.net cung cấp ngữ cảnh vanilla. Mọi khác biệt theo phiên bản hoặc thiết lập server cần được kiểm chứng riêng.",
+      "sourceTitle": "Taking Inventory: Iron Ingot",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--iron-ignot"
+    },
+    {
+      "name": "Kim cương",
+      "slug": "kim-cuong-tham-khao",
+      "kind": "material",
+      "summary": "Mục tham khảo về kim cương trong Minecraft vanilla và các nhóm vật phẩm liên quan.",
+      "markdown": "# Kim cương\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Kim cương là vật phẩm được Minecraft.net giới thiệu như một nguồn tài nguyên gắn với nhiều chủ đề chế tạo và trang bị trong game gốc.\n\n## Phạm vi\n\nĐây không xác nhận số lượng, vị trí, tỷ lệ khai thác, giá mua bán hoặc vật phẩm kim cương trên máy chủ Nova Haven. Bài viết không đưa ra tuyến đào hay lời khuyên gameplay cho server.\n\n## Nguồn tham khảo\n\nXem bài Taking Inventory: Diamond trên Minecraft.net để đọc nội dung vanilla. Nội dung hiện tại chỉ là thẻ biên tập cơ bản, chưa liên kết với bất kỳ dữ liệu plugin nào.",
+      "sourceTitle": "Taking Inventory: Diamond",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--diamond"
+    },
+    {
+      "name": "Thỏi Netherite",
+      "slug": "thoi-netherite-tham-khao",
+      "kind": "material",
+      "summary": "Thẻ tra cứu vanilla về thỏi Netherite, một vật phẩm thuộc hệ thống vật liệu của Minecraft.",
+      "markdown": "# Thỏi Netherite\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Thỏi Netherite là tên vật phẩm trong Minecraft; trang này giúp nhận biết khái niệm và dẫn tới bài viết chính thức về chủ đề.\n\n## Không phải dữ liệu server\n\nĐây không xác nhận thỏi Netherite có trong Nova Haven, cách thu thập, cách nâng cấp, giá trị hay công thức nào trên server. Những nội dung đó cần được kiểm tra với phiên bản và cấu hình thực tế.\n\n## Nguồn tham khảo\n\nMinecraft.net có bài Taking Inventory: Netherite Ingot. Mục thư viện này không suy rộng nội dung vanilla thành tính năng hoặc cân bằng riêng của Nova Haven.",
+      "sourceTitle": "Taking Inventory: Netherite Ingot",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--netherite-ingot"
+    },
+    {
+      "name": "La bàn",
+      "slug": "la-ban-tham-khao",
+      "kind": "item",
+      "summary": "Vật phẩm vanilla định hướng, hữu ích để bắt đầu tìm hiểu nhóm công cụ khám phá.",
+      "markdown": "# La bàn\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. La bàn là vật phẩm định hướng được trình bày trong loạt Taking Inventory của Minecraft.net; bài viết gốc giải thích cách nó hoạt động trong thế giới Minecraft chuẩn.\n\n## Lưu ý về bản đồ server\n\nTrang này không xác nhận vị trí spawn, hướng Bắc, điểm đánh dấu hay khả năng sử dụng la bàn trong Nova Haven. Đừng dựa vào thông tin vanilla để điều hướng trong một bản đồ server chưa được xác minh.\n\n## Nguồn tham khảo\n\nĐọc bài Taking Inventory: Compass từ Minecraft.net. Mục này chỉ giới thiệu vật phẩm gốc, không phải tài liệu hướng dẫn vị trí.",
+      "sourceTitle": "Taking Inventory: Compass",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--compass"
+    },
+    {
+      "name": "Đèn lồng",
+      "slug": "den-long-tham-khao",
+      "kind": "item",
+      "summary": "Vật phẩm chiếu sáng vanilla có thể đặt trên mặt khối hoặc treo bên dưới khối.",
+      "markdown": "# Đèn lồng\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Tài liệu Minecraft.net giới thiệu đèn lồng như một nguồn sáng và mô tả các cách đặt cơ bản trong trò chơi gốc.\n\n## Dùng trong bản dựng\n\nBài viết không xác nhận ánh sáng, độ sáng, công thức hoặc khả năng có đèn lồng trên máy chủ Nova Haven. Ảnh chụp hay mô tả từ một server cụ thể phải được kiểm tra riêng trước khi đưa vào Wiki.\n\n## Nguồn tham khảo\n\nXem ghi chú Village & Pillage của Minecraft.net. Mục này được biên tập để tra cứu nhanh bằng tiếng Việt và không khẳng định nội dung gameplay riêng.",
+      "sourceTitle": "Village & Pillage out today on Java",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/village---pillage-out-java-"
+    },
+    {
+      "name": "Cá tuyết sống",
+      "slug": "ca-tuyet-song-tham-khao",
+      "kind": "fish",
+      "summary": "Mục tham khảo vanilla về cá tuyết sống, có nhắc trong bài chính thức về thức ăn cho mèo.",
+      "markdown": "# Cá tuyết sống\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Một bài viết Minecraft.net về mèo nhắc đến cá tuyết sống như một loại thức ăn có thể dùng khi tiếp cận mèo hoang trong trò chơi gốc.\n\n## Giới hạn xác nhận\n\nTrang này không mô tả cách câu, vùng xuất hiện hay giá trị dinh dưỡng. Đây không xác nhận vật phẩm hoặc bất kỳ cơ chế câu cá nào trên máy chủ Nova Haven.\n\n## Nguồn tham khảo\n\nXem bài Cat của Minecraft.net để đọc ngữ cảnh vanilla. Nếu Nova Haven có hệ thống câu cá riêng, nội dung cần được bổ sung từ nguồn vận hành đáng tin cậy.",
+      "sourceTitle": "Cat",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/cat"
+    },
+    {
+      "name": "Cà rốt",
+      "slug": "ca-rot-tham-khao",
+      "kind": "crop",
+      "summary": "Nông sản vanilla dùng trong chủ đề trồng trọt; bài viết mô tả cà rốt như thực phẩm và cây trồng.",
+      "markdown": "# Cà rốt\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Bài Taking Inventory: Carrot của Minecraft.net giới thiệu cà rốt trong trò chơi gốc, bao gồm khía cạnh thực phẩm và cây trồng.\n\n## Tham khảo, không phải chỉ dẫn server\n\nTrang không xác nhận mùa vụ, tốc độ lớn, sản lượng, giá bán hay hệ thống nông nghiệp của Nova Haven. Các con số và luật chơi của server, nếu có, phải lấy từ cấu hình đã được xác minh.\n\n## Nguồn tham khảo\n\nĐọc bài Taking Inventory: Carrot trên Minecraft.net để xem mô tả vanilla. Mục này chỉ cung cấp một điểm bắt đầu cho thư viện vật phẩm tiếng Việt.",
+      "sourceTitle": "Taking Inventory: Carrot",
+      "sourceUrl": "https://www.minecraft.net/de-de/article/taking-inventory--carrot"
+    },
+    {
+      "name": "Lúa mì",
+      "slug": "lua-mi-tham-khao",
+      "kind": "crop",
+      "summary": "Nông sản vanilla xuất hiện trong hệ thống canh tác và nhiều chủ đề vật phẩm của Minecraft.",
+      "markdown": "# Lúa mì\n\nDữ liệu minh họa local, dùng làm mục tham khảo Minecraft vanilla. Minecraft.net giới thiệu lúa mì như một nông sản đa dụng gắn với canh tác và một số nhóm vật phẩm trong trò chơi gốc.\n\n## Ghi chú biên tập\n\nĐây không xác nhận thời gian thu hoạch, sản lượng, giá trị thương mại hoặc công thức trên máy chủ Nova Haven. Không dùng mô tả vanilla này làm bảo đảm cho thiết lập nông nghiệp của server.\n\n## Nguồn tham khảo\n\nBài Taking Inventory: Wheat của Minecraft.net là nguồn đọc thêm. Nội dung trang được rút gọn và Việt hóa, chưa liên kết dữ liệu gameplay trực tiếp.",
+      "sourceTitle": "Taking Inventory: Wheat",
+      "sourceUrl": "https://www.minecraft.net/en-us/article/taking-inventory--wheat"
+    }
+  ]
+}
