@@ -14,7 +14,7 @@ public sealed class GameKnowledgeRevisionConfiguration : IEntityTypeConfiguratio
         entity.Property(x => x.Slug).HasMaxLength(160).IsRequired();
         entity.Property(x => x.Name).HasMaxLength(160).IsRequired();
         entity.Property(x => x.Summary).HasMaxLength(500).IsRequired();
-        entity.Property(x => x.Markdown).HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.Markdown).HasColumnType("text").IsRequired();
         entity.HasOne<GameKnowledgeEntry>().WithMany().HasForeignKey(x => x.EntryId).OnDelete(DeleteBehavior.Restrict);
     
     }

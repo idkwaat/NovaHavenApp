@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import SiteIcon from './SiteIcon';
 import CartStatus from './CartStatus';
+import NotificationBell from './NotificationBell';
+import {minecraftServerAddress} from '@/lib/public-site-config';
 
 const links = [
   {href: '/', label: 'Trang chủ', note: 'Nova Haven'},
@@ -14,7 +16,7 @@ const links = [
   {href: '/community', label: 'Cộng đồng', note: 'Guild & hoạt động'},
   {href: '/news', label: 'Tin tức', note: 'Cập nhật mới nhất'},
   {href: '/notifications', label: 'Thông báo', note: 'Hộp thư tài khoản'},
-  {href: '/account', label: 'Tài khoản', note: 'Đăng nhập & xác nhận email'},
+  {href: '/account', label: 'Tài khoản', note: 'Đăng nhập & đăng ký'},
   {href: '/admin', label: 'Quản trị', note: 'Nova CMS'},
 ];
 
@@ -38,14 +40,15 @@ export default function SiteNavigation() {
             <span>{link.label}</span><small>{link.note}</small><SiteIcon name="arrow" className="nav-arrow"/>
           </Link>)}
         </nav>
-        <p className="site-nav-footer">Wiki chính thức · Máy chủ Nova Haven</p>
+        <p className="site-nav-footer">Cổng thông tin Nova Haven · Dữ liệu local</p>
         </aside>
       </div>
     </div>
     <div className="game-toolbar">
       <Link className="home-button" href="/" aria-label="Về trang chủ" title="Trang chủ"><SiteIcon name="home" className="ui-icon"/><span>Trang chủ</span></Link>
       <Link className="signin-button" href="/account"><span className="signin-icon"><SiteIcon name="user" className="ui-icon"/></span> Đăng nhập</Link>
-      <Link className="server-pill" href="/community" data-host="play.novahaven.local" aria-label="Thông tin máy chủ play.novahaven.net" title="Thông tin máy chủ">play.novahaven.net <SiteIcon name="arrow" className="server-arrow"/></Link>
+      <NotificationBell/>
+      <Link className="server-pill" href="/community" aria-label="Thông tin máy chủ: chưa có trạng thái trực tiếp" title="Địa chỉ chỉ xuất hiện khi được cấu hình">{minecraftServerAddress??'Máy chủ chưa công bố'} <SiteIcon name="arrow" className="server-arrow"/></Link>
       <CartStatus/>
       <details className="search-popover">
         <summary className="search-button" aria-label="Mở tìm kiếm" title="Tìm Wiki"><SiteIcon name="search" className="ui-icon"/></summary>

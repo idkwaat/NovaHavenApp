@@ -15,7 +15,7 @@ public sealed class WikiClassificationServiceTests
     {
         var category = new WikiCategory
         {
-            Name = "Starting zone", NormalizedName = "STARTING ZONE", Slug = "starting-zone", RowVersion = [1, 2]
+            Name = "Starting zone", NormalizedName = "STARTING ZONE", Slug = "starting-zone", RowVersion = 0x0102
         };
         var unitOfWork = new StubUnitOfWork();
         var service = new WikiCategoryService(new StubCategoryRepository(category), unitOfWork);
@@ -42,7 +42,7 @@ public sealed class WikiClassificationServiceTests
     {
         var tag = new WikiTag
         {
-            Name = "Guide", NormalizedName = "GUIDE", Slug = "guide", RowVersion = [1, 2]
+            Name = "Guide", NormalizedName = "GUIDE", Slug = "guide", RowVersion = 0x0102
         };
         var unitOfWork = new StubUnitOfWork();
         var service = new WikiTagService(new StubTagRepository(tag), unitOfWork);

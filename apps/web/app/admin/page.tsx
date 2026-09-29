@@ -338,11 +338,11 @@ export default function Admin() {
 
   if (!loggedIn) {
     return (
-      <section className="content" style={{maxWidth: 480, margin: '40px auto'}}>
+      <section className="content admin-login-page" style={{maxWidth: 480, margin: '40px auto'}}>
         <p className="eyebrow">EDITORIAL SYSTEM</p>
         <h1>Nova CMS · Admin</h1>
         <p className="muted">Đăng nhập tài khoản Quản trị viên để quản lý hệ thống Nova Haven RPG.</p>
-        <form className="form" onSubmit={login}>
+        <form className="form admin-login-form" onSubmit={login}>
           <label>
             Email
             <input
@@ -368,10 +368,10 @@ export default function Admin() {
             {busy ? 'Đang xác thực...' : 'Đăng nhập Quản trị'}
           </button>
         </form>
-        {status && <p className="error" role="alert" style={{marginTop: 12}}>{status}</p>}
+        {status && <p className="error admin-login-error" role="alert" style={{marginTop: 12}}>{status}</p>}
         <div style={{marginTop: 16, textAlign: 'center'}}>
           <button
-            className="button button-outline"
+            className="button button-outline admin-login-retry"
             type="button"
             onClick={() => { setStatus(''); setConnectionAttempt(v => v + 1); }}
           >

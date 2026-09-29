@@ -75,3 +75,13 @@ test('homepage directory reports Catalog and Community publication state honestl
   if (catalog.total > 0) assert.ok(html.includes(`${catalog.total} mục đã xuất bản`));
   if (community.total > 0) assert.ok(html.includes(`${community.total} mục đã xuất bản`));
 });
+
+test('homepage commerce directory reflects the published offers API total', integrationOptions, async () => {
+  const [commerce, html] = await Promise.all([
+    getJson(apiOrigin, '/api/v1/commerce/offers?page=1&pageSize=20'),
+    readHomepage(),
+  ]);
+  assert.ok(html.includes('href="/commerce"'), 'homepage should provide a Commerce destination');
+  if (commerce.total > 0) assert.ok(html.includes(`${commerce.total} mục đã xuất bản`));
+  if (commerce.total === 0) assert.ok(html.includes('Chưa có nội dung công khai'));
+});

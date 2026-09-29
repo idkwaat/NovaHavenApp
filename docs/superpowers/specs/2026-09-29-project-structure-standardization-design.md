@@ -1,7 +1,7 @@
 # Nova Haven — Project structure and naming standardization
 
 **Date:** 2026-09-29  
-**Status:** Approved in conversation on 2026-09-29; Backend implementation plan drafted and awaiting review: `../plans/2026-09-29-api-controller-bll-dal-standardization.md`
+**Status:** Approved in conversation on 2026-09-29; implementation is partially complete. The business API conversion is complete; Web/Mobile feature-folder organization remains unfinished. The owner later directed the local database provider to PostgreSQL; that approved provider change supersedes the original SQL Server assumption. See `../../openspec/changes/switch-local-database-to-postgresql/`.
 **Scope:** Internal code organization and engineering conventions for Backend, Web and Mobile.
 
 ## Goal
@@ -13,25 +13,24 @@ The owner specifically asked to use Wynncraft as a reference. Only Wynncraft's p
 ## Current evidence and constraints
 
 - Nova Haven is already a modular monolith: `backend/NovaHaven.Api`, `.Application`, `.Domain`, `.Infrastructure`; Next.js/React in `apps/web`; Flutter in `apps/mobile`; OpenAPI in `contracts/openapi`.
-- `apps/web/next.config.ts` rewrites same-origin `/api/*` to the configured backend origin. Public Wiki server code calls the REST API; Admin browser requests use the same-origin route. `backend/NovaHaven.Api/Program.cs` configures EF Core with SQL Server and maps versioned API endpoint groups. The web does not connect directly to SQL Server.
-- `apps/mobile/lib/main.dart` currently combines app startup/navigation with feature screens (about 1,643 lines); `apps/mobile/lib/wiki_api.dart` combines DTOs, Markdown TOC parsing and API requests (about 471 lines).
-- API endpoint files include large feature modules (for example `KnowledgeEndpoints.cs` and `AdminWikiEndpoints.cs`). The existing four-project backend split should be preserved.
-- There are no ASP.NET Core MVC controllers. Business routes are Minimal API endpoint maps and many inject `NovaDbContext` directly, combining HTTP binding, application rules, persistence queries/mutations, response projection and transaction handling.
-- Domain entities already exist, grouped by feature under `NovaHaven.Domain`; they are not absent, but there is no explicit `Entities` subfolder convention. Application currently contains validators/policies, not feature application services. No repository abstractions or implementations were found.
-- Web routes live under `apps/web/app`; feature clients/models are mixed under `apps/web/src/lib`, while some UI is colocated in route directories.
-- There is no `.git` directory in this checkpoint, so the historical branch and commits cannot be used or recovered. A branch/worktree is not currently available.
-- The current OpenSpec directory contains feature change packages rather than an `openspec/specs/` baseline. This refactor changes no observable product behavior and does not add a behavior spec or alter the OpenAPI contract.
+- `apps/web/next.config.ts` rewrites same-origin `/api/*` to the configured backend origin. Public Wiki server code calls the REST API; Admin browser requests use the same-origin route. `backend/NovaHaven.Api/Program.cs` configures EF Core/Npgsql with PostgreSQL and maps versioned API routes. The web does not connect directly to PostgreSQL.
+- Mobile startup/navigation and multiple feature screens/data concerns are still concentrated in root-level files under `apps/mobile/lib`; the planned `app`, `core` and `features/<feature>` separation is not complete.
+- All business API endpoints now use MVC Controller → Application service (BLL) → Infrastructure repository (DAL); `/health` is the only direct Minimal API mapping and remains intentionally in the composition root. The existing four-project backend split is preserved.
+- Domain entities are grouped by feature under `NovaHaven.Domain`. Application owns use-case services and repository abstractions; Infrastructure implements PostgreSQL persistence and transaction boundaries. The Wiki/News slices established the feature-oriented layout used in the conversion.
+- Web routes live under `apps/web/app`; feature clients/models remain mixed under `apps/web/src/lib`, while some UI is colocated in route directories. The planned feature/shared organization remains incomplete.
+- The current installed working copy has Git metadata and branch `delivery/source-install-guide`; it does not restore historical commit history from the original source checkpoint. The working tree contains substantial pre-existing modifications and must be preserved.
+- The current OpenSpec directory contains feature change packages rather than an `openspec/specs/` baseline. This refactor keeps the existing OpenAPI route/method contract; Rewards public reads now use the immutable published revision rather than mutable draft fields to satisfy its existing published-only requirement.
 
 ## Decisions
 
 ### 1. Preserve runtime architecture and contracts
 
-Keep Next.js/React, Flutter, ASP.NET Core, EF Core, SQL Server and the existing modular-monolith boundaries. Keep the database local. Do not introduce a framework, state-management library, generic CRUD-repository boilerplate, microservice, message broker, or a second API client-generation system as part of a folder cleanup.
+Keep Next.js/React, Flutter, ASP.NET Core, EF Core, PostgreSQL and the existing modular-monolith boundaries. Keep the active database local and preserve the old SQL Server database without converting or mutating it. Do not introduce a framework, state-management library, generic CRUD-repository boilerplate, microservice, message broker, or a second API client-generation system as part of a folder cleanup.
 
 The following remain invariant during the refactor:
 
 - Public and Admin URL paths, REST methods, JSON field names, authorization, CSRF and ETag behavior.
-- SQL table names, entity relationships, migration history and runtime database behavior.
+- Entity relationships and runtime API behavior. The PostgreSQL initial migration is a separate provider baseline; historical SQL Server migrations remain archived and are excluded from the active migration assembly.
 - Published-only public content, the mobile reader's API behavior, and existing page compositions/styles.
 - `contracts/openapi/wiki-v1.json` as the shared client-facing API contract.
 
@@ -39,13 +38,13 @@ Any discovered need to change an invariant is a separate design/spec decision, n
 
 ### 2. Make the Backend's conventional layers explicit, including BLL
 
-Preserve the four-project dependency direction: `Api` is the Presentation/composition-root layer and references `Application` plus `Infrastructure`; `Application` references `Domain`; `Infrastructure` references `Application` to implement its persistence abstractions and references `Domain`; `Domain` has no project dependencies. **`NovaHaven.Application` is the BLL (Business Logic Layer)**: it owns use-case services, validators/policies, repository contracts and transaction abstractions. Do not create a second parallel BLL project; that would split business logic between two assemblies. **`NovaHaven.Infrastructure` is the DAL implementation** for EF Core, SQL Server repositories, unit of work and migrations. Organize each project by feature (`Wiki`, `Catalog`, `Knowledge`, `Community`, `Commerce`, etc.) and reserve root-level folders for cross-cutting concerns.
+Preserve the four-project dependency direction: `Api` is the Presentation/composition-root layer and references `Application` plus `Infrastructure`; `Application` references `Domain`; `Infrastructure` references `Application` to implement its persistence abstractions and references `Domain`; `Domain` has no project dependencies. **`NovaHaven.Application` is the BLL (Business Logic Layer)**: it owns use-case services, validators/policies, repository contracts and transaction abstractions. Do not create a second parallel BLL project; that would split business logic between two assemblies. **`NovaHaven.Infrastructure` is the DAL implementation** for EF Core/Npgsql repositories, unit of work and PostgreSQL migrations. Organize each project by feature (`Wiki`, `Catalog`, `Knowledge`, `Community`, `Commerce`, etc.) and reserve root-level folders for cross-cutting concerns.
 
 - **API Controllers:** Replace feature Minimal API maps with thin ASP.NET Core `[ApiController]` controllers, using explicit route attributes, typed HTTP request/response DTOs, authorization metadata, cancellation tokens and consistent Problem Details. Controllers map HTTP DTOs to Application commands/queries and map Application results to response DTOs; they do not inject `NovaDbContext` or contain business workflows.
 - **Application Services:** Add focused use-case services (for example `WikiArticleService`, `WikiCategoryService`, `CommerceCheckoutService`) that accept Application-owned commands/queries and return Application result models. They call existing validators/policies, coordinate domain behavior, transactions and repositories. Avoid a service-per-entity with no behavior; split by use case where a service becomes too broad. Application must not depend on API transport DTOs.
 - **Domain Entities:** Keep the existing domain entities and make their location explicit under each feature's `Entities` folder. Entities own domain state/invariants and are not API request/response models.
 - **Repositories:** Add feature/aggregate-specific repository interfaces in Application and EF Core implementations in Infrastructure. Repositories own persistence queries and writes; they return domain entities or Application read models. Do not add a generic `IRepository<T>` CRUD wrapper for every DbSet. Do not expose `NovaDbContext` outside Infrastructure. API HTTP DTOs live in `Api/Contracts/<Feature>`; Application commands, queries and result models live in Application and are mapped explicitly at the controller boundary.
-- **Transactions:** Preserve current SQL Server transaction boundaries, isolation levels, rowversion/ETag behavior and atomic publication/checkout semantics through an Application-owned unit-of-work/transaction abstraction implemented by Infrastructure. Refactor only with relational integration tests.
+- **Transactions:** Preserve serializable transaction boundaries and atomic publication/checkout semantics through an Application-owned unit-of-work/transaction abstraction implemented by Infrastructure. PostgreSQL `xmin` backs the existing base64 HTTP ETag/If-Match concurrency contract. Refactor only with relational integration tests.
 - **Persistence:** Keep `NovaDbContext`, migrations and EF configuration in Infrastructure. Split the 558-line context/mapping into feature configurations only if the generated EF model is equivalent and no schema migration is produced.
 
 HTTP routes and response schemas stay unchanged during the conversion, including Admin authorization and CSRF requirements. Existing request/response JSON casing and OpenAPI operations are acceptance criteria.
@@ -93,13 +92,13 @@ This is a placement guide, not a requirement to create empty directories or move
 
 ## Delivery sequence
 
-1. Record baseline gates and add the minimal repository-wide conventions/solution metadata justified by the current projects.
-2. Convert one representative Wiki backend slice end-to-end: Controller → Application service → repository abstraction/EF implementation → existing Domain entities. Prove unchanged routes and API schemas before migrating other features.
-3. Migrate the remaining API features in small groups, with authorization/CSRF/ETag/transaction regression tests; keep migrations and local database schema unchanged.
-4. Refactor the Web and Mobile Wiki slices into feature-oriented folders, then apply the same proven naming/boundary rules to remaining features.
-5. Update README architecture/tree and local developer commands to match the actual result.
+1. [x] Record baseline gates and add the minimal repository-wide conventions/solution metadata justified by the current projects.
+2. [x] Convert a representative Wiki backend slice end-to-end and prove unchanged routes/API schemas before migrating other features.
+3. [x] Migrate the remaining business API features in small groups with authorization/CSRF/ETag/transaction regression tests; retain `/health` as the only direct health mapping.
+4. [ ] Refactor the Web and Mobile Wiki slices into feature-oriented folders, then apply the same proven naming/boundary rules to remaining features without changing page composition or behavior.
+5. [ ] Update README architecture/tree and local developer commands to match the final actual organization.
 
-The implementation plan will name exact files and command gates after this design is approved. Do not perform bulk renames across the whole tree in one unverified operation.
+Continue with small verified slices; do not perform bulk renames across the whole tree in one unverified operation.
 
 ## Verification and acceptance
 
@@ -117,4 +116,4 @@ Visual redesign, new features, endpoint or database changes, production deployme
 
 ## Review notes
 
-The current workspace has no `.git`, so this proposal cannot be committed and feature-branch/worktree isolation cannot be created from the supplied checkpoint. Implementation must preserve a clean audit trail through small, verifiable file changes and must not fabricate Git history. Wynncraft's public API documentation is evidence for its public API contract only, not for its private website implementation.
+The installed checkout has Git metadata but substantial user changes; preserve them, and do not claim the missing historical checkpoint commits were restored. Wynncraft's public API documentation is evidence for its public API contract only, not for its private website implementation.

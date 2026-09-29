@@ -35,12 +35,14 @@ void main() {
       defaultValue: 'http://10.0.2.2:5080/');
   runApp(NovaCompanion(
       api: WikiApi(base: Uri.parse(origin.endsWith('/') ? origin : '$origin/')),
-      accountApi: UserAccountApi(base: Uri.parse(origin.endsWith('/') ? origin : '$origin/')),
+      accountApi: UserAccountApi(
+          base: Uri.parse(origin.endsWith('/') ? origin : '$origin/')),
       bookmarks: BookmarkStore()));
 }
 
 class NovaCompanion extends StatelessWidget {
-  const NovaCompanion({super.key, required this.api, this.accountApi, required this.bookmarks});
+  const NovaCompanion(
+      {super.key, required this.api, this.accountApi, required this.bookmarks});
   final WikiApi api;
   final UserAccountApi? accountApi;
   final BookmarkStore bookmarks;
@@ -49,12 +51,14 @@ class NovaCompanion extends StatelessWidget {
         title: 'Nova Haven',
         debugShowCheckedModeBanner: false,
         theme: NovaTheme.dark,
-        home: NovaHomeShell(api: api, accountApi: accountApi, bookmarks: bookmarks),
+        home: NovaHomeShell(
+            api: api, accountApi: accountApi, bookmarks: bookmarks),
       );
 }
 
 class NovaHomeShell extends StatefulWidget {
-  const NovaHomeShell({super.key, required this.api, this.accountApi, required this.bookmarks});
+  const NovaHomeShell(
+      {super.key, required this.api, this.accountApi, required this.bookmarks});
   final WikiApi api;
   final UserAccountApi? accountApi;
   final BookmarkStore bookmarks;
@@ -173,14 +177,22 @@ class ExploreHub extends StatelessWidget {
                 _ExploreDestination(
                   icon: Icons.person_outline,
                   title: 'Tài khoản người chơi',
-                  subtitle: 'Đăng nhập, tạo tài khoản và xác nhận email.',
-                  onTap: () => _open(context, accountApi == null ? const AccountUnavailablePage() : AccountCenterPage(api: accountApi!)),
+                  subtitle: 'Đăng nhập, tạo tài khoản và theo dõi thông báo.',
+                  onTap: () => _open(
+                      context,
+                      accountApi == null
+                          ? const AccountUnavailablePage()
+                          : AccountCenterPage(api: accountApi!)),
                 ),
                 _ExploreDestination(
                   icon: Icons.notifications_none,
                   title: 'Thông báo',
                   subtitle: 'Đọc cập nhật gửi tới tài khoản Nova Haven.',
-                  onTap: () => _open(context, accountApi == null ? const AccountUnavailablePage() : AccountNotificationsPage(api: accountApi!)),
+                  onTap: () => _open(
+                      context,
+                      accountApi == null
+                          ? const AccountUnavailablePage()
+                          : AccountNotificationsPage(api: accountApi!)),
                 ),
               ],
             );
@@ -1667,22 +1679,21 @@ class _CommerceListState extends State<CommerceList> {
             if (items.isEmpty) {
               return const Center(child: Text('Chưa có thông tin hỗ trợ.'));
             }
-            return ListView(
-                padding: const EdgeInsets.all(16),
-                children: items
-                    .map((item) => Card(
-                          child: ListTile(
-                              title: Text(item.name),
-                              subtitle: Text(
-                                  '${_localizedContentKind(item.kind)} · ${item.summary}'),
-                              trailing: const Icon(Icons.chevron_right),
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => CommerceDetailPage(
-                                          api: widget.api, slug: item.slug)))),
-                        ))
-                    .toList());
+            return ListView(padding: const EdgeInsets.all(16), children: [
+              const CommerceDemoNotice(),
+              ...items.map((item) => Card(
+                    child: ListTile(
+                        title: Text(item.name),
+                        subtitle: Text(
+                            '${_localizedContentKind(item.kind)} · ${item.summary}'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => CommerceDetailPage(
+                                    api: widget.api, slug: item.slug)))),
+                  )),
+            ]);
           }));
 }
 
@@ -1716,16 +1727,12 @@ class _CommerceDetailPageState extends State<CommerceDetailPage> {
             }
             final item = snapshot.data!;
             return ListView(padding: const EdgeInsets.all(20), children: [
+              const CommerceDemoNotice(),
               Text(item.name,
                   style: Theme.of(context).textTheme.headlineMedium),
               Text(item.summary),
               Text('Giá hiển thị: ${item.displayPrice}'),
               const SizedBox(height: 12),
-              const Card(
-                  child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text(
-                          'Đây là thông tin tham khảo. Chưa hỗ trợ thanh toán trong ứng dụng.'))),
               MarkdownBody(
                   data: item.markdown,
                   selectable: true,
@@ -1733,4 +1740,25 @@ class _CommerceDetailPageState extends State<CommerceDetailPage> {
                   onTapLink: (_, __, ___) {})
             ]);
           }));
+}
+
+class CommerceDemoNotice extends StatelessWidget {
+  const CommerceDemoNotice({super.key});
+
+  @override
+  Widget build(BuildContext context) => const Card(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Mô phỏng local',
+                  style: TextStyle(fontWeight: FontWeight.w700)),
+              SizedBox(height: 6),
+              Text(
+                  'Không thu tiền thật và không giao vật phẩm hoặc quyền lợi trong game.'),
+            ],
+          ),
+        ),
+      );
 }

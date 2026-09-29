@@ -1,5 +1,6 @@
 using NovaHaven.Application.Common.Results;
 using NovaHaven.Application.Common.Transactions;
+using NovaHaven.Application.Common.Concurrency;
 using NovaHaven.Application.Features.Wiki.Repositories;
 using NovaHaven.Application.Features.Wiki.Results;
 using NovaHaven.Application.Wiki;
@@ -50,7 +51,7 @@ public sealed class WikiTagService(IWikiTagRepository repository, IUnitOfWork un
                 var tag = await repository.FindForUpdateAsync(id, transactionToken);
                 if (tag is null) return NotFound();
                 if (expectedVersion is null) return PreconditionRequired();
-                if (!tag.RowVersion.AsSpan().SequenceEqual(expectedVersion)) return Stale();
+                if (!ConcurrencyVersion.Matches(tag.RowVersion, expectedVersion)) return Stale();
 
                 var errors = WikiDraftValidator.ValidateTag(input);
                 if (errors.Count > 0) return ValidationFailure(errors);
@@ -84,7 +85,7 @@ public sealed class WikiTagService(IWikiTagRepository repository, IUnitOfWork un
                 var tag = await repository.FindForUpdateAsync(id, transactionToken);
                 if (tag is null) return NotFoundBoolean();
                 if (expectedVersion is null) return PreconditionRequiredBoolean();
-                if (!tag.RowVersion.AsSpan().SequenceEqual(expectedVersion)) return StaleBoolean();
+                if (!ConcurrencyVersion.Matches(tag.RowVersion, expectedVersion)) return StaleBoolean();
 
                 var hasDraftReferences = await repository.HasDraftReferencesAsync(id, transactionToken);
                 var hasRevisionReferences = await repository.HasRevisionReferencesAsync(id, transactionToken);
@@ -100,7 +101,7 @@ public sealed class WikiTagService(IWikiTagRepository repository, IUnitOfWork un
             cancellationToken);
 
     private static WikiTagAdminResult ToResult(WikiTag tag) =>
-        new(tag.Id, tag.Name, tag.Slug, tag.IsActive, tag.RowVersion);
+        new(tag.Id, tag.Name, tag.Slug, tag.IsActive, ConcurrencyVersion.ToBytes(tag.RowVersion));
 
     private static ApplicationResult<WikiTagAdminResult> ValidationFailure(Dictionary<string, string[]> errors) =>
         ApplicationResult<WikiTagAdminResult>.Failure(new ApplicationError(

@@ -18,39 +18,41 @@ class MemoryAccountSecretStore implements AccountSecretStore {
 }
 
 void main() {
-  testWidgets('account center confirms email from the Development local outbox',
+  testWidgets('account center registers and signs in without sending email',
       (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    var confirmRequestSeen = false;
+    var registerRequestSeen = false;
     final client = MockClient((request) async {
-      if (request.url.path.endsWith('/auth/me')) return http.Response('', 401);
-      if (request.url.path.endsWith('/dev/mailbox')) {
-        return http.Response.bytes(
-            utf8.encode(jsonEncode([
-              {
-                'id': 'message-1',
-                'recipient': 'player@example.test',
-                'subject': 'Xác nhận tài khoản Nova Haven',
-                'confirmationUrl':
-                    'https://nova.example/account?email=player%40example.test&token=local%2Btoken%3D',
-                'createdAtUtc': '2026-09-29T12:00:00Z',
-              }
-            ])),
-            200,
-            headers: {'content-type': 'application/json; charset=utf-8'});
+      if (request.url.path.endsWith('/auth/me')) {
+        return registerRequestSeen
+            ? http.Response(jsonEncode({
+                'id': '11111111-1111-1111-1111-111111111111',
+                'email': 'player@example.test',
+                'emailConfirmed': true,
+                'isAdmin': false,
+              }), 200)
+            : http.Response('', 401);
       }
       if (request.url.path.endsWith('/auth/csrf')) {
         return http.Response('{"token":"csrf-token"}', 200);
       }
-      if (request.url.path.endsWith('/auth/confirm-email')) {
-        confirmRequestSeen = true;
+      if (request.url.path.endsWith('/auth/register')) {
+        registerRequestSeen = true;
+        expect(request.headers['x-csrf-token'], 'csrf-token');
         final body = jsonDecode(request.body) as Map<String, dynamic>;
         expect(body['email'], 'player@example.test');
-        expect(body['token'], 'local+token=');
-        return http.Response('', 204);
+        return http.Response(jsonEncode({
+          'id': '11111111-1111-1111-1111-111111111111',
+          'email': 'player@example.test',
+          'emailConfirmed': true,
+          'isAdmin': false,
+        }), 201, headers: {
+          'set-cookie':
+              '.AspNetCore.Identity.Application=identity-cookie; path=/; httponly'
+        });
       }
       throw StateError('Unexpected request: ${request.method} ${request.url}');
     });
@@ -67,19 +69,15 @@ void main() {
     await tester.pumpAndSettle();
     await tester.enterText(
         find.byType(TextFormField).first, 'player@example.test');
+    await tester.enterText(find.byType(TextFormField).last, 'VeryStrongPass123!');
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('load-local-confirmation')));
-    await tester.pumpAndSettle();
-    expect(
-        find.text(
-            'Đã tải thư xác nhận local. Bạn có thể xác nhận email ngay bên dưới.'),
-        findsOneWidget);
-    await tester.tap(find.text('Xác nhận email bằng mã'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Tạo tài khoản'));
     await tester.pumpAndSettle();
 
-    expect(confirmRequestSeen, isTrue);
-    expect(find.text('Email đã được xác nhận. Bạn có thể đăng nhập.'),
-        findsOneWidget);
+    expect(registerRequestSeen, isTrue);
+    expect(find.text('player@example.test'), findsOneWidget);
+    expect(find.text('Tài khoản người chơi'), findsOneWidget);
+    expect(find.textContaining('đang đăng nhập vào Nova Haven'), findsOneWidget);
     client.close();
   });
 
@@ -109,38 +107,6 @@ void main() {
     client.close();
   });
 
-  testWidgets('email confirmation rejects a missing address and token locally',
-      (tester) async {
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    final paths = <String>[];
-    final client = MockClient((request) async {
-      paths.add(request.url.path);
-      if (request.url.path.endsWith('/auth/me')) return http.Response('', 401);
-      throw StateError('Confirmation should not be sent with empty fields.');
-    });
-    final api = UserAccountApi(
-      base: Uri.parse('https://nova.example/'),
-      storage: MemoryAccountSecretStore(),
-      client: client,
-    );
-    await tester.pumpWidget(
-        MaterialApp(theme: NovaTheme.dark, home: AccountCenterPage(api: api)));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Tạo tài khoản'));
-    await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Xác nhận email bằng mã'));
-    await tester.tap(find.text('Xác nhận email bằng mã'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Nhập email và mã xác nhận trước khi tiếp tục.'),
-        findsOneWidget);
-    expect(paths, ['/api/v1/auth/me']);
-    client.close();
-  });
-
   testWidgets('account form remains usable at 320dp with enlarged text',
       (tester) async {
     tester.view.physicalSize = const Size(320, 720);
@@ -162,7 +128,7 @@ void main() {
     await tester.tap(find.text('Tạo tài khoản'));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('load-local-confirmation')), findsOneWidget);
+    expect(find.textContaining('Tạo xong là dùng được ngay'), findsOneWidget);
     expect(tester.getSize(find.byType(TextFormField).first).width,
         lessThanOrEqualTo(320));
     expect(tester.getSize(find.byType(FilledButton).last).height,

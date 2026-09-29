@@ -18,6 +18,6 @@ public sealed class IntegrationCapability
     public DateTimeOffset? LastCheckedAt { get; set; }
     public DateTimeOffset? LastSuccessAt { get; set; }
     public string SafeMessage { get; set; } = "";
-    public byte[] RowVersion { get; set; } = [];
+    public uint RowVersion { get; set; }
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

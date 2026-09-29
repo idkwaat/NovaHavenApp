@@ -1,5 +1,7 @@
 # Add user accounts, notifications and Web Push
 
+> **Superseded:** This is the historical proposal that required email confirmation. The current local account/no-email behavior, pagination and notification scope are defined by [`finish-local-player-access-and-notifications`](../finish-local-player-access-and-notifications/proposal.md); do not treat this document as the active implementation contract.
+
 Nova Haven currently has Identity-backed Admin cookie authentication but no player account lifecycle, notification inbox or browser push subscription. This change adds those capabilities inside the existing ASP.NET Core + SQL Server modular monolith and keeps all state local.
 
 ## Scope

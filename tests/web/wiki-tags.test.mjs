@@ -53,10 +53,11 @@ test('tag API contract declares protected mutations and public filter',()=>{
 
 test('tag snapshot is written on publish and public filter excludes draft membership',()=>{
  const repository=readFileSync(new URL('../../backend/NovaHaven.Infrastructure/Persistence/Repositories/Wiki/EfWikiArticleRepository.cs',import.meta.url),'utf8');
- const publicCode=readFileSync(new URL('../../backend/NovaHaven.Api/Endpoints/PublicWikiEndpoints.cs',import.meta.url),'utf8');
+ const publicCode=readFileSync(new URL('../../backend/NovaHaven.Infrastructure/Persistence/Repositories/Wiki/EfWikiReadRepository.cs',import.meta.url),'utf8');
  assert.match(repository,/dbContext\.RevisionTags\.AddRange/);
- assert.match(publicCode,/db\.RevisionTags\.Any/);
- assert.doesNotMatch(publicCode,/db\.DraftTags/);
+ assert.match(publicCode,/dbContext\.RevisionTags\.Any/);
+ assert.match(publicCode,/current\.PublishedRevisionId equals \(Guid\?\)revision\.Id/);
+ assert.doesNotMatch(publicCode,/DraftTags/);
 });
 
 test('tag manager validation rejects malformed tag names/slugs and allows active toggle',async()=>{
@@ -103,9 +104,9 @@ test('live SQL smoke script has tag visibility and historical reference assertio
 });
 
 test('public tag catalog omits tags used only in private drafts or old revisions',()=>{
- const source=readFileSync(new URL('../../backend/NovaHaven.Api/Endpoints/PublicWikiEndpoints.cs',import.meta.url),'utf8');
- const catalog=source.split('group.MapGet("/tags"')[1]?.split('group.MapGet("/categories"')[0]??'';
+ const source=readFileSync(new URL('../../backend/NovaHaven.Infrastructure/Persistence/Repositories/Wiki/EfWikiReadRepository.cs',import.meta.url),'utf8');
+ const catalog=source.split('ListTagsAsync(')[1]?.split('ListCategoriesAsync(')[0]??'';
  assert.match(catalog,/article\.State == ArticleState\.Published/);
  assert.match(catalog,/article\.PublishedRevisionId/);
- assert.match(catalog,/byId\.GetValueOrDefault\(x\.Id\) > 0/);
+ assert.match(catalog,/countByTag\.GetValueOrDefault\(tag\.Id\) > 0/);
 });

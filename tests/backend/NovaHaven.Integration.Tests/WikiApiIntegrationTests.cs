@@ -5,9 +5,15 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Npgsql;
+using NovaHaven.Application.Features.Notifications;
+using NovaHaven.Domain.Notifications.Entities;
 using NovaHaven.Infrastructure.Data;
 using NovaHaven.Infrastructure.Identity;
 using Xunit;
@@ -16,22 +22,34 @@ namespace NovaHaven.Integration.Tests;
 
 public sealed class LocalApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    private const string IntegrationDatabasePrefix = "NovaHaven_Integration_";
     private readonly string databaseName = $"NovaHaven_Integration_{Guid.NewGuid():N}";
     private readonly string testPassword = $"NovaTest-{Guid.NewGuid():N}a1!";
-    private readonly string? previousConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__NovaDb");
+    private readonly string adminConnectionString = GetAdminConnectionString();
     private bool databaseMayExist;
 
     public string AdminEmail { get; } = $"admin-{Guid.NewGuid():N}@local.test";
     public string EditorEmail { get; } = $"editor-{Guid.NewGuid():N}@local.test";
     public string TestPassword => testPassword;
-    private string ConnectionString =>
-        $"Server=(localdb)\\MSSQLLocalDB;Database={databaseName};Integrated Security=True;TrustServerCertificate=True";
-
-    public LocalApiFactory()
+    public FakeWebPushGateway PushGateway => Services.GetRequiredService<FakeWebPushGateway>();
+    private string ConnectionString => new NpgsqlConnectionStringBuilder(adminConnectionString)
     {
-        // Program reads the connection string while WebApplicationFactory creates the host,
-        // before ConfigureWebHost can replace the application's configuration.
-        Environment.SetEnvironmentVariable("ConnectionStrings__NovaDb", ConnectionString);
+        Database = databaseName
+    }.ConnectionString;
+
+    private static string GetAdminConnectionString()
+    {
+        var connection = Environment.GetEnvironmentVariable("NOVA_HAVEN_TEST_ADMIN_CONNECTION");
+        if (string.IsNullOrWhiteSpace(connection))
+            throw new InvalidOperationException(
+                "Set NOVA_HAVEN_TEST_ADMIN_CONNECTION to a local PostgreSQL admin connection for disposable integration databases.");
+
+        return new NpgsqlConnectionStringBuilder(connection)
+        {
+            Database = "postgres",
+            Pooling = false,
+            Timeout = 15
+        }.ConnectionString;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -40,20 +58,36 @@ public sealed class LocalApiFactory : WebApplicationFactory<Program>, IAsyncLife
         // Development keeps the production cookie policy's SameSite behavior while
         // allowing the local non-TLS test client to send the auth cookie.
         builder.UseEnvironment("Development");
+        builder.ConfigureLogging(logging => logging.ClearProviders());
         builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(
             new Dictionary<string, string?>
             {
                 ["ConnectionStrings:NovaDb"] = ConnectionString,
                 ["SeedAdmin:Enabled"] = "false"
             }));
+        builder.ConfigureTestServices(services =>
+        {
+            services.RemoveAll<DbContextOptions<NovaDbContext>>();
+            services.AddDbContext<NovaDbContext>(options => options.UseNpgsql(ConnectionString));
+            services.RemoveAll<IWebPushGateway>();
+            services.AddSingleton<FakeWebPushGateway>();
+            services.AddSingleton<IWebPushGateway>(provider => provider.GetRequiredService<FakeWebPushGateway>());
+        });
     }
 
     public async Task InitializeAsync()
     {
+        // Minimal-host startup reads this before the deferred test-host configuration callback runs.
+        // The DbContext registration below still overrides it with this fixture's unique database.
+        Environment.SetEnvironmentVariable("ConnectionStrings__NovaDb", adminConnectionString);
         _ = CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
 
         using var scope = Services.CreateScope();
         var database = scope.ServiceProvider.GetRequiredService<NovaDbContext>();
+        if (!IsExpectedDisposableDatabase(database))
+            throw new InvalidOperationException(
+                "Refusing to run PostgreSQL integration tests unless the context targets its unique disposable database.");
+        await CreateDisposableDatabaseAsync();
         databaseMayExist = true;
         await database.Database.MigrateAsync();
 
@@ -72,6 +106,9 @@ public sealed class LocalApiFactory : WebApplicationFactory<Program>, IAsyncLife
             {
                 using var scope = Services.CreateScope();
                 var database = scope.ServiceProvider.GetRequiredService<NovaDbContext>();
+                if (!IsExpectedDisposableDatabase(database))
+                    throw new InvalidOperationException(
+                        "Refusing to delete a database outside this fixture's unique disposable target.");
                 if (await database.Database.CanConnectAsync())
                 {
                     await database.Database.EnsureDeletedAsync();
@@ -81,8 +118,34 @@ public sealed class LocalApiFactory : WebApplicationFactory<Program>, IAsyncLife
         finally
         {
             await base.DisposeAsync();
-            Environment.SetEnvironmentVariable("ConnectionStrings__NovaDb", previousConnectionString);
         }
+    }
+
+    private bool IsExpectedDisposableDatabase(NovaDbContext database)
+    {
+        var generatedId = databaseName.AsSpan(IntegrationDatabasePrefix.Length);
+        return databaseName.StartsWith(IntegrationDatabasePrefix, StringComparison.Ordinal)
+            && Guid.TryParseExact(generatedId, "N", out _)
+            && string.Equals(database.Database.GetDbConnection().Database, databaseName, StringComparison.Ordinal);
+    }
+
+    private async Task CreateDisposableDatabaseAsync()
+    {
+        if (!IsValidDatabaseName())
+            throw new InvalidOperationException("Refusing to create a database outside the integration-test naming pattern.");
+
+        await using var connection = new NpgsqlConnection(adminConnectionString);
+        await connection.OpenAsync();
+        await using var command = connection.CreateCommand();
+        command.CommandText = $"CREATE DATABASE \"{databaseName}\";";
+        await command.ExecuteNonQueryAsync();
+    }
+
+    private bool IsValidDatabaseName()
+    {
+        var generatedId = databaseName.AsSpan(IntegrationDatabasePrefix.Length);
+        return databaseName.StartsWith(IntegrationDatabasePrefix, StringComparison.Ordinal)
+            && Guid.TryParseExact(generatedId, "N", out _);
     }
 
     public async Task<HttpClient> CreateAuthenticatedClientAsync(string email)
@@ -169,6 +232,27 @@ public sealed class LocalApiFactory : WebApplicationFactory<Program>, IAsyncLife
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
+    }
+}
+
+public sealed class FakeWebPushGateway : IWebPushGateway
+{
+    private int _pushAttempts;
+    private string? _lastPayload;
+
+    public int PushAttempts => Volatile.Read(ref _pushAttempts);
+    public string? LastPayload => Volatile.Read(ref _lastPayload);
+
+    public Task<string?> GetPublicKeyAsync(CancellationToken cancellationToken = default) =>
+        Task.FromResult<string?>("BTestOnlyPublicVapidKey");
+
+    public Task<PushDeliveryStatus> SendAsync(PushSubscription subscription, string payload,
+        CancellationToken cancellationToken = default)
+    {
+        Interlocked.Increment(ref _pushAttempts);
+        Volatile.Write(ref _lastPayload, payload);
+        // Simulate an external provider outage; the SQL-backed inbox must still retain its row.
+        return Task.FromResult(PushDeliveryStatus.Failed);
     }
 }
 
@@ -312,7 +396,7 @@ public sealed class WikiApiIntegrationTests : IClassFixture<LocalApiFactory>
             {
                 title = "Integration Published Article",
                 slug = articleSlug,
-                summary = "Published from LocalDB integration test.",
+                summary = "Published from PostgreSQL integration test.",
                 markdown = "# Integration\n\nPublished content.",
                 categoryId,
                 tagIds = Array.Empty<Guid>()
@@ -454,8 +538,8 @@ public sealed class WikiApiIntegrationTests : IClassFixture<LocalApiFactory>
                 new[] { HttpStatusCode.PreconditionFailed, HttpStatusCode.Conflict });
             if (loser.StatusCode == HttpStatusCode.Conflict)
             {
-                // Serializable SQL Server transactions may choose the losing request as
-                // deadlock victim; that path intentionally maps error 1205 to retryable 409.
+                // Serializable relational transactions may abort the losing request
+                // before the stale ETag reaches EF's concurrency check.
                 using var problem = JsonDocument.Parse(await loser.Content.ReadAsStreamAsync());
                 Assert.Equal(409, problem.RootElement.GetProperty("status").GetInt32());
                 Assert.Contains("Concurrent update conflict",
@@ -637,6 +721,17 @@ public sealed class WikiApiIntegrationTests : IClassFixture<LocalApiFactory>
         using var client = await factory.CreateAuthenticatedClientAsync(factory.AdminEmail);
         var suffix = Guid.NewGuid().ToString("N");
         var slug = $"news-{suffix}";
+        using (var scope = factory.Services.CreateScope())
+        {
+            var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var adminUser = await users.FindByEmailAsync(factory.AdminEmail);
+            Assert.NotNull(adminUser);
+            var db = scope.ServiceProvider.GetRequiredService<NovaDbContext>();
+            db.PushSubscriptions.Add(PushSubscription.Create(adminUser.Id,
+                $"https://fcm.googleapis.com/fcm/send/{suffix}", "test-p256dh", "test-auth", DateTimeOffset.UtcNow));
+            await db.SaveChangesAsync();
+        }
+        var pushAttemptsBefore = factory.PushGateway.PushAttempts;
         var input = new { title = "Local News", slug, summary = "Local news summary.", markdown = "News body." };
         var csrf = await LocalApiFactory.GetCsrfAsync(client);
         using var create = await LocalApiFactory.SendJsonAsync(client, HttpMethod.Post, "/api/v1/admin/news", input, csrf);
@@ -664,6 +759,19 @@ public sealed class WikiApiIntegrationTests : IClassFixture<LocalApiFactory>
         publicNews.EnsureSuccessStatusCode();
         using var json = JsonDocument.Parse(await publicNews.Content.ReadAsStreamAsync());
         Assert.Equal("Local News", json.RootElement.GetProperty("title").GetString());
+
+        using var inboxResponse = await client.GetAsync("/api/v1/notifications?page=1&pageSize=20");
+        inboxResponse.EnsureSuccessStatusCode();
+        using var inbox = JsonDocument.Parse(await inboxResponse.Content.ReadAsStreamAsync());
+        Assert.Contains(inbox.RootElement.GetProperty("items").EnumerateArray(), notification =>
+            notification.GetProperty("title").GetString() == "Tin mới: Local News" &&
+            notification.GetProperty("href").GetString() == $"/news/{slug}");
+        Assert.Equal(pushAttemptsBefore + 1, factory.PushGateway.PushAttempts);
+        Assert.Contains($"/news/{slug}", factory.PushGateway.LastPayload ?? string.Empty);
+        using var unreadResponse = await client.GetAsync("/api/v1/notifications/unread-count");
+        unreadResponse.EnsureSuccessStatusCode();
+        using var unread = JsonDocument.Parse(await unreadResponse.Content.ReadAsStreamAsync());
+        Assert.True(unread.RootElement.GetProperty("unreadCount").GetInt32() > 0);
     }
 
     private static readonly byte[] TinyPng = Convert.FromHexString(

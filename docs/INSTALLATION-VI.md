@@ -1,71 +1,73 @@
 # Hướng dẫn cài đặt Nova Haven (local development)
 
-Tài liệu này hướng dẫn chạy API .NET, website Next.js, ứng dụng Flutter và SQL Server trên Windows để phát triển/demo. Đây chưa phải quy trình triển khai production.
+Tài liệu này hướng dẫn chạy API .NET, website Next.js, ứng dụng Flutter và PostgreSQL local trên Windows để phát triển/demo. Đây chưa phải quy trình triển khai production. Database SQL Server cũ được giữ nguyên, không tự chuyển đổi dữ liệu.
 
 ## 1. Source, database và dữ liệu
 
 | Thành phần | Đường dẫn | Nội dung |
 | --- | --- | --- |
 | Backend | `backend/` | ASP.NET Core 10 REST API |
-| Database | `backend/NovaHaven.Infrastructure/Data/Migrations/` | 12 EF Core migrations cho SQL Server |
+| Database | `backend/NovaHaven.Infrastructure/Data/PostgreSqlMigrations/` | Migration baseline cho PostgreSQL (sinh từ model hiện tại) |
 | Website/Admin | `apps/web/` | Next.js |
 | Mobile | `apps/mobile/` | Flutter reader, tài khoản và hộp thư thông báo |
 | Hợp đồng API | `contracts/openapi/wiki-v1.json` | OpenAPI dùng chung cho clients |
 | Dữ liệu demo | `scripts/demo-*-content.json`, `scripts/demo-seed.mjs` | Seed nội dung tiếng Việt qua API local |
 | ERD | `docs/defense/ERD.md` | Quan hệ bảng |
 
-Repo chứa schema dưới dạng migrations, không chứa file database đã nạp dữ liệu hoặc bản sao lưu `.bak`. Mỗi máy tạo SQL Server database local riêng rồi áp dụng migrations. Minecraft plugins vẫn giữ quyền xử lý gameplay; source này không ghi vào database Minecraft.
+Repo chứa schema dưới dạng migrations, không chứa file database đã nạp dữ liệu hoặc secret. Mỗi máy tạo PostgreSQL database local riêng rồi áp dụng PostgreSQL migrations. Các file SQL Server migration cũ chỉ được lưu làm lịch sử, không biên dịch/chạy cùng provider hiện tại. Minecraft plugins vẫn giữ quyền xử lý gameplay; source này không ghi vào database Minecraft.
 
 ## 2. Yêu cầu
 
 - Windows 10/11, PowerShell.
 - .NET SDK 10, EF CLI `dotnet-ef` 10.0.12.
-- SQL Server 2022 LocalDB (`MSSQLLocalDB`) hoặc Docker Desktop + Docker Compose.
+- PostgreSQL local hoặc Docker Desktop + Docker Compose (Compose dùng PostgreSQL 17, cổng loopback `15432`).
 - Node.js 22+ và npm.
 - Flutter SDK 3.44+ và Android Studio/emulator nếu chạy ứng dụng Android.
 
-Phiên bản đã xác minh tại checkout ngày 2026-09-29: .NET SDK 10.0.302, Node 24.16.0/npm 11.13.0, Flutter 3.44.1/Dart 3.12.1 và SQL Server LocalDB 17.0.4025.3. Docker không có trong môi trường này. Kết quả test mới nhất được ghi ở [báo cáo hardening local](verification/2026-09-29-local-platform-hardening.md); thiết bị Android thật/emulator chưa được nghiệm thu trong lượt đó.
+Các báo cáo SQL Server/LocalDB ngày 2026-09-29 là lịch sử của provider cũ. Trên checkout này, solution build và toàn bộ PostgreSQL integration đã được chạy trên một PostgreSQL 18.4 cluster tạm chỉ bind loopback; fixture tự tạo/xóa database test ngẫu nhiên. Không có migration, seed hoặc thao tác ghi nào nhắm vào database nội dung local của bạn. Khi tự chạy ứng dụng, cần PostgreSQL local hoặc Docker Compose; kiểm thử trên emulator/thiết bị thật vẫn là bước nghiệm thu riêng.
+
+> **Android Studio không đồng nghĩa với Flutter SDK.** Android Studio cung cấp IDE, Android SDK và emulator; Flutter SDK là bộ công cụ riêng. Trên máy này plugin Flutter/Dart của Android Studio đã có, nhưng Flutter SDK trước đó chưa được cài. Mình đã cài Flutter stable 3.47.3 vào thư mục bị Git ignore `D:\nova-haven-handoff\.local-tools\flutter`. Flutter CLI hoạt động bằng đường dẫn đầy đủ nhưng chưa được thêm vào PATH toàn hệ thống; đặt Flutter SDK path trong Android Studio về thư mục trên nếu IDE chưa tự nhận. Một checkout khác hoặc máy khác cần cài Flutter SDK riêng.
 
 ## 3. Tạo database local mới
 
-Ví dụ dùng database riêng `NovaHaven_InstallDemo`. Đổi tên nếu database này đã tồn tại. Chỉ áp dụng migrations lên DB local mới hoặc DB đã sao lưu/kiểm tra.
+Tạo database local riêng tên `NovaHaven_InstallDemo`. Không trỏ lệnh migration vào database SQL Server cũ hoặc database PostgreSQL đang chứa dữ liệu cần giữ.
 
-### Cách A — SQL Server LocalDB
+### Cách A — PostgreSQL qua Docker Compose
 
-Mở PowerShell ở thư mục gốc repo:
-
-```powershell
-$dbConnection = 'Server=(localdb)\MSSQLLocalDB;Database=NovaHaven_InstallDemo;Integrated Security=true;TrustServerCertificate=True'
-$env:NOVA_DB_CONNECTION = $dbConnection
-$env:ConnectionStrings__NovaDb = $dbConnection
-```
-
-LocalDB thuộc tài khoản Windows đã tạo instance. Chạy EF và API dưới cùng tài khoản đó.
-
-### Cách B — SQL Server qua Docker
-
-Tạo file `.env` local từ mẫu, sửa `MSSQL_SA_PASSWORD` thành mật khẩu mạnh chỉ dùng trên máy này rồi chạy SQL Server. Không commit file `.env`.
+Tạo `.env` local từ mẫu, đổi `POSTGRES_PASSWORD` thành mật khẩu riêng trên máy này rồi chạy PostgreSQL. Không commit file `.env`.
 
 ```powershell
 Copy-Item .env.example .env
 notepad .env
-docker compose up -d sqlserver
+docker compose up -d postgres
 ```
 
-Khi SQL Server sẵn sàng, nhập lại cùng mật khẩu trong connection string. Tránh dùng dấu chấm phẩy trong mật khẩu.
+Compose chỉ bind vào loopback cổng `15432`, tránh xung đột với service PostgreSQL đang dùng `5432`. Sau khi container sẵn sàng, nhập mật khẩu local vào biến trong PowerShell (không ghi vào source):
 
 ```powershell
-$saPassword = '<mat-khau-local-da-dat-trong-file-env>'
-$dbConnection = "Server=localhost,14333;Database=NovaHaven_InstallDemo;User Id=sa;Password=$saPassword;TrustServerCertificate=True"
+$pgPassword = '<mat-khau-local-da-dat-trong-file-env>'
+$dbConnection = "Host=127.0.0.1;Port=15432;Database=NovaHaven_InstallDemo;Username=novahaven;Password=$pgPassword"
 $env:NOVA_DB_CONNECTION = $dbConnection
 $env:ConnectionStrings__NovaDb = $dbConnection
 ```
 
-EF đọc `NOVA_DB_CONNECTION`; API đọc `ConnectionStrings__NovaDb`. Hai biến phải trỏ tới cùng database. Docker Compose chỉ chạy SQL Server; API và web chạy bằng SDK tương ứng.
+### Cách B — PostgreSQL đã cài trên máy
+
+Dùng role local có quyền tạo database và điền thông tin xác thực của chính máy đó. Không cần Docker:
+
+```powershell
+$dbConnection = 'Host=127.0.0.1;Port=5432;Database=NovaHaven_InstallDemo;Username=<local-role>;Password=<local-password>'
+$env:NOVA_DB_CONNECTION = $dbConnection
+$env:ConnectionStrings__NovaDb = $dbConnection
+```
+
+Với integration tests, đặt thêm `NOVA_HAVEN_TEST_ADMIN_CONNECTION` trỏ đến database `postgres` bằng role local có quyền `CREATEDB`. Mỗi fixture chỉ tạo/xóa database có tên ngẫu nhiên `NovaHaven_Integration_<32 hex>`; không trỏ biến này vào database đang chứa nội dung.
+
+EF tooling đọc `NOVA_DB_CONNECTION`; API đọc `ConnectionStrings__NovaDb`. Hai biến phải trỏ tới cùng PostgreSQL local. Có thể lưu connection string API trong User Secrets, không đưa mật khẩu vào `launchSettings.json` hoặc Git.
 
 ## 4. Tạo schema bằng migrations
 
-Chạy từ thư mục gốc:
+Chạy từ thư mục gốc sau khi baseline migration PostgreSQL đã được tạo và review:
 
 ```powershell
 dotnet --version
@@ -74,7 +76,7 @@ dotnet ef database update --project backend/NovaHaven.Infrastructure --startup-p
 dotnet ef migrations list --project backend/NovaHaven.Infrastructure --startup-project backend/NovaHaven.Api --context NovaDbContext
 ```
 
-Nếu đã có `dotnet-ef` 10.0.12, bỏ qua lệnh cài tool. Hiện có 12 migrations, từ `InitialWiki` đến `AddUserNotifications`. App không tự tạo bảng hoặc tự migrate khi khởi động. Không dùng `EnsureCreated` và không sửa schema thủ công.
+Nếu đã có `dotnet-ef` 10.0.12, bỏ qua lệnh cài tool. EF chỉ nhìn thấy migration PostgreSQL trong `Data/PostgreSqlMigrations`; migrations SQL Server cũ không nằm trong chuỗi chạy hiện hành. App không tự tạo bảng hoặc tự migrate khi khởi động. Không dùng `EnsureCreated` và không sửa schema thủ công.
 
 ## 5. Tạo Admin local và chạy API
 
@@ -95,7 +97,7 @@ Remove-Item Env:SeedAdmin__Enabled, Env:SeedAdmin__Email, Env:SeedAdmin__Passwor
 dotnet run --project backend/NovaHaven.Api --urls http://127.0.0.1:5080
 ```
 
-Kiểm tra `http://127.0.0.1:5080/health`. Trong Development không cấu hình SMTP, email xác nhận người chơi được ghi vào `.local/mail-outbox`; không gửi email ra ngoài.
+Kiểm tra `http://127.0.0.1:5080/health`. Đăng ký người chơi dùng được ngay và không gửi email. API và dữ liệu chạy trên PostgreSQL local.
 
 ## 6. Nạp dữ liệu demo
 
@@ -161,7 +163,16 @@ dotnet test tests/backend/NovaHaven.Domain.Tests/NovaHaven.Domain.Tests.csproj
 dotnet test tests/backend/NovaHaven.Integration.Tests/NovaHaven.Integration.Tests.csproj
 ```
 
-Integration tests cần SQL Server local và tự dùng database `NovaHaven_Integration_<GUID>` riêng. Lần chạy ngày 2026-09-29 đạt 58/58 và không để lại database test. `NovaHaven_Local` hiện có 11 migrations trong khi source có 12; migration `AddUserNotifications` đã được kiểm thử trên fixture disposable nhưng **chưa áp dụng** lên DB này. Nếu muốn dùng account/notification trên DB có sẵn, hãy sao lưu và đọc kỹ migration trước khi chủ động chạy `dotnet ef database update`; không dùng `EnsureCreated`.
+Integration tests cần một PostgreSQL local role có quyền `CREATEDB` và kết nối qua `NOVA_HAVEN_TEST_ADMIN_CONNECTION`. Fixture chỉ tạo/xóa database tên chính xác `NovaHaven_Integration_<32 hex>`; lần nghiệm thu checkout này đạt 78/78 trên PostgreSQL 18.4 cô lập. EF Core xác nhận không có thay đổi model chưa được migration bao phủ. PostgreSQL database chứa nội dung của bạn không bị áp dụng migration hoặc seed trong lượt kiểm tra. Không dùng `EnsureCreated`; chỉ tự áp migration lên database local sau khi chọn đúng connection string và sao lưu dữ liệu cần giữ.
+
+Trên checkout/máy này, chạy Flutter CLI bằng đường dẫn đầy đủ nếu chưa thêm SDK vào PATH:
+
+```powershell
+& 'D:\nova-haven-handoff\.local-tools\flutter\bin\flutter.bat' test --no-pub
+& 'D:\nova-haven-handoff\.local-tools\flutter\bin\flutter.bat' analyze --no-pub
+```
+
+Kết quả lượt kiểm tra hiện tại: Flutter test 26/26, analyze không có issue. `flutter doctor` xác nhận Android SDK 36.1, Java 21 và licenses Android đã sẵn sàng. Network-check tới pub.dev, Google Maven, GitHub bị sandbox chặn; các lệnh test/analyze không cần tải thêm package do dependency đã cache.
 
 Web typecheck/build chạy trong `apps/web`; Flutter test/analyze chạy trong `apps/mobile`. Xem kết quả và giới hạn của từng gate tại `docs/verification/` và `docs/roadmap/NOVA-HAVEN-ROADMAP.md`.
 

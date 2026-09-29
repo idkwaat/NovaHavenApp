@@ -1,4 +1,5 @@
-using Microsoft.Data.SqlClient;
+using System.Text.RegularExpressions;
+using Npgsql;
 using Xunit;
 
 namespace NovaHaven.Integration.Tests;
@@ -42,15 +43,20 @@ public sealed class LocalApiFactoryCleanupTests
 
     private static async Task<HashSet<string>> ReadIntegrationDatabaseNamesAsync()
     {
-        await using var connection = new SqlConnection(MasterConnectionString());
+        await using var connection = new NpgsqlConnection(AdminConnectionString());
         await connection.OpenAsync();
 
         await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT [name] FROM sys.databases WHERE [name] LIKE N'NovaHaven_Integration[_]%';";
+        command.CommandText = "SELECT datname FROM pg_database WHERE datname ~ '^NovaHaven_Integration_[0-9a-f]{32}$';";
 
         await using var reader = await command.ExecuteReaderAsync();
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        while (await reader.ReadAsync()) names.Add(reader.GetString(0));
+        while (await reader.ReadAsync())
+        {
+            var name = reader.GetString(0);
+            if (Regex.IsMatch(name, @"\ANovaHaven_Integration_[0-9a-f]{32}\z", RegexOptions.CultureInvariant))
+                names.Add(name);
+        }
         return names;
     }
 
@@ -58,24 +64,30 @@ public sealed class LocalApiFactoryCleanupTests
     {
         foreach (var name in databaseNames)
         {
-            var identifier = $"[{name.Replace("]", "]]", StringComparison.Ordinal)}]";
-            await using var connection = new SqlConnection(MasterConnectionString());
+            if (!Regex.IsMatch(name, @"\ANovaHaven_Integration_[0-9a-f]{32}\z", RegexOptions.CultureInvariant))
+                throw new InvalidOperationException("Refusing to drop a database outside the integration-test naming pattern.");
+
+            await using var connection = new NpgsqlConnection(AdminConnectionString());
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
-            command.CommandText = $"IF DB_ID(@name) IS NOT NULL BEGIN ALTER DATABASE {identifier} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE {identifier}; END;";
-            command.Parameters.AddWithValue("@name", name);
+            command.CommandText = $"DROP DATABASE IF EXISTS \"{name}\" WITH (FORCE);";
             await command.ExecuteNonQueryAsync();
         }
     }
 
-    private static string MasterConnectionString() => new SqlConnectionStringBuilder
+    private static string AdminConnectionString()
     {
-        DataSource = @"(localdb)\MSSQLLocalDB",
-        InitialCatalog = "master",
-        IntegratedSecurity = true,
-        TrustServerCertificate = true,
-        ConnectTimeout = 15,
-        Pooling = false
-    }.ConnectionString;
+        var connection = Environment.GetEnvironmentVariable("NOVA_HAVEN_TEST_ADMIN_CONNECTION");
+        if (string.IsNullOrWhiteSpace(connection))
+            throw new InvalidOperationException(
+                "Set NOVA_HAVEN_TEST_ADMIN_CONNECTION to a local PostgreSQL admin connection for disposable integration databases.");
+
+        return new NpgsqlConnectionStringBuilder(connection)
+        {
+            Database = "postgres",
+            Pooling = false,
+            Timeout = 15
+        }.ConnectionString;
+    }
 }

@@ -9,7 +9,7 @@ public sealed class NovaDbContextFactory : IDesignTimeDbContextFactory<NovaDbCon
     {
         var connection = Environment.GetEnvironmentVariable("NOVA_DB_CONNECTION")
             ?? throw new InvalidOperationException("Set NOVA_DB_CONNECTION before creating EF migrations.");
-        var options = new DbContextOptionsBuilder<NovaDbContext>().UseSqlServer(connection).Options;
+        var options = new DbContextOptionsBuilder<NovaDbContext>().UseNpgsql(connection).Options;
         return new NovaDbContext(options);
     }
 }

@@ -18,8 +18,7 @@ flutter run --dart-define=API_BASE_URL=http://10.0.2.2:5080/
 
 ## Tài khoản và thông báo
 
-- Mở **Khám phá → Tài khoản người chơi** để đăng ký, đăng nhập, xác nhận email, gửi lại xác nhận hoặc đăng xuất.
-- Với API `Development` không cấu hình SMTP, nút **Mở hộp thư xác nhận local** đọc token từ outbox Development để xác nhận ngay trong app. Khi dùng SMTP, xác nhận từ email; app cũng cho phép dán mã.
+- Mở **Khám phá → Tài khoản người chơi** để đăng ký, đăng nhập hoặc đăng xuất. Tài khoản dùng được ngay sau khi tạo; ứng dụng không gửi email xác nhận.
 - Mở **Khám phá → Thông báo** hoặc **Tài khoản → Mở thông báo** để xem inbox, đánh dấu một tin hoặc toàn bộ là đã đọc. Inbox lấy từ SQL Server API, không phải dữ liệu giả trên thiết bị.
 - Web Push chỉ dành cho trình duyệt. Ứng dụng Flutter chưa có native push/FCM; muốn thêm cần cấu hình provider và thông tin nền tảng riêng.
 

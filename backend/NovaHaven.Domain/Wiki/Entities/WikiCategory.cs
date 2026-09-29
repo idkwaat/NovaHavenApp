@@ -8,5 +8,5 @@ public sealed class WikiCategory
     public string Slug { get; set; } = "";
     public bool IsActive { get; set; } = true;
     public int DisplayOrder { get; set; }
-    public byte[] RowVersion { get; set; } = [];
+    public uint RowVersion { get; set; }
 }

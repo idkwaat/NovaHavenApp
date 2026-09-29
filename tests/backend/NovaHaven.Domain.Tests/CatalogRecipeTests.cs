@@ -1,4 +1,5 @@
-using NovaHaven.Application.Catalog;
+using NovaHaven.Application.Features.Catalog.Commands;
+using NovaHaven.Application.Features.Catalog.Validators;
 using Xunit;
 
 namespace NovaHaven.Domain.Tests;

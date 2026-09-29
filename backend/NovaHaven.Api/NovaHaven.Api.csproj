@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <UserSecretsId>NovaHaven-Local-Development</UserSecretsId>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../NovaHaven.Application/NovaHaven.Application.csproj"/>
     <ProjectReference Include="../NovaHaven.Infrastructure/NovaHaven.Infrastructure.csproj"/>

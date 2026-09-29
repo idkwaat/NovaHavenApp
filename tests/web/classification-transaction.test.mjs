@@ -8,11 +8,11 @@ const categoryService = readFileSync(new URL('../../backend/NovaHaven.Applicatio
 const articleService = readFileSync(new URL('../../backend/NovaHaven.Application/Features/Wiki/Services/WikiArticleService.cs', import.meta.url), 'utf8');
 const articleController = readFileSync(new URL('../../backend/NovaHaven.Api/Controllers/AdminWikiArticlesController.cs', import.meta.url), 'utf8');
 const unitOfWork = readFileSync(new URL('../../backend/NovaHaven.Infrastructure/Persistence/UnitOfWork/EfUnitOfWork.cs', import.meta.url), 'utf8');
-const guard = () => readFileSync(new URL('../../backend/NovaHaven.Api/Infrastructure/SqlServerConflict.cs', import.meta.url), 'utf8');
+const guard = () => readFileSync(new URL('../../backend/NovaHaven.Api/Infrastructure/PostgreSqlConflict.cs', import.meta.url), 'utf8');
 for (const [name, start, end, reads] of [
   ['article create', 'public async Task<ApplicationResult<WikiArticleWriteResult>> CreateAsync(', 'public Task<ApplicationResult<WikiArticleWriteResult>> UpdateAsync(', /IsActiveCategoryAsync|AreActiveTagsAsync|AreExistingMediaAsync/],
-  ['article edit', 'public Task<ApplicationResult<WikiArticleWriteResult>> UpdateAsync(', 'public Task<ApplicationResult<WikiArticlePublishedResult>> PublishAsync(', /FindForUpdateAsync|IsActiveCategoryAsync|AreActiveTagsAsync|AreExistingMediaAsync/],
-  ['article publish', 'public Task<ApplicationResult<WikiArticlePublishedResult>> PublishAsync(', 'public Task<ApplicationResult<bool>> UnpublishAsync(', /FindForUpdateAsync|GetDraftTagIdsAsync|GetDraftMediaIdsAsync/],
+  ['article edit', 'public Task<ApplicationResult<WikiArticleWriteResult>> UpdateAsync(', 'public async Task<ApplicationResult<WikiArticlePublishedResult>> PublishAsync(', /FindForUpdateAsync|IsActiveCategoryAsync|AreActiveTagsAsync|AreExistingMediaAsync/],
+  ['article publish', 'public async Task<ApplicationResult<WikiArticlePublishedResult>> PublishAsync(', 'public Task<ApplicationResult<bool>> UnpublishAsync(', /FindForUpdateAsync|GetDraftTagIdsAsync|GetDraftMediaIdsAsync/],
   ['article restore', 'public Task<ApplicationResult<WikiArticleWriteResult>> RestoreAsync(', 'private async Task<ApplicationResult<bool>> UnpublishInTransactionAsync(', /FindForUpdateAsync|FindRevisionAsync|GetRevisionTagIdsAsync|GetRevisionMediaIdsAsync/]
 ]) {
   test(`${name} guards classification read and write with serializable Application transaction`, () => {
@@ -49,10 +49,11 @@ for (const [name, start, end, reads] of [
   });
 }
 
-test('Admin mutation filter returns 409 only for recognized SQL Server 1205 errors', () => {
-  assert.match(conflictFilter, /SqlServerConflict\.IsDeadlock\(exception\)/);
+test('Admin mutation filter returns 409 for recognized PostgreSQL concurrency conflicts', () => {
+  assert.match(conflictFilter, /PostgreSqlConflict\.IsDeadlock\(exception\)/);
   assert.match(conflictFilter, /StatusCodes\.Status409Conflict/);
-  assert.match(guard(), /SqlException\s*\{\s*Number:\s*1205\s*\}/);
+  assert.match(guard(), /PostgresErrorCodes\.DeadlockDetected/);
+  assert.match(guard(), /PostgresErrorCodes\.SerializationFailure/);
   assert.match(guard(), /\.InnerException/);
 });
 
@@ -76,7 +77,7 @@ test('real SQL smoke includes concurrent category deactivation and article creat
   assert.match(smoke, /cannot both succeed/);
 });
 
-test('all transactional mutations document SQL deadlock HTTP 409 in OpenAPI', () => {
+test('all transactional mutations document persistence conflict HTTP 409 in OpenAPI', () => {
   for (const [path,method] of [
     ['/api/v1/admin/wiki/categories/{id}','patch'],
     ['/api/v1/admin/wiki/categories/{id}','delete'],

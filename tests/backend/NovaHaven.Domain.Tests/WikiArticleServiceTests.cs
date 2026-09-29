@@ -1,5 +1,7 @@
 using NovaHaven.Application.Common.Results;
+using NovaHaven.Application.Common.Concurrency;
 using NovaHaven.Application.Common.Transactions;
+using NovaHaven.Application.Features.Notifications;
 using NovaHaven.Application.Features.Wiki.Repositories;
 using NovaHaven.Application.Features.Wiki.Results;
 using NovaHaven.Application.Features.Wiki.Services;
@@ -16,7 +18,7 @@ public sealed class WikiArticleServiceTests
     {
         var repository = new StubArticleRepository();
         var unitOfWork = new StubUnitOfWork();
-        var service = new WikiArticleService(repository, unitOfWork);
+        var service = CreateService(repository, unitOfWork);
 
         var result = await service.CreateAsync(
             new WikiDraftInput("", "Bad Slug", "", "", Guid.Empty), null, CancellationToken.None);
@@ -34,7 +36,7 @@ public sealed class WikiArticleServiceTests
         var article = Article();
         var repository = new StubArticleRepository(article);
         var unitOfWork = new StubUnitOfWork();
-        var service = new WikiArticleService(repository, unitOfWork);
+        var service = CreateService(repository, unitOfWork);
         var input = ValidInput(article.DraftCategoryId);
 
         var missing = await service.UpdateAsync(article.Id, input, null, null, CancellationToken.None);
@@ -60,11 +62,12 @@ public sealed class WikiArticleServiceTests
             DraftMediaIds = [mediaId]
         };
         var unitOfWork = new StubUnitOfWork();
-        var service = new WikiArticleService(repository, unitOfWork);
+        var notifications = new StubNotificationPublisher(unitOfWork);
+        var service = CreateService(repository, unitOfWork, notifications);
         var actorId = Guid.NewGuid();
 
         var result = await service.PublishAsync(
-            article.Id, article.RowVersion, actorId, actorId, CancellationToken.None);
+            article.Id, ConcurrencyVersion.ToBytes(article.RowVersion), actorId, actorId, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.True(unitOfWork.LastTransactionCommitted);
@@ -77,6 +80,9 @@ public sealed class WikiArticleServiceTests
         Assert.Equal([tagId], repository.SnapshotTagIds);
         Assert.Equal([mediaId], repository.SnapshotMediaIds);
         Assert.Equal("article.published", repository.LastAuditAction);
+        Assert.Equal(1, notifications.StageCount);
+        Assert.Equal(1, notifications.DeliveryCount);
+        Assert.True(notifications.DeliveredAfterCommit);
     }
 
     [Fact]
@@ -108,10 +114,10 @@ public sealed class WikiArticleServiceTests
             RevisionMediaIds = [restoredMediaId]
         };
         var unitOfWork = new StubUnitOfWork();
-        var service = new WikiArticleService(repository, unitOfWork);
+        var service = CreateService(repository, unitOfWork);
 
         var result = await service.RestoreAsync(
-            article.Id, restoreId, article.RowVersion, null, CancellationToken.None);
+            article.Id, restoreId, ConcurrencyVersion.ToBytes(article.RowVersion), null, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.Equal("Earlier title", article.DraftTitle);
@@ -132,12 +138,18 @@ public sealed class WikiArticleServiceTests
         DraftSummary = "Summary",
         DraftMarkdown = "Content",
         DraftCategoryId = Guid.NewGuid(),
-        RowVersion = [1, 2, 3]
+        RowVersion = 0x01020304
     };
 
     private static WikiDraftInput ValidInput(Guid categoryId) =>
         new("Updated draft", "updated-draft", "Updated summary", "Updated content", categoryId,
             [Guid.NewGuid()], [Guid.NewGuid()]);
+
+    private static WikiArticleService CreateService(
+        StubArticleRepository repository,
+        StubUnitOfWork unitOfWork,
+        StubNotificationPublisher? notifications = null) =>
+        new(repository, unitOfWork, notifications ?? new StubNotificationPublisher(unitOfWork));
 
     private sealed class StubUnitOfWork : IUnitOfWork
     {
@@ -163,6 +175,32 @@ public sealed class WikiArticleServiceTests
             var result = await operation(cancellationToken);
             LastTransactionCommitted = shouldCommit(result);
             return result;
+        }
+    }
+
+    private sealed class StubNotificationPublisher(StubUnitOfWork unitOfWork) : IUserNotificationPublisher
+    {
+        public int StageCount { get; private set; }
+        public int DeliveryCount { get; private set; }
+        public bool DeliveredAfterCommit { get; private set; }
+
+        public Task<NotificationBatch> StageForAllUsersAsync(
+            string title,
+            string body,
+            string? href,
+            CancellationToken cancellationToken = default)
+        {
+            StageCount++;
+            return Task.FromResult(new NotificationBatch([], title, body, href));
+        }
+
+        public Task<NotificationDeliveryResult> DeliverPushAsync(
+            NotificationBatch batch,
+            CancellationToken cancellationToken = default)
+        {
+            DeliveryCount++;
+            DeliveredAfterCommit = unitOfWork.LastTransactionCommitted;
+            return Task.FromResult(new NotificationDeliveryResult(0, 0, 0));
         }
     }
 

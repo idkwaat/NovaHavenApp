@@ -8,7 +8,7 @@ public sealed class CommerceOrderLineConfiguration : IEntityTypeConfiguration<Co
     public void Configure(EntityTypeBuilder<CommerceOrderLine> entity)
     {
         entity.ToTable("CommerceOrderLines", table => table.HasCheckConstraint(
-            "CK_CommerceOrderLines_PositiveValues", "[Quantity] BETWEEN 1 AND 99 AND [UnitPriceMinorUnits] > 0 AND [LineTotalMinorUnits] > 0"));
+            "CK_CommerceOrderLines_PositiveValues", "\"Quantity\" BETWEEN 1 AND 99 AND \"UnitPriceMinorUnits\" > 0 AND \"LineTotalMinorUnits\" > 0"));
         entity.HasKey(x => x.Id);
         entity.HasIndex(x => new { x.OrderId, x.OfferId }).IsUnique();
         entity.Property(x => x.OfferSlug).HasMaxLength(120).IsRequired();

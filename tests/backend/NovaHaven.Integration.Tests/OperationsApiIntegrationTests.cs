@@ -27,7 +27,7 @@ public sealed class OperationsApiIntegrationTests : IClassFixture<LocalApiFactor
         var database = json.RootElement.GetProperty("database");
         Assert.True(database.GetProperty("canConnect").GetBoolean());
         Assert.Equal(0, database.GetProperty("pendingMigrations").GetInt32());
-        Assert.True(database.GetProperty("appliedMigrations").GetInt32() >= 10);
+        Assert.True(database.GetProperty("appliedMigrations").GetInt32() >= 1);
         Assert.True(json.RootElement.GetProperty("content").GetProperty("wikiArticles").GetInt32() >= 0);
         Assert.Equal(JsonValueKind.Array, json.RootElement.GetProperty("integrations").ValueKind);
     }

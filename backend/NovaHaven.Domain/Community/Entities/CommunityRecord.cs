@@ -14,7 +14,7 @@ public sealed class CommunityRecord
     public Guid? PublishedRevisionId { get; set; }
     public bool WasPublished { get; set; }
     public int LatestRevisionNumber { get; set; }
-    public byte[] RowVersion { get; set; } = [];
+    public uint RowVersion { get; set; }
     public DateTimeOffset? DraftStartsAt { get; set; }
     public DateTimeOffset? DraftEndsAt { get; set; }
     public Guid? DraftLocationEntryId { get; set; }
@@ -114,5 +114,5 @@ public sealed class CommunityEventRegistration
     public string Contact { get; set; } = "";
     public EventRegistrationState State { get; set; } = EventRegistrationState.Pending;
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
-    public byte[] RowVersion { get; set; } = [];
+    public uint RowVersion { get; set; }
 }

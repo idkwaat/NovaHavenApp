@@ -13,7 +13,7 @@ public sealed class RewardDefinitionConfiguration : IEntityTypeConfiguration<Rew
         entity.Property(x => x.Slug).HasMaxLength(120).IsRequired();
         entity.Property(x => x.DraftName).HasMaxLength(160).IsRequired();
         entity.Property(x => x.DraftSummary).HasMaxLength(500).IsRequired();
-        entity.Property(x => x.DraftMarkdown).HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.DraftMarkdown).HasColumnType("text").IsRequired();
         entity.Property(x => x.DraftKind).HasConversion<string>().HasMaxLength(20);
         entity.Property(x => x.DraftDeliveryDescription).HasMaxLength(1000).IsRequired();
         entity.Property(x => x.State).HasConversion<string>().HasMaxLength(20);

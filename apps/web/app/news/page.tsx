@@ -1,20 +1,22 @@
 import Link from 'next/link';
 import ArticlePreview from '../ArticlePreview';
 import {articlePreviewFor,extractMarkdownPreview} from '@/lib/article-previews';
+import PageNavigation, {parsePublicPage} from '../PageNavigation';
 
 type NewsSummary={id:string;slug:string;title:string;summary:string;markdown?:string;publishedAt:string};
 type NewsPageResponse={items:NewsSummary[];page:number;pageSize:number;total:number};
 const apiOrigin=process.env.NOVA_API_ORIGIN??'http://localhost:5080';
 
-async function loadNews():Promise<NewsPageResponse>{
- const response=await fetch(new URL('/api/v1/news?page=1&pageSize=20',apiOrigin),{cache:'no-store'});
+async function loadNews(page:number):Promise<NewsPageResponse>{
+ const response=await fetch(new URL(`/api/v1/news?page=${page}&pageSize=20`,apiOrigin),{cache:'no-store'});
  if(!response.ok)throw Error(`News API ${response.status}`);
  return response.json() as Promise<NewsPageResponse>;
 }
 
-export default async function News(){
+export default async function News({searchParams}:{searchParams:Promise<{page?:string}>}){
  try{
-  const result=await loadNews();
+  const page=parsePublicPage((await searchParams).page);
+  const result=await loadNews(page);
   return <section className="content news-page">
    <header className="page-heading"><p className="eyebrow">NOVA HAVEN · BẢN TIN</p><h1>Tin tức &amp; cập nhật</h1><p>Những bài viết đã được xuất bản trên Nova Haven.</p></header>
    <div className="news-layout">
@@ -33,6 +35,7 @@ export default async function News(){
         </div>
        </article>;
       })}</div>:<div className="notice">Chưa có tin đã xuất bản.</div>}
+     <PageNavigation page={result.page} pageSize={result.pageSize} total={result.total} href="/news"/>
     </section>
     <aside className="news-aside" aria-label="Khám phá Nova Haven">
      <p className="eyebrow">KHÁM PHÁ THÊM</p><h2>Điều gì đang chờ bạn?</h2>
