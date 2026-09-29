@@ -13,6 +13,7 @@ obj/
 .vscode/
 artifacts/localdb-backup/
 .local/
+*.tsbuildinfo
 .env.*
 !.env.example
 artifacts/

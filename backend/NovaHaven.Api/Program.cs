@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using NovaHaven.Application.Common.Transactions;
 using NovaHaven.Application.Features.Account;
 using NovaHaven.Application.Features.Media;
@@ -22,7 +23,7 @@ var connection = builder.Configuration.GetConnectionString("NovaDb")
     ?? throw new InvalidOperationException("ConnectionStrings:NovaDb must be set in environment configuration.");
 
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews(); // Registers the built-in antiforgery filter used by Admin API actions.
 builder.Services.AddDbContext<NovaDbContext>(options => options.UseSqlServer(connection));
 builder.Services.AddScoped<WikiReadService>();
 builder.Services.AddScoped<IWikiReadRepository, EfWikiReadRepository>();

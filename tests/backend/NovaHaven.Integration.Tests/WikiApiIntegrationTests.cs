@@ -202,6 +202,21 @@ public sealed class WikiApiIntegrationTests : IClassFixture<LocalApiFactory>
     }
 
     [Fact]
+    public async Task AdminControllerMutationWithoutCsrfHeaderIsRejected()
+    {
+        using var client = await factory.CreateAuthenticatedClientAsync(factory.AdminEmail);
+
+        using var response = await client.PostAsJsonAsync("/api/v1/admin/wiki/categories", new
+        {
+            name = $"Missing CSRF {Guid.NewGuid():N}",
+            slug = $"missing-csrf-{Guid.NewGuid():N}",
+            displayOrder = 0
+        });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task CategoryRequiresIfMatchAndRejectsDuplicateSlug()
     {
         using var client = await factory.CreateAuthenticatedClientAsync(factory.AdminEmail);

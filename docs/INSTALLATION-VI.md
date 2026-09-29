@@ -24,7 +24,7 @@ Repo chứa schema dưới dạng migrations, không chứa file database đã n
 - Node.js 22+ và npm.
 - Flutter SDK 3.44+ và Android Studio/emulator nếu chạy ứng dụng Android.
 
-Phiên bản đã ghi nhận trong lần xác minh trước: .NET SDK 10.0.302, Node 24.16.0, Flutter 3.44.1. Phiên bản khác chưa được xác minh ở đây.
+Phiên bản đã xác minh tại checkout ngày 2026-09-29: .NET SDK 10.0.302, Node 24.16.0/npm 11.13.0, Flutter 3.44.1/Dart 3.12.1 và SQL Server LocalDB 17.0.4025.3. Docker không có trong môi trường này. Kết quả test mới nhất được ghi ở [báo cáo hardening local](verification/2026-09-29-local-platform-hardening.md); thiết bị Android thật/emulator chưa được nghiệm thu trong lượt đó.
 
 ## 3. Tạo database local mới
 
@@ -161,6 +161,8 @@ dotnet test tests/backend/NovaHaven.Domain.Tests/NovaHaven.Domain.Tests.csproj
 dotnet test tests/backend/NovaHaven.Integration.Tests/NovaHaven.Integration.Tests.csproj
 ```
 
-Integration tests cần SQL Server local và database test riêng. Web typecheck/build chạy trong `apps/web`; Flutter test/analyze chạy trong `apps/mobile`. Xem kết quả các lần xác minh trước tại `docs/verification/` và `docs/roadmap/NOVA-HAVEN-ROADMAP.md`.
+Integration tests cần SQL Server local và tự dùng database `NovaHaven_Integration_<GUID>` riêng. Lần chạy ngày 2026-09-29 đạt 58/58 và không để lại database test. `NovaHaven_Local` hiện có 11 migrations trong khi source có 12; migration `AddUserNotifications` đã được kiểm thử trên fixture disposable nhưng **chưa áp dụng** lên DB này. Nếu muốn dùng account/notification trên DB có sẵn, hãy sao lưu và đọc kỹ migration trước khi chủ động chạy `dotnet ef database update`; không dùng `EnsureCreated`.
+
+Web typecheck/build chạy trong `apps/web`; Flutter test/analyze chạy trong `apps/mobile`. Xem kết quả và giới hạn của từng gate tại `docs/verification/` và `docs/roadmap/NOVA-HAVEN-ROADMAP.md`.
 
 Đây là local MVP; chưa tuyên bố production deployment, đồng bộ dữ liệu Minecraft, thanh toán thật, cấp vật phẩm, native push cho Flutter hay nghiệm thu đầy đủ browser/mobile E2E. Xem [hướng dẫn demo](defense/DEMO-GUIDE.md), [ERD](defense/ERD.md) và [readiness](defense/READINESS-CHECKLIST.md).
