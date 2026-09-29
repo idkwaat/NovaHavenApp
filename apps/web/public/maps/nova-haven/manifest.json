@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "imageUrl": "/maps/nova-haven/terrain.png",
+  "blockScale": 1,
+  "width": 3200,
+  "height": 2304,
+  "bounds": {
+    "minX": -1536,
+    "maxX": 1663,
+    "minZ": -1152,
+    "maxZ": 1151
+  },
+  "coordinateConvention": {
+    "unit": "block",
+    "xDirection": "right",
+    "zDirection": "down"
+  },
+  "spawn": {
+    "x": 191,
+    "z": -71,
+    "label": "Điểm xuất hiện"
+  },
+  "markers": [],
+  "dataVersion": 3955,
+  "chunksRendered": 27991,
+  "heightmapUrl": "/maps/nova-haven/heightmap.bin",
+  "minY": 46,
+  "maxY": 309
+}

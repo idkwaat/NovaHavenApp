@@ -1,0 +1,79 @@
+{
+  "description": "Original Nova Haven lore profiles. Geographic coordinates and server/plugin identities are intentionally omitted until verified from an authoritative source.",
+  "locations": [
+    {
+      "name": "Bến Nguyệt",
+      "slug": "ben-nguyet",
+      "summary": "Bến cảng trong lore Nova Haven, nơi người lữ hành trao đổi tin tức trước khi tiếp tục về phía đông.",
+      "region": "Miền Đông",
+      "locationType": "Bến cảng",
+      "latitude": null,
+      "longitude": null,
+      "markdown": "# Bến Nguyệt\n\nBến Nguyệt là một địa danh trong lore biên soạn cho Nova Haven. Những câu chuyện quanh bến kể về người lữ hành dừng lại để trao đổi tin tức, hỏi thăm đường và để lại lời nhắn cho người đến sau. Bài viết hiện chưa xác nhận đây là một địa điểm có trong máy chủ online.\n\n## Dấu ấn trong câu chuyện\n\nNgười kể thường nhắc tới tiếng dây neo chạm vào cột gỗ và những mảnh giấy ghi tên các chuyến đi. Có nhiều cách lý giải tên gọi “Bến Nguyệt”; chưa có một phiên bản nào được xem là lịch sử chính thức.\n\n## Ghi nhận bản đồ\n\nVùng được gắn nhãn Miền Đông theo mạch truyện của Wiki. Tọa độ và lối vào chưa được xác minh, nên bản đồ không hiển thị điểm định vị. Nếu phát hiện địa danh tương ứng trong game, hãy gửi bằng chứng và thời điểm kiểm tra cho người biên tập.\n\n## Trạng thái\n\nĐây là địa điểm lore biên soạn, chưa xác nhận với dữ liệu server. Không dùng bài này làm chỉ dẫn đường đi trong game cho tới khi có nguồn đáng tin cậy."
+    },
+    {
+      "name": "Rừng Thông Mù Sương",
+      "slug": "rung-thong-mu-suong",
+      "summary": "Khu rừng phía bắc trong những chuyện kể về Thung lũng Sao; vị trí thực tế chưa được xác nhận.",
+      "region": "Miền Bắc",
+      "locationType": "Rừng",
+      "latitude": null,
+      "longitude": null,
+      "markdown": "# Rừng Thông Mù Sương\n\nRừng Thông Mù Sương là một địa danh trong lore biên soạn cho Nova Haven. Trong chuyện kể, lớp sương buổi sớm làm những thân thông nối tiếp nhau như một hành lang dài, còn con đường cũ dần biến mất sau mỗi mùa mưa. Đây là hình ảnh văn học, không phải xác nhận thời tiết hay địa hình trong plugin.\n\n## Tiếng chuông xa\n\nMột số phiên bản câu chuyện nhắc tới tiếng chuông vang lên từ sâu trong rừng. Người kể bất đồng về nguồn âm thanh: có người nói đó là trạm gác, người khác cho rằng gió đi qua khe đá. Wiki ghi đây là truyền thuyết chưa có lời giải.\n\n## Điều cần xác minh\n\nBài hiện chưa có tọa độ, bản đồ hoặc bằng chứng xác nhận địa danh này trong máy chủ. Người chơi gặp khu rừng tương tự có thể gửi ảnh và mô tả dấu mốc, nhưng đừng tự gắn tên lore này vào địa điểm thực nếu chưa được kiểm tra.\n\n## Trạng thái\n\nĐây là địa điểm lore biên soạn, chưa xác nhận với dữ liệu server. Nội dung có thể tiếp tục được chỉnh sửa khi có thông tin đáng tin cậy."
+    },
+    {
+      "name": "Làng Ven Sông",
+      "slug": "lang-ven-song",
+      "summary": "Điểm khởi hành trong mạch truyện Thung lũng Sao, gắn với con đường men theo bờ nước.",
+      "region": "Thung lũng Sao",
+      "locationType": "Làng",
+      "latitude": null,
+      "longitude": null,
+      "markdown": "# Làng Ven Sông\n\nLàng Ven Sông là một điểm khởi hành trong lore biên soạn cho Nova Haven. Những ghi chép về Thung lũng Sao thường lấy bờ sông làm mốc đầu tiên để kể lại hành trình. Từ đây, câu chuyện mở ra các hướng đi tới rừng phía bắc và bến cảng phía đông.\n\n## Nhịp sống bên bờ nước\n\nNgười dân trong truyện quen với việc chỉ đường bằng những mốc dễ nhận ra: nơi bờ sông uốn cong, cây cầu gỗ và lối mòn nhập vào đường chính. Các chi tiết giúp người đọc hình dung khung cảnh, không mô tả cơ chế hay địa hình đã được xác nhận trong server.\n\n## Nơi bắt đầu của nhật ký\n\nNhững nhà thám hiểm thường ghi điểm xuất phát trước khi đi xa. Việc dùng cùng một tên gọi giúp cộng đồng nối các bản ghi với nhau, đồng thời làm rõ chỗ nào là trải nghiệm cá nhân và chỗ nào là lore do dự án sáng tác.\n\n## Trạng thái\n\nĐây là địa điểm lore biên soạn, chưa xác nhận với dữ liệu server. Tọa độ để trống có chủ ý; không suy diễn vị trí từ tên vùng hoặc câu chuyện."
+    },
+    {
+      "name": "Mỏm Đèn",
+      "slug": "mom-den",
+      "summary": "Mỏm đá trong truyền thuyết về người giữ đèn, một dấu mốc tượng trưng cho đường trở về.",
+      "region": "Thung lũng Sao",
+      "locationType": "Mỏm đá",
+      "latitude": null,
+      "longitude": null,
+      "markdown": "# Mỏm Đèn\n\nMỏm Đèn là địa điểm trong lore biên soạn cho Nova Haven, gắn với câu chuyện về chiếc đèn nhỏ nhìn xuống Thung lũng Sao. Người giữ đèn trong truyện không vẽ bản đồ thay khách lữ hành; ông nhắc mỗi người nhớ tên nơi mình xuất phát và để lại tin nhắn cho người đang chờ.\n\n## Một dấu hiệu trong truyền thuyết\n\nCó phiên bản nói ánh đèn giúp đoàn đi xa tìm thấy đường về. Phiên bản khác cho rằng chiếc đèn chỉ là ẩn dụ về sự quan tâm giữa những người đồng hành. Chưa có ghi chép thống nhất về hình dáng hay vị trí của mỏm đá.\n\n## Mối liên hệ với nhật ký\n\nTrong các câu chuyện, người lữ hành thường dừng lại để viết điều họ đã thấy và điều còn chưa rõ. Chi tiết này nối địa danh với quy ước ghi chép của cộng đồng: quan sát, lời kể và phỏng đoán cần được phân biệt.\n\n## Trạng thái\n\nĐây là địa điểm lore biên soạn, chưa xác nhận với dữ liệu server. Tọa độ và đường đi không được đưa ra cho tới khi có nguồn xác minh."
+    }
+  ],
+  "npcs": [
+    {
+      "name": "An, người chép bản đồ",
+      "slug": "an-nguoi-chep-ban-do",
+      "summary": "Nhân vật lore ghi lại mốc đường và luôn đánh dấu rõ những điều mình chưa kiểm chứng.",
+      "role": "Người chép bản đồ",
+      "locationSlug": "thung-lung-sao",
+      "markdown": "# An, người chép bản đồ\n\nAn là nhân vật lore biên soạn cho Nova Haven, thường xuất hiện trong những mẩu chuyện ở Làng Ven Sông. Cô không tự nhận biết mọi con đường; công việc của cô là hỏi người vừa trở về đã nhìn thấy gì, rồi ghi lại cả những chỗ còn bất đồng.\n\n## Cách An ghi chép\n\nMỗi trang sổ có điểm xuất phát, các mốc đã quan sát và câu hỏi chưa được giải đáp. An dùng dấu riêng cho điều tận mắt thấy và điều nghe kể. Khi một con đường thay đổi, cô giữ lại ghi chú cũ cùng thời điểm để người đọc hiểu bối cảnh.\n\n## Vai trò trong câu chuyện\n\nAn nhắc các nhà thám hiểm rằng bản đồ không hoàn hảo vẫn có ích nếu trung thực về giới hạn của nó. Cô thường gửi người mới tới đọc lại ghi chép trước khi chọn hướng đi. Những cuộc trò chuyện của An tạo cầu nối giữa các câu chuyện địa danh trong Wiki.\n\n## Trạng thái nhân vật\n\nĐây là nhân vật lore biên soạn, chưa xác nhận là NPC trong máy chủ online. Tên, lời thoại và vai trò không đại diện cho NPC hoặc nhiệm vụ đã được triển khai."
+    },
+    {
+      "name": "Mộc, người giữ đèn",
+      "slug": "moc-nguoi-giu-den",
+      "summary": "Người canh chiếc đèn trong truyền thuyết Mỏm Đèn và hỏi khách lữ hành có nhớ đường quay về.",
+      "role": "Người giữ đèn trong truyền thuyết",
+      "locationSlug": "mom-den",
+      "markdown": "# Mộc, người giữ đèn\n\nMộc là nhân vật lore biên soạn cho Nova Haven. Trong câu chuyện, ông trông nom một chiếc đèn trên mỏm đá nhìn xuống thung lũng. Mộc ít hỏi đoàn lữ hành họ đang tìm gì; ông muốn biết họ đã thống nhất nơi gặp lại và có ai đang chờ tin ở nhà hay chưa.\n\n## Ba câu hỏi của Mộc\n\nTrước khi đoàn lên đường, Mộc thường hỏi điểm xuất phát là đâu, dấu mốc nào giúp nhận ra đường về và ai sẽ ghi lại điều vừa khám phá. Các câu hỏi không phải luật chơi hoặc điều kiện nhiệm vụ; chúng là cách câu chuyện nhấn mạnh sự chuẩn bị và quan tâm tới bạn đồng hành.\n\n## Chiếc đèn và những phiên bản kể\n\nCó người kể rằng ánh đèn nhìn thấy từ rất xa. Người khác cho rằng nó chỉ sáng trong trí nhớ của những ai đã trở về an toàn. Wiki giữ hai cách kể như dị bản, không khẳng định một trong số đó là lịch sử thật.\n\n## Trạng thái nhân vật\n\nĐây là nhân vật lore biên soạn, chưa xác nhận là NPC trong máy chủ online. Không có nhiệm vụ, phần thưởng, tọa độ hay lời thoại game được tuyên bố trong hồ sơ này."
+    },
+    {
+      "name": "Hạ, người trông bến",
+      "slug": "ha-nguoi-trong-ben",
+      "summary": "Nhân vật lore ở Bến Nguyệt, chuyên lưu lại tin tức các đoàn thám hiểm để người đến sau tham khảo.",
+      "role": "Người trông bến trong lore",
+      "locationSlug": "ben-nguyet",
+      "markdown": "# Hạ, người trông bến\n\nHạ là nhân vật lore biên soạn cho Nova Haven. Cô chăm nom những mảnh giấy được để lại quanh Bến Nguyệt, sắp chúng theo ngày và ghi thêm ai đã xác nhận từng thông tin. Hạ không xóa lời kể chỉ vì chúng khác nhau; cô để người đọc thấy vì sao hai đoàn có thể nhớ cùng một con đường theo hai cách.\n\n## Tin nào cũng cần bối cảnh\n\nMột lời nhắn về tuyến đường sẽ được giữ cùng thời điểm và điểm xuất phát. Nếu người gửi không nhớ rõ, Hạ đánh dấu ghi chú là chưa chắc chắn. Cách làm ấy khiến cuốn sổ của bến đôi lúc lộn xộn, nhưng không biến phỏng đoán thành lời chỉ dẫn có vẻ chính thức.\n\n## Mối liên hệ với người đi xa\n\nTrong truyện, Hạ thường gặp lại những người từng dừng chân ở bến. Họ mang về chỉnh sửa, câu hỏi mới hoặc một câu chuyện nghe dọc đường. Nhân vật giúp gắn Bến Nguyệt với cộng đồng rộng hơn của những người ghi chép.\n\n## Trạng thái nhân vật\n\nĐây là nhân vật lore biên soạn, chưa xác nhận là NPC trong máy chủ online. Hồ sơ không khẳng định cô tồn tại trong game hoặc có thể tương tác trực tiếp."
+    },
+    {
+      "name": "Tâm, người nghe tiếng chuông",
+      "slug": "tam-nguoi-nghe-tieng-chuong",
+      "summary": "Người kể chuyện trong lore Rừng Thông Mù Sương, luôn ghi lại nhiều cách lý giải trước khi chọn câu trả lời.",
+      "role": "Người kể chuyện và lưu trữ dị bản",
+      "locationSlug": "rung-thong-mu-suong",
+      "markdown": "# Tâm, người nghe tiếng chuông\n\nTâm là nhân vật lore biên soạn cho Nova Haven. Cậu đi cùng những đoàn muốn tìm hiểu câu chuyện về tiếng chuông trong Rừng Thông Mù Sương, nhưng không bao giờ nói rằng mình đã tìm ra nguồn âm thanh. Tâm tin một bí ẩn được kể trung thực sẽ thú vị hơn một đáp án bịa ra cho gọn.\n\n## Ghi lại các dị bản\n\nTâm hỏi người kể họ nghe tiếng chuông ở đâu, vào lúc nào và có ai đi cùng. Một số người nhớ tiếng gió qua khe đá, số khác nhắc tới một trạm gác trong rừng. Cậu giữ nguyên khác biệt giữa các lời kể, đồng thời ghi rõ chúng chưa được xác minh.\n\n## Vai trò của người quan sát\n\nTrong các mẩu chuyện, Tâm nhắc đoàn thám hiểm dừng lại khi không chắc đường và chia sẻ điều mình thực sự nhìn thấy. Đây là phẩm chất của nhân vật, không phải chỉ dẫn về một cơ chế hoặc vật phẩm trong server.\n\n## Trạng thái nhân vật\n\nĐây là nhân vật lore biên soạn, chưa xác nhận là NPC trong máy chủ online. Chưa có vị trí chính xác, nhiệm vụ hay dữ liệu gameplay chính thức gắn với Tâm."
+    }
+  ]
+}

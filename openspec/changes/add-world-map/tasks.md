@@ -1,0 +1,8 @@
+- [x] Add tested, bounded NBT/Anvil/ZIP reader and one-block terrain renderer; 15 Python unit tests pass.
+- [x] Render source-derived local assets: 3,200×2,304 color PNG (911,322 bytes), 14,745,600-byte height field, 27,991 rendered chunks, X/Z bounds −1536…1663 / −1152…1151, observed Y 46…309.
+- [x] Update the map contract for fixed-angle isometric terrain, one-block surface colors, 1–32× zoom, pan and explicit/automatic 2D fallback.
+- [x] Add and test fixed-camera projection, bounded GPU coordinate picking, masked mesh gaps, source-derived spawn/sign marker data, row alignment and WebGL2 fallback behavior.
+- [x] Make 3D the default where valid height data and WebGL2 are available; retain flat-map mode, keyboard/buttons, source marker and mobile layout.
+- [x] Run full verification: Node 146 pass / 0 fail / 4 skipped; Python 15 pass; web typecheck and production build pass; local map and assets return HTTP 200.
+- [x] Verify local browser rendering, fixed-camera pan/zoom/pick, 3D/flat switch, keyboard controls, and 320×800 / 390×844 mobile views. See `docs/verification/2026-09-29-world-map.md`.
+- [x] Record the actual rendering boundary: per-block surface-color texels with four-block-spaced height geometry; this is not a full voxel model and does not bundle Minecraft resource-pack side textures.

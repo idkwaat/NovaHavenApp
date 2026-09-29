@@ -1,0 +1,12 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set a unique password in .env first}
+    ports:
+      - "127.0.0.1:14333:1433"
+    volumes:
+      - nova_sql_data:/var/opt/mssql
+volumes:
+  nova_sql_data:

@@ -1,0 +1,107 @@
+{
+  "description": "Fictional, clearly labeled local demo records for illustrating the Community section. They are not real players, guilds, scheduled events, housing owners or server statistics.",
+  "entries": [
+    {
+      "name": "Dạo bước qua bản đồ",
+      "slug": "dao-buoc-qua-ban-do-demo",
+      "kind": "event",
+      "summary": "Buổi gặp mặt minh họa để cùng xem bản đồ lore và chia sẻ cách ghi chú hành trình.",
+      "markdown": "# Dạo bước qua bản đồ\n\nDữ liệu minh họa local. Đây là bản ghi mẫu để thể hiện cách một lịch sinh hoạt cộng đồng có thể xuất hiện trên website; không phải dữ liệu sự kiện thật từ máy chủ Nova Haven.\n\n## Nội dung dự kiến trong bản mẫu\n\nNgười tham dự giả định sẽ cùng mở bản đồ lore, chọn một địa danh muốn tìm hiểu và ghi lại câu hỏi còn bỏ ngỏ. Phần này chỉ minh họa cách trình bày hoạt động; chưa có người tổ chức, giờ tập trung, phòng Discord hay đường dẫn đăng ký đã được xác nhận.\n\n## Trạng thái\n\nLịch và sức chứa hiển thị là dữ liệu mẫu được tạo khi chạy seed. Đăng ký đang đóng để tránh người xem hiểu nhầm đây là lời mời thật. Hãy kiểm tra thông báo chính thức trước mọi hoạt động ngoài đời hoặc trong game.",
+      "startsInDays": 12,
+      "durationDays": 1,
+      "capacity": 18,
+      "registrationOpen": false,
+      "locationSlug": "thung-lung-sao"
+    },
+    {
+      "name": "Lửa trại kể chuyện ven bến",
+      "slug": "lua-trai-ven-ben-demo",
+      "kind": "event",
+      "summary": "Một lịch mẫu cho buổi kể chuyện ngắn, lấy cảm hứng từ địa danh Bến Nguyệt trong lore.",
+      "markdown": "# Lửa trại kể chuyện ven bến\n\nDữ liệu minh họa local. Tên buổi gặp và lịch hiển thị được dựng để trang cộng đồng có nội dung mẫu; đây không phải dữ liệu sự kiện thật từ máy chủ Nova Haven.\n\n## Ý tưởng chương trình\n\nMột buổi trò chuyện có thể bắt đầu bằng một câu chuyện ngắn, tiếp nối bằng phần chia sẻ bản dựng và kết thúc với ghi chú cho Wiki. Mô tả này chỉ phác họa cách biên tập sự kiện, không xác nhận địa điểm trong game hoặc một hoạt động đã được ban tổ chức duyệt.\n\n## Trạng thái\n\nNgày giờ và sức chứa là dữ liệu demo. Đăng ký đã đóng, không có biểu mẫu hay liên hệ tham gia. Hãy dựa vào kênh thông báo chính thức của Nova Haven khi cần biết sự kiện nào thực sự diễn ra.",
+      "startsInDays": 28,
+      "durationDays": 1,
+      "capacity": 24,
+      "registrationOpen": false,
+      "locationSlug": "ben-nguyet"
+    },
+    {
+      "name": "Hội Lữ Hành",
+      "slug": "hoi-lu-hanh-demo",
+      "kind": "guild",
+      "summary": "Hồ sơ bang hội hư cấu minh họa cách giới thiệu mục tiêu, nếp sinh hoạt và nội dung tuyển thành viên.",
+      "markdown": "# Hội Lữ Hành\n\nDữ liệu minh họa local. Hội Lữ Hành là tên hư cấu cho một hồ sơ giao diện, không phải bang hội thật hay dữ liệu bang hội từ máy chủ Nova Haven.\n\n## Tinh thần trong bản mẫu\n\nHồ sơ này đại diện cho nhóm người thích ghi chép chuyến đi, sưu tầm ảnh dựng và giúp người mới tìm thấy bài hướng dẫn phù hợp. Đây là ý tưởng biên tập, không xác nhận có thành viên, quản trị viên hay lịch hoạt động đang diễn ra.\n\n## Tham gia\n\nKhông có lời mời, địa chỉ Discord hoặc nút đăng ký thật được gắn vào hồ sơ. Khi bang hội chính thức được xác nhận, người biên tập có thể thay bản mẫu bằng thông tin do đại diện nhóm cung cấp.",
+      "motto": "Đi xa để hiểu thêm, ghi chép để người sau khỏi lạc.",
+      "discordUrl": ""
+    },
+    {
+      "name": "Vườn Bên Suối",
+      "slug": "vuon-ben-suoi-demo",
+      "kind": "guild",
+      "summary": "Hồ sơ mẫu cho một nhóm yêu thích xây dựng, trồng trọt và chia sẻ những góc nhỏ yên bình.",
+      "markdown": "# Vườn Bên Suối\n\nDữ liệu minh họa local. Vườn Bên Suối là một bang hội hư cấu được viết để lấp đầy bố cục thử nghiệm, không phải dữ liệu thật từ máy chủ Nova Haven.\n\n## Một nhóm trong câu chuyện\n\nTrong bản mẫu, nhóm chia sẻ ảnh khu vườn, ghi lại ý tưởng trang trí và trao đổi mẹo chăm sóc không gian chung. Nội dung không khẳng định có khu đất, quyền sở hữu, thành viên hay cơ chế trồng trọt nào trong game.\n\n## Thông tin liên hệ\n\nKhông có Discord thật hay lời mời tham gia. Nếu có bang hội chính thức, cần xác minh tên, người đại diện và liên kết liên hệ trước khi thay thế mục demo này.",
+      "motto": "Gieo một hạt nhỏ, vun một nơi để trở về.",
+      "discordUrl": ""
+    },
+    {
+      "name": "Minh Gỗ",
+      "slug": "minh-go-demo",
+      "kind": "player",
+      "summary": "Hồ sơ nhân vật minh họa cho người thích xây nhà gỗ và giữ lại ảnh trước–sau của mỗi công trình.",
+      "markdown": "# Minh Gỗ\n\nDữ liệu minh họa local. Minh Gỗ là hồ sơ nhân vật hư cấu được tạo cho bản xem thử website; không phải người chơi thật hay tài khoản đã xác nhận trong Nova Haven.\n\n## Sở thích trong câu chuyện\n\nBản tiểu sử mẫu kể về một người thích phối gỗ sẫm với đá sáng, bắt đầu mỗi công trình bằng một bản phác nhỏ và lưu lại những lần chỉnh sửa. Chi tiết này chỉ giúp minh họa kiểu nội dung hồ sơ, không mô tả thành tích hoặc lịch sử hoạt động trong server.\n\n## Quyền riêng tư và xác minh\n\nKhông có UUID, ảnh đại diện, Discord handle hoặc dữ liệu trực tuyến gắn với mục này. Hồ sơ người thật chỉ nên được đăng sau khi có sự đồng ý và thông tin do chính chủ cung cấp.",
+      "handle": "minhgo",
+      "bio": "Nhân vật hư cấu trong bộ demo local; yêu thích kiến trúc gỗ, ảnh công trình và những ghi chú ngắn về quá trình dựng nhà."
+    },
+    {
+      "name": "Linh La Bàn",
+      "slug": "linh-la-ban-demo",
+      "kind": "player",
+      "summary": "Hồ sơ mẫu của một người sưu tầm bản đồ, ghi lại câu hỏi và những địa danh cần được kiểm chứng.",
+      "markdown": "# Linh La Bàn\n\nDữ liệu minh họa local. Linh La Bàn là nhân vật hư cấu dùng cho bản trình diễn; hồ sơ không đại diện cho tài khoản người chơi Nova Haven có thật.\n\n## Nếp khám phá\n\nTrong câu chuyện mẫu, Linh ghi thời điểm chụp ảnh, phân biệt điều mình tận mắt thấy với lời kể và để trống tọa độ khi chưa chắc chắn. Đây là mô tả về cách biên tập một chân dung cộng đồng, không phải một bản ghi hành trình thật.\n\n## Trạng thái dữ liệu\n\nKhông có UUID, thời gian chơi, vị trí, ảnh đại diện hay thống kê máy chủ. Thông tin người chơi thực cần được xác nhận và đăng với sự đồng ý của chủ thể.",
+      "handle": "linhlab",
+      "bio": "Nhân vật hư cấu của dữ liệu demo local; thích sưu tầm bản đồ, ghi nguồn và đánh dấu những câu hỏi còn mở."
+    },
+    {
+      "name": "Bảo Mộc",
+      "slug": "bao-moc-demo",
+      "kind": "player",
+      "summary": "Chân dung thử nghiệm dành cho một người chơi yêu cây xanh, cảnh quan và những lối đi dễ nhớ.",
+      "markdown": "# Bảo Mộc\n\nDữ liệu minh họa local. Bảo Mộc là tên nhân vật hư cấu để kiểm tra trang hồ sơ; không phải dữ liệu người chơi thật từ máy chủ Nova Haven.\n\n## Góc nhìn trong bản mẫu\n\nBảo thích để lại khoảng trống quanh lối đi, dùng cây cối tạo đường viền và chụp lại công trình ở nhiều thời điểm trong ngày. Những câu này là nội dung biên tập mẫu, không khẳng định nhân vật đã xây dựng hay xuất hiện trong game.\n\n## Thông tin cần xác minh\n\nMục không chứa UUID, ảnh thật, số liệu trực tuyến hay liên hệ cá nhân. Hồ sơ thực tế chỉ được thay vào sau khi chủ tài khoản đồng ý và thông tin đã được kiểm tra.",
+      "handle": "baomoc",
+      "bio": "Nhân vật minh họa trong bộ dữ liệu local; quan tâm tới bố cục vườn, lối đi và cách ghi nhận một bản dựng."
+    },
+    {
+      "name": "Nhà Ga Cũ bên Bến Nguyệt",
+      "slug": "nha-ga-cu-ben-nguyet-demo",
+      "kind": "housing",
+      "summary": "Bản giới thiệu công trình hư cấu, với hiên gỗ dài, bảng ghi hành trình và góc nghỉ chân ven bến.",
+      "markdown": "# Nhà Ga Cũ bên Bến Nguyệt\n\nDữ liệu minh họa local. Đây là hồ sơ công trình hư cấu dùng để trình bày mục không gian sống; không phải nhà có thật hay bản ghi từ máy chủ Nova Haven.\n\n## Ý tưởng kiến trúc\n\nBản dựng tưởng tượng một nhà ga nhỏ với mái rộng để trú mưa, tấm bảng ghi lại các chuyến đi và một chiếc ghế nhìn ra bến. Mô tả không đưa ra tọa độ, vật liệu server hay quyền sở hữu thực tế.\n\n## Ghi chú bộ sưu tập\n\nẢnh chưa được cung cấp; phần bên dưới là caption văn bản minh họa. Khi có công trình thật, hãy dùng ảnh được chủ nhân cho phép và ghi nguồn rõ ràng.",
+      "ownerDisplayName": "Lan Mộc (nhân vật demo)",
+      "galleryMarkdown": "**Bộ sưu tập minh họa — chưa có ảnh công trình thật.**\n\n- Hiên gỗ: góc nghỉ chân tưởng tượng hướng về Bến Nguyệt.\n- Bảng hành trình: chi tiết kể chuyện, chưa xác nhận có trong game.",
+      "locationSlug": "ben-nguyet"
+    },
+    {
+      "name": "Vườn Sau Cơn Mưa",
+      "slug": "vuon-sau-con-mua-demo",
+      "kind": "housing",
+      "summary": "Không gian sống mẫu lấy cảm hứng từ khu vườn nhỏ, hàng rào gỗ và lối đi lát đá.",
+      "markdown": "# Vườn Sau Cơn Mưa\n\nDữ liệu minh họa local. Đây là ý tưởng công trình hư cấu giúp thử giao diện thư viện không gian sống, không phải dữ liệu nhà đất thực từ máy chủ Nova Haven.\n\n## Bố cục câu chuyện\n\nMột lối đá uốn quanh luống cây, mái che nhỏ và chiếc đèn bên cổng tạo nên khung cảnh yên tĩnh sau mưa. Đây là mô tả văn học, không khẳng định vật liệu, thời tiết hay khu đất tồn tại trong server.\n\n## Bộ sưu tập\n\nCác chú thích phía dưới chỉ minh họa cấu trúc gallery. Chưa có ảnh thật hoặc giấy phép sử dụng hình ảnh; không đại diện cho công trình của một người chơi cụ thể.",
+      "ownerDisplayName": "An Nhiên (nhân vật demo)",
+      "galleryMarkdown": "**Bộ sưu tập minh họa — chưa có ảnh công trình thật.**\n\n- Cổng vườn: bản phác ý tưởng, không phải ảnh chụp trong game.\n- Lối đá: mô tả bố cục để minh họa phần caption.",
+      "locationSlug": "rung-thong-mu-suong"
+    },
+    {
+      "name": "Sổ tay người biên tập — bảng minh họa",
+      "slug": "so-tay-bien-tap-bang-minh-hoa-demo",
+      "kind": "leaderboard",
+      "summary": "Bảng ví dụ để xem cách xếp thứ tự đóng góp bài viết; điểm không phải thống kê trong Minecraft.",
+      "markdown": "# Sổ tay người biên tập\n\nDữ liệu minh họa local. Bảng này kiểm tra cách hiển thị thứ hạng và điểm trên trang; không phải dữ liệu thật từ máy chủ Nova Haven.\n\n## Cách đọc\n\nTên và điểm đều được dựng để minh họa bố cục. Điểm không đo thời gian chơi, cấp độ, vật phẩm, số quái bị hạ hay thành tích Minecraft. Chúng không phải cuộc thi đang diễn ra và không gắn với phần thưởng.\n\n## Thay thế bằng dữ liệu có nguồn\n\nNếu Nova Haven muốn công bố bảng xếp hạng thật, cần thống nhất định nghĩa chỉ số, nguồn dữ liệu, khoảng thời gian, cách xử lý đồng hạng và quyền riêng tư trước khi xuất bản.",
+      "leaderboardCategory": "Đóng góp biên tập",
+      "rows": [
+        {"rank": 1, "participantName": "Linh La Bàn (demo)", "score": 18.5, "note": "Điểm minh họa, không phải thống kê máy chủ."},
+        {"rank": 2, "participantName": "Minh Gỗ (demo)", "score": 14, "note": "Điểm minh họa, không phải thống kê máy chủ."},
+        {"rank": 3, "participantName": "Bảo Mộc (demo)", "score": 11.5, "note": "Điểm minh họa, không phải thống kê máy chủ."}
+      ]
+    }
+  ]
+}

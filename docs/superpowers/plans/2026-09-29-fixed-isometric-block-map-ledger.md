@@ -1,0 +1,14 @@
+# SDD ledger — plan: docs/superpowers/plans/2026-09-29-fixed-isometric-block-map.md
+
+- Setup: workspace is the supplied checkpoint at `D:\nova-haven-handoff`; `git rev-parse --show-toplevel` confirms it is not a Git repository. No worktree/branch/history can be made without inventing a repository; edits stay in the user-designated workspace.
+- Baseline: `node --test tests/web/world-map.test.mjs` → 9/9 pass; `python -m unittest tests.map.test_render_minecraft_map -v` → 14/14 pass.
+- Design workflow: read approved Nova Haven MASTER and current world-map OpenSpec; ran UI Pro Max UX and Next.js stack searches. Chosen fixed isometric WebGL2, local-only source assets, 2D fallback, one block per texture pixel; no camera rotation, external assets, new package, or generated art.
+- Ruling: follow the user's latest correction and keep a fixed camera instead of adding orbit/rotation controls. Cost if wrong: people cannot inspect arbitrary sides, by design.
+- Ruling: use a 45° yaw / 60° elevated view and 1.5× vertical exaggeration. Cost if wrong: elevation proportions are visual rather than a metrically exact presentation; underlying integer Y samples remain source-derived.
+- Ruling: sample surface color once per block but keep the GPU height mesh at four-block intervals. Cost if wrong: close-up shows per-block surface colors, but vertical geometry/edges do not resolve every block or building face. A full voxel renderer remains out of scope.
+- Ruling: preserve the user-owned browser's local map tab and reset its temporary mobile viewport after responsive QA. Cost if wrong: the local preview stays open at its overview state for the user to inspect.
+- Implementation: fixed-angle WebGL2 terrain canvas; local height/texture rows align; spawn and source-sign markers draw as typed points; cursor and center values come from GPU terrain picking; 2D atlas remains an explicit/manual and automatic fallback.
+- Browser evidence: local WebGL rendered without console warnings/errors; source spawn visible; switching flat/3D worked; zoom buttons reached 156%, keyboard `+` reached 125%, additional clicks reached 596% before the repeated-action call timed out; pointer drag changed center coordinates; ArrowRight changed the reported center; Home reset to 100%; terrain click returned integer X/Z. Browser screenshots at 320×800 and 390×844 showed no visible horizontal overflow.
+- Asset evidence: `terrain.png` 3,200×2,304 / 911,322 bytes; `heightmap.bin` 14,745,600 bytes; manifest 577 bytes; 27,991 chunks; X −1536…1663, Z −1152…1151, Y 46…309; spawn X=191, Z=−71; no sign labels.
+- Final automated evidence: `npm test` → 150 total / 146 passed / 0 failed / 4 skipped; renderer unittest → 15 passed; web typecheck passed; Next production build passed with `/map` statically prerendered; local HEAD checks for `/map` and all three map assets returned HTTP 200.
+- Final review: independent read-only reviewer found no critical/high findings and made no edits.
