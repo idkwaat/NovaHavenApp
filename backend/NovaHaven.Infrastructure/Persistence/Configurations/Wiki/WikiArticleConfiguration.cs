@@ -13,7 +13,7 @@ public sealed class WikiArticleConfiguration : IEntityTypeConfiguration<WikiArti
         entity.Property(x => x.Slug).HasMaxLength(120).IsRequired();
         entity.Property(x => x.DraftTitle).HasMaxLength(120).IsRequired();
         entity.Property(x => x.DraftSummary).HasMaxLength(300).IsRequired();
-        entity.Property(x => x.DraftMarkdown).HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.DraftMarkdown).HasColumnType("text").IsRequired();
         entity.Property(x => x.State).HasConversion<string>().HasMaxLength(20);
         entity.Property(x => x.RowVersion).IsRowVersion();
         entity.HasOne<WikiCategory>().WithMany().HasForeignKey(x => x.DraftCategoryId).OnDelete(DeleteBehavior.Restrict);

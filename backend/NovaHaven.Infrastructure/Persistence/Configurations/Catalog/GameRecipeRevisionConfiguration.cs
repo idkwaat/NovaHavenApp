@@ -12,7 +12,7 @@ public sealed class GameRecipeRevisionConfiguration : IEntityTypeConfiguration<G
         entity.HasIndex(x => new { x.RecipeId, x.Number }).IsUnique();
         entity.Property(x => x.Name).HasMaxLength(160).IsRequired();
         entity.Property(x => x.Summary).HasMaxLength(500).IsRequired();
-        entity.Property(x => x.Markdown).HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.Markdown).HasColumnType("text").IsRequired();
         entity.HasOne<GameRecipe>().WithMany().HasForeignKey(x => x.RecipeId).OnDelete(DeleteBehavior.Restrict);
     
     }

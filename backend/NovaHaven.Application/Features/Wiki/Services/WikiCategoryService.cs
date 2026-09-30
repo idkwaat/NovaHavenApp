@@ -1,5 +1,6 @@
 using NovaHaven.Application.Common.Results;
 using NovaHaven.Application.Common.Transactions;
+using NovaHaven.Application.Common.Concurrency;
 using NovaHaven.Application.Features.Wiki.Repositories;
 using NovaHaven.Application.Features.Wiki.Results;
 using NovaHaven.Application.Wiki;
@@ -63,7 +64,7 @@ public sealed class WikiCategoryService(IWikiCategoryRepository repository, IUni
                     return Failure<WikiCategoryAdminResult>("wiki.category.not-found", "The requested category was not found.");
                 if (expectedVersion is null)
                     return Failure<WikiCategoryAdminResult>("http.precondition-required", "If-Match is required.");
-                if (!category.RowVersion.AsSpan().SequenceEqual(expectedVersion))
+                if (!ConcurrencyVersion.Matches(category.RowVersion, expectedVersion))
                     return Failure<WikiCategoryAdminResult>("http.precondition-failed", "Category changed; reload before editing.");
 
                 var errors = WikiDraftValidator.ValidateCategory(input);
@@ -103,7 +104,7 @@ public sealed class WikiCategoryService(IWikiCategoryRepository repository, IUni
                     return Failure<bool>("wiki.category.not-found", "The requested category was not found.");
                 if (expectedVersion is null)
                     return Failure<bool>("http.precondition-required", "If-Match is required.");
-                if (!category.RowVersion.AsSpan().SequenceEqual(expectedVersion))
+                if (!ConcurrencyVersion.Matches(category.RowVersion, expectedVersion))
                     return Failure<bool>("http.precondition-failed", "Category changed; reload before editing.");
 
                 var hasArticleReferences = await repository.HasArticleReferencesAsync(id, transactionToken);
@@ -120,7 +121,8 @@ public sealed class WikiCategoryService(IWikiCategoryRepository repository, IUni
             cancellationToken);
 
     private static WikiCategoryAdminResult ToResult(WikiCategory category) =>
-        new(category.Id, category.Name, category.Slug, category.DisplayOrder, category.IsActive, category.RowVersion);
+        new(category.Id, category.Name, category.Slug, category.DisplayOrder, category.IsActive,
+            ConcurrencyVersion.ToBytes(category.RowVersion));
 
     private static ApplicationResult<T> ValidationFailure<T>(Dictionary<string, string[]> errors) =>
         Failure<T>("validation.failed", "One or more validation errors occurred.", errors);

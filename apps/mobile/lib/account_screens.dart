@@ -30,15 +30,12 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
-  final _token = TextEditingController();
   bool _register = false;
   bool _busy = false;
   bool _checkingUser = true;
-  bool _mailBusy = false;
   String? _message;
   String? _error;
   AccountUser? _user;
-  LocalConfirmationMessage? _localConfirmation;
 
   @override
   void initState() {
@@ -60,41 +57,6 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
     }
   }
 
-  Future<void> _loadLocalConfirmation() async {
-    if (_email.text.trim().isEmpty) {
-      setState(() => _error = 'Nhập email trước khi mở hộp thư local.');
-      return;
-    }
-    setState(() {
-      _mailBusy = true;
-      _error = null;
-      _message = null;
-    });
-    try {
-      final message = await widget.api.latestLocalConfirmation(_email.text);
-      if (!mounted) return;
-      setState(() {
-        _localConfirmation = message;
-        if (message == null) {
-          _token.clear();
-          _message =
-              'Chưa có thư local cho địa chỉ này. Hãy tạo tài khoản hoặc gửi lại liên kết.';
-        } else {
-          _token.text = message.token;
-          _message =
-              'Đã tải thư xác nhận local. Bạn có thể xác nhận email ngay bên dưới.';
-        }
-      });
-    } catch (error) {
-      if (mounted) {
-        setState(
-            () => _error = error.toString().replaceFirst('Bad state: ', ''));
-      }
-    } finally {
-      if (mounted) setState(() => _mailBusy = false);
-    }
-  }
-
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() {
@@ -104,10 +66,13 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
     });
     try {
       if (_register) {
-        await widget.api.register(_email.text, _password.text);
+        final user = await widget.api.register(_email.text, _password.text);
         if (mounted) {
-          setState(() => _message =
-              'Nếu địa chỉ này hợp lệ, liên kết xác nhận đã được gửi. Hãy xác nhận email trước khi đăng nhập.');
+          setState(() {
+            _user = user;
+            _message =
+                'Tài khoản đã sẵn sàng. Bạn đang đăng nhập vào Nova Haven.';
+          });
         }
       } else {
         final user = await widget.api.login(_email.text, _password.text);
@@ -117,54 +82,6 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
             _message = 'Đăng nhập thành công.';
           });
         }
-      }
-    } catch (error) {
-      if (mounted) {
-        setState(
-            () => _error = error.toString().replaceFirst('Bad state: ', ''));
-      }
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  Future<void> _confirm() async {
-    if (_email.text.trim().isEmpty || _token.text.trim().isEmpty) {
-      setState(() => _error = 'Nhập email và mã xác nhận trước khi tiếp tục.');
-      return;
-    }
-    setState(() {
-      _busy = true;
-      _error = null;
-      _message = null;
-    });
-    try {
-      await widget.api.confirmEmail(_email.text, _token.text);
-      if (mounted) {
-        setState(
-            () => _message = 'Email đã được xác nhận. Bạn có thể đăng nhập.');
-      }
-    } catch (error) {
-      if (mounted) {
-        setState(
-            () => _error = error.toString().replaceFirst('Bad state: ', ''));
-      }
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  Future<void> _resend() async {
-    setState(() {
-      _busy = true;
-      _error = null;
-      _message = null;
-    });
-    try {
-      await widget.api.resendConfirmation(_email.text);
-      if (mounted) {
-        setState(() => _message =
-            'Nếu tài khoản chưa xác nhận, Nova Haven đã gửi lại email.');
       }
     } catch (error) {
       if (mounted) {
@@ -204,7 +121,6 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
   void dispose() {
     _email.dispose();
     _password.dispose();
-    _token.dispose();
     super.dispose();
   }
 
@@ -240,9 +156,7 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
                                           .textTheme
                                           .titleLarge),
                                   const SizedBox(height: 6),
-                                  Text(_user!.emailConfirmed
-                                      ? 'Email đã xác nhận'
-                                      : 'Email chưa xác nhận'),
+                                  const Text('Tài khoản người chơi'),
                                   if (_user!.isAdmin)
                                     const Text('Quản trị viên'),
                                   const SizedBox(height: 12),
@@ -289,8 +203,6 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
                                                     _register = value.first;
                                                     _message = null;
                                                     _error = null;
-                                                    _localConfirmation = null;
-                                                    _token.clear();
                                                   })),
                                       const SizedBox(height: 16),
                                       TextFormField(
@@ -303,10 +215,6 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
                                           ],
                                           decoration: const InputDecoration(
                                               labelText: 'Email'),
-                                          onChanged: (_) => setState(() {
-                                                _localConfirmation = null;
-                                                _token.clear();
-                                              }),
                                           validator: (value) => value == null ||
                                                   !value.contains('@')
                                               ? 'Nhập email hợp lệ.'
@@ -334,48 +242,10 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
                                       if (_register) ...[
                                         const SizedBox(height: 8),
                                         Text(
-                                            'Mật khẩu gồm tối thiểu 12 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt. Cần xác nhận email trước khi đăng nhập.',
+                                            'Mật khẩu tối thiểu 12 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt. Tạo xong là dùng được ngay.',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall),
-                                        const SizedBox(height: 8),
-                                        OutlinedButton.icon(
-                                          key: const Key(
-                                              'load-local-confirmation'),
-                                          onPressed: _mailBusy ||
-                                                  _email.text.trim().isEmpty
-                                              ? null
-                                              : _loadLocalConfirmation,
-                                          icon: _mailBusy
-                                              ? const SizedBox.square(
-                                                  dimension: 18,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                          strokeWidth: 2))
-                                              : const Icon(Icons
-                                                  .mark_email_unread_outlined),
-                                          label: Text(_mailBusy
-                                              ? 'Đang mở hộp thư…'
-                                              : 'Mở hộp thư xác nhận local'),
-                                        ),
-                                        if (_localConfirmation == null)
-                                          Text(
-                                              'Email thật: mở liên kết trong hộp thư. Có thể dán mã xác nhận vào đây nếu cần.',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall),
-                                        const SizedBox(height: 14),
-                                        TextFormField(
-                                            controller: _token,
-                                            decoration: const InputDecoration(
-                                                labelText: 'Mã xác nhận email'),
-                                            autocorrect: false,
-                                            enableSuggestions: false),
-                                        const SizedBox(height: 8),
-                                        OutlinedButton(
-                                            onPressed: _busy ? null : _confirm,
-                                            child: const Text(
-                                                'Xác nhận email bằng mã')),
                                       ],
                                       const SizedBox(height: 12),
                                       FilledButton(
@@ -385,14 +255,6 @@ class _AccountCenterPageState extends State<AccountCenterPage> {
                                               : _register
                                                   ? 'Tạo tài khoản'
                                                   : 'Đăng nhập')),
-                                      if (!_register)
-                                        TextButton(
-                                            onPressed:
-                                                _busy || _email.text.isEmpty
-                                                    ? null
-                                                    : _resend,
-                                            child: const Text(
-                                                'Gửi lại email xác nhận')),
                                     ])))),
                   if (_message != null)
                     _FeedbackCard(message: _message!, isError: false),
@@ -413,22 +275,26 @@ class AccountNotificationsPage extends StatefulWidget {
 
 class _AccountNotificationsPageState extends State<AccountNotificationsPage> {
   late Future<AccountInbox> _inbox;
+  int _page = 1;
   bool _busy = false;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _inbox = widget.api.notifications();
+    _inbox = widget.api.notifications(page: _page);
   }
 
-  Future<void> _reload() async {
+  Future<void> _loadPage(int page) async {
     setState(() {
-      _inbox = widget.api.notifications();
+      _page = page;
+      _inbox = widget.api.notifications(page: page);
       _error = null;
     });
     await _inbox;
   }
+
+  Future<void> _reload() => _loadPage(_page);
 
   Future<void> _mark(AccountNotification item) async {
     setState(() {
@@ -541,6 +407,35 @@ class _AccountNotificationsPageState extends State<AccountNotificationsPage> {
                             onTap: item.isRead || _busy
                                 ? null
                                 : () => _mark(item)))),
+                    if (inbox.total > inbox.pageSize)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 12,
+                          runSpacing: 8,
+                          children: [
+                            OutlinedButton(
+                              onPressed: _busy || inbox.page <= 1
+                                  ? null
+                                  : () => _loadPage(inbox.page - 1),
+                              child: const Text('← Trang trước'),
+                            ),
+                            Text(
+                                'Trang ${inbox.page} / ${((inbox.total + inbox.pageSize - 1) ~/ inbox.pageSize)}'),
+                            OutlinedButton(
+                              onPressed: _busy ||
+                                      inbox.page >=
+                                          ((inbox.total + inbox.pageSize - 1) ~/
+                                              inbox.pageSize)
+                                  ? null
+                                  : () => _loadPage(inbox.page + 1),
+                              child: const Text('Trang tiếp →'),
+                            ),
+                          ],
+                        ),
+                      ),
                     if (_error != null)
                       _FeedbackCard(message: _error!, isError: true),
                   ]));

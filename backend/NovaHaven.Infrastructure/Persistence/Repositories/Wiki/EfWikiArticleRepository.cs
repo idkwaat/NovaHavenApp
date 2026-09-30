@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using NovaHaven.Application.Common.Concurrency;
 using NovaHaven.Application.Features.Wiki.Repositories;
 using NovaHaven.Application.Features.Wiki.Results;
 using NovaHaven.Domain.Wiki.Entities;
@@ -37,7 +38,7 @@ public sealed class EfWikiArticleRepository(NovaDbContext dbContext) : IWikiArti
             mediaIds,
             article.LatestRevisionNumber,
             article.PublishedRevisionId,
-            article.RowVersion);
+            ConcurrencyVersion.ToBytes(article.RowVersion));
     }
 
     public Task<WikiArticle?> FindForUpdateAsync(Guid id, CancellationToken cancellationToken) =>

@@ -131,12 +131,34 @@ void main() {
     await tester.pumpAndSettle();
 
     final theme = tester.widget<MaterialApp>(find.byType(MaterialApp)).theme!;
-    expect(theme.scaffoldBackgroundColor, const Color(0xFF211D19));
-    expect(theme.colorScheme.surface, const Color(0xFF30271F));
+    expect(theme.scaffoldBackgroundColor, const Color(0xFF1D2422));
+    expect(theme.colorScheme.surface, const Color(0xFF252D2A));
     expect(
       _contrastRatio(theme.colorScheme.onSurface, theme.colorScheme.surface),
       greaterThanOrEqualTo(4.5),
     );
+    expect(tester.takeException(), isNull);
+    api.dispose();
+  });
+
+  testWidgets(
+      'mobile commerce clearly explains local demo has no charge or game delivery',
+      (tester) async {
+    final api = WikiApi(
+      base: Uri.parse('https://nova.example/'),
+      client: MockClient((request) async => _responseFor(request)),
+    );
+    await tester.pumpWidget(
+      NovaCompanion(api: api, bookmarks: _MemoryBookmarkStore()),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Khám phá'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Hỗ trợ máy chủ'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Không thu tiền thật'), findsOneWidget);
+    expect(find.textContaining('không giao vật phẩm'), findsOneWidget);
     expect(tester.takeException(), isNull);
     api.dispose();
   });
@@ -232,6 +254,24 @@ void main() {
 }
 
 http.Response _responseFor(http.Request request) {
+  if (request.url.path.endsWith('/commerce/offers')) {
+    return _jsonResponse({
+      'items': [
+        {
+          'id': 'demo-support',
+          'slug': 'goi-ho-tro-demo',
+          'name': 'Gói hỗ trợ demo',
+          'summary': 'Mục chỉ dùng để kiểm thử quy trình.',
+          'kind': 'donation',
+          'revision': 1,
+          'definitionOnly': false,
+          'updatedAt': '2026-09-29T00:00:00Z',
+        },
+      ],
+      'page': 1,
+      'total': 1,
+    });
+  }
   if (request.url.path.endsWith('/categories')) {
     return _jsonResponse([
       {

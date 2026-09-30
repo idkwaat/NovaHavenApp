@@ -5,18 +5,13 @@ import 'package:http/http.dart' as http;
 
 class AccountUser {
   const AccountUser(
-      {required this.id,
-      required this.email,
-      required this.emailConfirmed,
-      required this.isAdmin});
+      {required this.id, required this.email, required this.isAdmin});
   final String id;
   final String email;
-  final bool emailConfirmed;
   final bool isAdmin;
   factory AccountUser.fromJson(Map<String, dynamic> json) => AccountUser(
         id: json['id'] as String,
         email: json['email'] as String,
-        emailConfirmed: json['emailConfirmed'] as bool? ?? false,
         isAdmin: json['isAdmin'] as bool? ?? false,
       );
 }
@@ -50,44 +45,31 @@ class AccountNotification {
 }
 
 class AccountInbox {
-  const AccountInbox({required this.items, required this.unreadCount});
+  const AccountInbox(
+      {required this.items,
+      required this.page,
+      required this.pageSize,
+      required this.total,
+      required this.unreadCount});
   final List<AccountNotification> items;
+  final int page;
+  final int pageSize;
+  final int total;
   final int unreadCount;
   factory AccountInbox.fromJson(Map<String, dynamic> json) => AccountInbox(
         items: (json['items'] as List<dynamic>? ?? [])
             .map((item) =>
                 AccountNotification.fromJson(item as Map<String, dynamic>))
             .toList(),
+        page: (json['page'] as num? ?? 1).toInt(),
+        pageSize: (json['pageSize'] as num? ?? 20).toInt(),
+        total: (json['total'] as num? ?? 0).toInt(),
         unreadCount: (json['unreadCount'] as num? ?? 0).toInt(),
       );
 }
 
 class AccountAuthenticationRequired implements Exception {
   const AccountAuthenticationRequired();
-}
-
-class LocalConfirmationMessage {
-  const LocalConfirmationMessage(
-      {required this.token, required this.createdAtUtc});
-  final String token;
-  final DateTime createdAtUtc;
-
-  factory LocalConfirmationMessage.fromJson(Map<String, dynamic> json) {
-    final confirmationUrl = json['confirmationUrl'];
-    final createdAtUtc = json['createdAtUtc'];
-    if (confirmationUrl is! String || createdAtUtc is! String) {
-      throw const FormatException('Thư xác nhận local không hợp lệ.');
-    }
-    final uri = Uri.tryParse(confirmationUrl);
-    final token = uri?.queryParameters['token'];
-    if (token == null || token.isEmpty) {
-      throw const FormatException('Thư xác nhận local không có mã hợp lệ.');
-    }
-    return LocalConfirmationMessage(
-      token: token,
-      createdAtUtc: DateTime.parse(createdAtUtc).toUtc(),
-    );
-  }
 }
 
 abstract interface class AccountSecretStore {
@@ -221,23 +203,17 @@ class UserAccountApi {
             .toString());
   }
 
-  Future<void> register(String email, String password) async => _expectSuccess(
-      await _mutate('api/v1/auth/register',
-          method: 'POST', body: {'email': email.trim(), 'password': password}),
-      {202},
-      'Không thể tạo tài khoản.');
-
-  Future<void> confirmEmail(String email, String token) async => _expectSuccess(
-      await _mutate('api/v1/auth/confirm-email',
-          method: 'POST', body: {'email': email.trim(), 'token': token}),
-      {204},
-      'Liên kết xác nhận không hợp lệ hoặc đã hết hạn.');
-
-  Future<void> resendConfirmation(String email) async => _expectSuccess(
-      await _mutate('api/v1/auth/resend-confirmation',
-          method: 'POST', body: {'email': email.trim()}),
-      {202},
-      'Không thể gửi lại email xác nhận.');
+  Future<AccountUser> register(String email, String password) async {
+    await _expectSuccess(
+        await _mutate('api/v1/auth/register',
+            method: 'POST',
+            body: {'email': email.trim(), 'password': password}),
+        {201},
+        'Không thể tạo tài khoản.');
+    final user = await currentUser();
+    if (user == null) throw StateError('Phiên đăng nhập chưa được tạo.');
+    return user;
+  }
 
   Future<AccountUser> login(String email, String password) async {
     await _expectSuccess(
@@ -245,7 +221,7 @@ class UserAccountApi {
             method: 'POST',
             body: {'email': email.trim(), 'password': password}),
         {204},
-        'Đăng nhập thất bại hoặc email chưa xác nhận.');
+        'Email hoặc mật khẩu không đúng.');
     final user = await currentUser();
     if (user == null) throw StateError('Phiên đăng nhập chưa được tạo.');
     return user;
@@ -265,9 +241,14 @@ class UserAccountApi {
     return AccountUser.fromJson(json as Map<String, dynamic>);
   }
 
-  Future<AccountInbox> notifications() async {
+  Future<AccountInbox> notifications({int page = 1, int pageSize = 20}) async {
+    if (page < 1 || pageSize < 1 || pageSize > 50) {
+      throw ArgumentError('Trang thông báo không hợp lệ.');
+    }
     final response = await _client
-        .get(_base.resolve('api/v1/notifications'), headers: await _headers())
+        .get(
+            _base.resolve('api/v1/notifications?page=$page&pageSize=$pageSize'),
+            headers: await _headers())
         .timeout(const Duration(seconds: 10));
     await _saveResponseCookies(response);
     if (response.statusCode == 401) throw const AccountAuthenticationRequired();
@@ -277,41 +258,6 @@ class UserAccountApi {
     }
     return AccountInbox.fromJson(
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>);
-  }
-
-  Future<LocalConfirmationMessage?> latestLocalConfirmation(
-      String email) async {
-    final uri = _base.resolve('api/v1/dev/mailbox').replace(
-      queryParameters: {'email': email.trim()},
-    );
-    final response = await _client
-        .get(uri, headers: await _headers())
-        .timeout(const Duration(seconds: 10));
-    if (response.statusCode == 404) {
-      throw StateError(
-        'Hộp thư local chỉ có trong Development. Nếu dùng email thật, hãy mở liên kết trong email.',
-      );
-    }
-    if (response.statusCode != 200) {
-      throw StateError(
-          'Không đọc được hộp thư xác nhận local (HTTP ${response.statusCode}).');
-    }
-
-    final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-    if (decoded is! List<dynamic>) {
-      throw const FormatException('Danh sách thư xác nhận local không hợp lệ.');
-    }
-    if (decoded.isEmpty) return null;
-    final latest = decoded.first;
-    if (latest is! Map<String, dynamic>) {
-      throw const FormatException('Thư xác nhận local không hợp lệ.');
-    }
-    try {
-      return LocalConfirmationMessage.fromJson(latest);
-    } on FormatException {
-      throw const FormatException(
-          'Thư xác nhận local không hợp lệ hoặc đã hết hạn.');
-    }
   }
 
   Future<void> markRead(String id) async => _expectSuccess(

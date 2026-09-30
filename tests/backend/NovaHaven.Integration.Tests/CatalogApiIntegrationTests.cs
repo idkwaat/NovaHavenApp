@@ -50,6 +50,17 @@ public sealed class CatalogApiIntegrationTests : IClassFixture<LocalApiFactory>
         Assert.Equal("weapon", firstJson.RootElement.GetProperty("kind").GetString());
         Assert.Equal(1, firstJson.RootElement.GetProperty("revision").GetInt32());
 
+        using var filteredPage = await client.GetAsync($"/api/v1/catalog/items?q=Moonsteel&page=1&pageSize=1&kind=weapon");
+        filteredPage.EnsureSuccessStatusCode();
+        using var pageJson = JsonDocument.Parse(await filteredPage.Content.ReadAsStreamAsync());
+        Assert.Equal(1, pageJson.RootElement.GetProperty("total").GetInt32());
+        Assert.Equal(slug, pageJson.RootElement.GetProperty("items")[0].GetProperty("slug").GetString());
+
+        using var invalidKind = await client.GetAsync("/api/v1/catalog/items?kind=not-a-kind");
+        Assert.Equal(HttpStatusCode.BadRequest, invalidKind.StatusCode);
+        using var invalidKindJson = JsonDocument.Parse(await invalidKind.Content.ReadAsStreamAsync());
+        Assert.Equal("Invalid catalog item kind.", invalidKindJson.RootElement.GetProperty("title").GetString());
+
         using var currentAdmin = await client.GetAsync($"/api/v1/admin/catalog/items/{itemId}");
         currentAdmin.EnsureSuccessStatusCode();
         var currentEtag = currentAdmin.Headers.ETag?.ToString();
@@ -139,6 +150,7 @@ public sealed class CatalogApiIntegrationTests : IClassFixture<LocalApiFactory>
         Assert.Equal(HttpStatusCode.NotFound, privateRecipe.StatusCode);
         using var adminRecipe = await client.GetAsync($"/api/v1/admin/catalog/recipes/{recipeId}");
         adminRecipe.EnsureSuccessStatusCode();
+        Assert.Equal("no-store", adminRecipe.Headers.CacheControl?.ToString());
         csrf = await LocalApiFactory.GetCsrfAsync(client);
         using var publishRecipe = await LocalApiFactory.SendJsonAsync(client, HttpMethod.Post,
             $"/api/v1/admin/catalog/recipes/{recipeId}/publish", new { }, csrf, adminRecipe.Headers.ETag?.ToString());
@@ -150,6 +162,12 @@ public sealed class CatalogApiIntegrationTests : IClassFixture<LocalApiFactory>
         Assert.Equal(1, recipeJson.RootElement.GetProperty("revision").GetInt32());
         Assert.Equal("Moonsteel Ingot", recipeJson.RootElement.GetProperty("ingredients")[0].GetProperty("itemName").GetString());
         Assert.Equal("Moonsteel Sword", recipeJson.RootElement.GetProperty("outputs")[0].GetProperty("itemName").GetString());
+
+        using var recipePage = await client.GetAsync($"/api/v1/catalog/recipes?q=Forge&page=1&pageSize=5");
+        recipePage.EnsureSuccessStatusCode();
+        using var recipePageJson = JsonDocument.Parse(await recipePage.Content.ReadAsStreamAsync());
+        Assert.Equal(1, recipePageJson.RootElement.GetProperty("total").GetInt32());
+        Assert.Equal(recipeSlug, recipePageJson.RootElement.GetProperty("items")[0].GetProperty("slug").GetString());
 
         using var latestAdminRecipe = await client.GetAsync($"/api/v1/admin/catalog/recipes/{recipeId}");
         latestAdminRecipe.EnsureSuccessStatusCode();

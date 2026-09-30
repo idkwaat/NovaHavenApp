@@ -1,5 +1,18 @@
 /* Nova Haven CMS Admin Stylesheet */
 
+:root {
+  --gg-red: #9a9b70;
+  --gg-cyan: #91a499;
+  --gg-bg-main: #1d2422;
+  --gg-bg-card: #252d2a;
+  --gg-bg-card-hover: #303b35;
+  --gg-border: #66776b;
+  --gg-border-light: #82958a;
+  --gg-text-bright: #efe2ca;
+  --gg-text-body: #d4c3a7;
+  --gg-text-muted: #b9c8bd;
+}
+
 .admin-wrapper {
   display: flex;
   min-height: calc(100vh - 60px);
@@ -692,4 +705,232 @@
   .dashboard-activity-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Keep CMS surfaces aligned with the shared charcoal, olive and teal palette. */
+.admin-wrapper {
+  background: var(--gg-bg-main);
+  color: var(--gg-text-body);
+}
+
+.admin-sidebar,
+.admin-sidebar-footer,
+.admin-topbar {
+  background: var(--gg-bg-card);
+  border-color: var(--gg-border);
+}
+
+.admin-brand-icon {
+  color: var(--gg-text-bright);
+  background: linear-gradient(135deg, var(--gg-red), #83845d);
+}
+
+.admin-brand h2,
+.admin-breadcrumbs strong,
+.admin-page-header h1,
+.kpi-value,
+.dashboard-panel-header h3,
+.activity-left strong,
+.media-info strong {
+  color: var(--gg-text-bright);
+}
+
+.admin-brand small,
+.admin-nav-title,
+.admin-breadcrumbs,
+.admin-page-header p,
+.kpi-title,
+.kpi-desc,
+.quick-action-text small,
+.activity-left small,
+.media-info small {
+  color: var(--gg-text-muted);
+}
+
+.admin-sidebar-header,
+.admin-sidebar-footer,
+.dashboard-panel-header {
+  border-color: var(--gg-border);
+}
+
+.admin-nav-item button,
+.admin-footer-links a,
+.admin-footer-links button {
+  color: var(--gg-text-body);
+}
+
+.admin-nav-item button:hover,
+.admin-footer-links a:hover {
+  color: var(--gg-text-bright);
+  border-color: var(--gg-border-light);
+  background: var(--gg-bg-card-hover);
+}
+
+.admin-nav-item.is-active button {
+  color: var(--gg-text-bright);
+  border-color: rgba(154, 155, 112, .55);
+  background: rgba(154, 155, 112, .12);
+  box-shadow: inset 3px 0 0 var(--gg-red);
+}
+
+.nav-badge,
+.admin-user-pill,
+.btn-topbar-refresh,
+.activity-item,
+.media-actions button {
+  color: var(--gg-text-body);
+  border-color: var(--gg-border);
+  background: var(--gg-bg-main);
+}
+
+.nav-badge {
+  color: var(--gg-text-muted);
+}
+
+.admin-nav-item.is-active .nav-badge {
+  color: var(--gg-text-bright);
+  border-color: rgba(154, 155, 112, .55);
+  background: rgba(154, 155, 112, .2);
+}
+
+.user-avatar,
+.quick-action-icon {
+  color: var(--gg-cyan);
+  border: 1px solid var(--gg-border-light);
+  background: #111a20;
+}
+
+.user-meta strong,
+.quick-action-text strong {
+  color: var(--gg-text-bright);
+}
+
+.user-meta small,
+.panel-view-all,
+.activity-price {
+  color: var(--gg-cyan);
+}
+
+.system-status-indicator {
+  color: #9ce8bd;
+  border-color: rgba(73, 180, 126, .35);
+  background: rgba(35, 112, 75, .16);
+}
+
+.btn-topbar-refresh:hover,
+.activity-item:hover,
+.media-actions button:hover {
+  color: var(--gg-text-bright);
+  border-color: var(--gg-border-light);
+  background: var(--gg-bg-card-hover);
+}
+
+.kpi-card,
+.quick-action-card,
+.dashboard-panel,
+.media-card {
+  border-color: var(--gg-border);
+  background: var(--gg-bg-card);
+}
+
+.kpi-card:hover,
+.quick-action-card:hover {
+  border-color: var(--gg-border-light);
+  background: var(--gg-bg-card-hover);
+}
+
+.dashboard-actions-section h2 {
+  color: var(--gg-text-bright);
+}
+
+.dashboard-panel-header {
+  border-bottom-color: var(--gg-border);
+}
+
+.activity-item {
+  border-color: var(--gg-border);
+}
+
+.badge-status.draft {
+  color: #ffd58a;
+  background: rgba(245, 166, 35, .14);
+}
+
+.media-upload-zone,
+.media-thumb-wrap {
+  border-color: var(--gg-border-light);
+  background: #11191f;
+}
+
+.media-upload-zone:hover {
+  border-color: var(--gg-cyan);
+  background: var(--gg-bg-card-hover);
+}
+
+.media-info {
+  color: var(--gg-text-body);
+}
+
+.media-actions button {
+  color: var(--gg-text-bright);
+}
+
+.admin-wrapper .admin-main input,
+.admin-wrapper .admin-main textarea,
+.admin-wrapper .admin-main select,
+.admin-login-page .admin-login-form input {
+  color: var(--gg-text-bright);
+  border: 1px solid var(--gg-border-light);
+  background: var(--gg-bg-main);
+}
+
+.admin-wrapper .admin-main input::placeholder,
+.admin-wrapper .admin-main textarea::placeholder,
+.admin-login-page .admin-login-form input::placeholder {
+  color: var(--gg-text-muted);
+  opacity: 1;
+}
+
+.admin-wrapper .admin-main input:focus-visible,
+.admin-wrapper .admin-main textarea:focus-visible,
+.admin-wrapper .admin-main select:focus-visible,
+.admin-login-page .admin-login-form input:focus-visible,
+.admin-login-retry:focus-visible {
+  outline: 2px solid var(--gg-cyan);
+  outline-offset: 2px;
+}
+
+.admin-login-page .admin-login-form {
+  color: var(--gg-text-body);
+  border-color: var(--gg-border);
+  border-top: 3px solid var(--gg-red);
+  background: var(--gg-bg-card);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .24);
+}
+
+.admin-login-page .admin-login-form label {
+  color: var(--gg-text-bright);
+}
+
+section.content.admin-login-page > p.admin-login-error {
+  padding: 12px 14px;
+  color: #ffdce2;
+  border: 1px solid #7d3040;
+  border-left: 3px solid var(--gg-red);
+  border-radius: 3px;
+  background: #351d25;
+  line-height: 1.5;
+}
+
+.admin-login-retry {
+  min-height: 44px;
+  color: var(--gg-text-bright);
+  border-color: var(--gg-border-light);
+  background: var(--gg-bg-card);
+}
+
+.admin-login-retry:hover {
+  color: var(--gg-text-bright);
+  border-color: var(--gg-cyan);
+  background: var(--gg-bg-card-hover);
 }

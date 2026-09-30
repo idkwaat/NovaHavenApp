@@ -30,5 +30,9 @@
 .notification-list time{color:var(--nh-muted,#d4c3a7);font-size:.88rem}
 .notification-empty{padding:36px 8px;text-align:center}
 .notification-empty p{color:var(--nh-muted,#d4c3a7)}
+.notification-pager{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--nh-line,#80664a)}
+.notification-pager>span{color:var(--nh-muted,#d4c3a7);text-align:center}
+.notification-pager button{min-height:46px}
 @media(max-width:600px){.account-page{padding:32px 16px 48px}.account-card{margin:20px 0;padding:20px 16px}.notification-list li{flex-direction:column}.notification-toolbar>div{width:100%}.notification-toolbar button{flex:1}.notification-actions{width:100%}.notification-actions>*{flex:1}}
+@media(max-width:420px){.notification-pager{flex-wrap:wrap}.notification-pager>span{order:-1;width:100%}.notification-pager button{flex:1}}
 @media(prefers-reduced-motion:reduce){.account-page *{scroll-behavior:auto;transition:none!important}}

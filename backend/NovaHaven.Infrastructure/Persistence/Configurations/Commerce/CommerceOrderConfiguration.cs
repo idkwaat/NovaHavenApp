@@ -8,7 +8,7 @@ public sealed class CommerceOrderConfiguration : IEntityTypeConfiguration<Commer
     public void Configure(EntityTypeBuilder<CommerceOrder> entity)
     {
         entity.ToTable("CommerceOrders", table => table.HasCheckConstraint(
-            "CK_CommerceOrders_TotalMinorUnits", "[TotalMinorUnits] > 0"));
+            "CK_CommerceOrders_TotalMinorUnits", "\"TotalMinorUnits\" > 0"));
         entity.HasKey(x => x.Id);
         entity.HasIndex(x => x.OrderNumber).IsUnique();
         entity.HasIndex(x => x.IdempotencyKey).IsUnique();

@@ -1,29 +1,96 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using NovaHaven.Application.Common.Transactions;
-using NovaHaven.Application.Features.Account;
+using NovaHaven.Application.Common.Concurrency;
 using NovaHaven.Application.Features.Media;
 using NovaHaven.Application.Features.Media.Repositories;
 using NovaHaven.Application.Features.Media.Services;
 using NovaHaven.Application.Features.Notifications;
+using NovaHaven.Application.Features.Notifications.Repositories;
+using NovaHaven.Application.Features.Notifications.Services;
+using NovaHaven.Application.Features.Auth.Repositories;
+using NovaHaven.Application.Features.Auth.Services;
+using NovaHaven.Application.Features.Audit.Repositories;
+using NovaHaven.Application.Features.Audit.Services;
+using NovaHaven.Application.Features.Operations.Repositories;
+using NovaHaven.Application.Features.Operations.Services;
 using NovaHaven.Application.Features.Wiki.Repositories;
 using NovaHaven.Application.Features.Wiki.Services;
-using NovaHaven.Api.Endpoints;
 using NovaHaven.Infrastructure.Data;
 using NovaHaven.Infrastructure.Identity;
 using NovaHaven.Infrastructure.Media;
 using NovaHaven.Infrastructure.Persistence.Repositories.Wiki;
+using NovaHaven.Infrastructure.Persistence.Repositories.Audit;
+using NovaHaven.Infrastructure.Persistence.Repositories.Operations;
+using NovaHaven.Infrastructure.Persistence.Repositories.News;
 using NovaHaven.Infrastructure.Persistence.UnitOfWork;
 using NovaHaven.Infrastructure.Notifications;
+using NovaHaven.Infrastructure.Persistence.Repositories.Notifications;
+using NovaHaven.Application.Features.News.Repositories;
+using NovaHaven.Application.Features.News.Services;
+using NovaHaven.Application.Features.Catalog.Repositories;
+using NovaHaven.Application.Features.Catalog.Services;
+using NovaHaven.Application.Features.Rewards.Repositories;
+using NovaHaven.Application.Features.Rewards.Services;
+using NovaHaven.Application.Features.Knowledge.Repositories;
+using NovaHaven.Application.Features.Knowledge.Services;
+using NovaHaven.Application.Features.Integration.Repositories;
+using NovaHaven.Application.Features.Integration.Services;
+using NovaHaven.Application.Features.Community.Repositories;
+using NovaHaven.Application.Features.Community.Services;
+using NovaHaven.Application.Features.Commerce.Repositories;
+using NovaHaven.Application.Features.Commerce.Services;
+using NovaHaven.Infrastructure.Persistence.Repositories.Catalog;
+using NovaHaven.Infrastructure.Persistence.Repositories.Rewards;
+using NovaHaven.Infrastructure.Persistence.Repositories.Knowledge;
+using NovaHaven.Infrastructure.Persistence.Repositories.Integration;
+using NovaHaven.Infrastructure.Persistence.Repositories.Community;
+using NovaHaven.Infrastructure.Persistence.Repositories.Commerce;
+using NovaHaven.Infrastructure.Persistence;
 using WebPush;
 
 var builder = WebApplication.CreateBuilder(args);
+if (builder.Environment.IsDevelopment())
+{
+    var localKeyDirectory = Path.Combine(builder.Environment.ContentRootPath, ".local", "data-protection-keys");
+    Directory.CreateDirectory(localKeyDirectory);
+    var dataProtection = builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(localKeyDirectory));
+    if (OperatingSystem.IsWindows()) dataProtection.ProtectKeysWithDpapi();
+}
 var connection = builder.Configuration.GetConnectionString("NovaDb")
     ?? throw new InvalidOperationException("ConnectionStrings:NovaDb must be set in environment configuration.");
 
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers();
-builder.Services.AddDbContext<NovaDbContext>(options => options.UseSqlServer(connection));
+builder.Services.AddControllersWithViews(); // Registers the built-in antiforgery filter used by Admin API actions.
+builder.Services.AddDbContext<NovaDbContext>(options => options.UseNpgsql(connection));
+builder.Services.AddScoped<IUserAccountRepository, IdentityUserAccountRepository>();
+builder.Services.AddScoped<UserAccountService>();
+builder.Services.AddScoped<IAuditEventRepository, EfAuditEventRepository>();
+builder.Services.AddScoped<AuditService>();
+builder.Services.AddScoped<IOperationsReadRepository, EfOperationsReadRepository>();
+builder.Services.AddScoped<OperationsService>();
+builder.Services.AddScoped<INewsRepository, EfNewsRepository>();
+builder.Services.AddScoped<NewsService>();
+builder.Services.AddScoped<ICatalogItemRepository, EfCatalogItemRepository>();
+builder.Services.AddScoped<ICatalogRecipeRepository, EfCatalogRecipeRepository>();
+builder.Services.AddScoped<CatalogItemService>();
+builder.Services.AddScoped<CatalogRecipeService>();
+builder.Services.AddScoped<IRewardRepository, EfRewardRepository>();
+builder.Services.AddScoped<RewardService>();
+builder.Services.AddScoped<IKnowledgeRepository, EfKnowledgeRepository>();
+builder.Services.AddScoped<KnowledgeService>();
+builder.Services.AddScoped<IIntegrationCapabilityRepository, EfIntegrationCapabilityRepository>();
+builder.Services.AddScoped<IntegrationCapabilityService>();
+builder.Services.AddScoped<ICommunityRepository, EfCommunityRepository>();
+builder.Services.AddScoped<CommunityService>();
+builder.Services.AddScoped<ICommerceOfferRepository, EfCommerceOfferRepository>();
+builder.Services.AddScoped<CommerceOfferService>();
+builder.Services.AddScoped<ICommerceOrderRepository, EfCommerceOrderRepository>();
+builder.Services.AddScoped<CommerceOrderService>();
+builder.Services.AddScoped<IPersistenceConflictDetector, PostgreSqlPersistenceConflictDetector>();
 builder.Services.AddScoped<WikiReadService>();
 builder.Services.AddScoped<IWikiReadRepository, EfWikiReadRepository>();
 builder.Services.AddScoped<IWikiTagRepository, EfWikiTagRepository>();
@@ -36,16 +103,16 @@ builder.Services.AddScoped<WikiArticleService>();
 builder.Services.AddScoped<WikiMediaService>();
 builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 builder.Services.AddSingleton<IWikiMediaStorage, LocalWikiMediaStorage>();
-builder.Services.AddSingleton<LocalOrSmtpUserEmailSender>();
-builder.Services.AddSingleton<IUserEmailSender>(services => services.GetRequiredService<LocalOrSmtpUserEmailSender>());
-builder.Services.AddSingleton<ILocalEmailOutbox>(services => services.GetRequiredService<LocalOrSmtpUserEmailSender>());
 builder.Services.AddSingleton<IVapidKeyProvider, VapidKeyProvider>();
 builder.Services.AddSingleton(new WebPushClient(new HttpClientHandler { AllowAutoRedirect = false }));
 builder.Services.AddScoped<IWebPushGateway, WebPushGateway>();
+builder.Services.AddScoped<IUserNotificationPublisher, UserNotificationPublisher>();
+builder.Services.AddScoped<IUserNotificationRepository, EfUserNotificationRepository>();
+builder.Services.AddScoped<UserNotificationService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 {
     options.User.RequireUniqueEmail = true;
-    options.SignIn.RequireConfirmedEmail = true;
+    options.SignIn.RequireConfirmedEmail = false;
     options.Password.RequiredLength = 12;
     options.Lockout.MaxFailedAccessAttempts = 5;
 }) .AddEntityFrameworkStores<NovaDbContext>().AddDefaultTokenProviders();
@@ -76,19 +143,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapControllers();
-app.MapAuthEndpoints();
-app.MapNotificationEndpoints();
-app.MapAuditEndpoints();
-app.MapOperationsEndpoints();
-app.MapNewsEndpoints();
-app.MapCatalogEndpoints();
-app.MapCatalogRecipeEndpoints();
-app.MapKnowledgeEndpoints();
-app.MapCommunityEndpoints();
-app.MapIntegrationEndpoints();
-app.MapRewardEndpoints();
-app.MapCommerceEndpoints();
-app.MapCommerceOrderEndpoints();
 
 // Bootstrap is explicit, local-only, never performs schema changes or logs credentials.
 if (app.Environment.IsDevelopment() && builder.Configuration.GetValue<bool>("SeedAdmin:Enabled"))

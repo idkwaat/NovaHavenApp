@@ -8,7 +8,7 @@ public sealed class CommercePaymentConfiguration : IEntityTypeConfiguration<Comm
     public void Configure(EntityTypeBuilder<CommercePayment> entity)
     {
         entity.ToTable("CommercePayments", table => table.HasCheckConstraint(
-            "CK_CommercePayments_PositiveAmount", "[AmountMinorUnits] > 0"));
+            "CK_CommercePayments_PositiveAmount", "\"AmountMinorUnits\" > 0"));
         entity.HasKey(x => x.Id);
         entity.HasIndex(x => x.OrderId).IsUnique();
         entity.Property(x => x.Method).HasConversion<string>().HasMaxLength(30).IsRequired();

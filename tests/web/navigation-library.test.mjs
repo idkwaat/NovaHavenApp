@@ -16,7 +16,8 @@ test('shared navigation exposes home, centered server address and an accessible 
   assert.match(navigation, /href="\/"/);
   assert.match(navigation, /aria-label="Mở menu"/);
   assert.match(navigation, /Nhấn ☰ để đóng/);
-  assert.match(navigation, /play\.novahaven\.local/);
+  assert.match(navigation, /minecraftServerAddress\?\?'Máy chủ chưa công bố'/);
+  assert.doesNotMatch(navigation, /play\.novahaven\.(?:local|net)/);
   assert.match(css, /\.site-nav-drawer\s*\{/);
   assert.match(css, /\.game-toolbar\s*\{[^}]*position:\s*relative/s);
   assert.match(css, /\.server-pill\s*\{[^}]*position:\s*absolute;[^}]*left:\s*50%;[^}]*transform:\s*translate\(-50%,\s*-50%\)/s);
@@ -35,7 +36,7 @@ test('menu works without client hydration and public content keeps readable cont
   assert.match(navigation, /site-nav-backdrop/);
   assert.match(css, /font-family:\s*Arial,\s*"Segoe UI",\s*Tahoma,\s*sans-serif/);
   assert.match(css, /\.content h1,\s*\.content h2,\s*\.content h3\s*\{[^}]*text-shadow:\s*none/s);
-  assert.match(lastRule(css, String.raw`(?:\.wiki-filters,\s*)?\.catalog-filters`), /background:\s*#393126/s);
+  assert.match(lastRule(css, String.raw`(?:\.wiki-filters,\s*)?\.catalog-filters`), /background:\s*var\(--nh-paper-light\)/s);
   assert.match(lastRule(css, String.raw`\.news-aside`), /background:\s*#3a3328/s);
 });
 
@@ -47,7 +48,7 @@ test('sidebar is an opaque viewport layer, not a fixed child of a transformed to
   assert.match(css, /\.site-nav-layer\s*\{[^}]*position:\s*fixed;[^}]*inset:\s*0;[^}]*z-index:\s*1000/s);
   assert.match(css, /\.site-nav-backdrop\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;/s);
   assert.match(css, /\.site-nav-drawer\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0 auto 0 0;/s);
-  assert.match(lastRule(css, String.raw`\.site-nav-drawer`), /background:\s*#28221c/s);
+  assert.match(lastRule(css, String.raw`\.site-nav-drawer`), /background:\s*var\(--nh-paper\)/s);
   assert.match(css, /\.site-nav-backdrop\s*\{[^}]*cursor:\s*pointer/s);
 });
 
@@ -70,6 +71,11 @@ test('centered server address stays visible on narrow screens without toolbar co
   assert.match(css, /@media\s*\(max-width:\s*600px\)[\s\S]*?\.signin-button\s*\{[^}]*display:\s*none/s);
   assert.match(css, /@media\s*\(max-width:\s*360px\)[\s\S]*?\.home-button\s*\{[^}]*display:\s*none/s);
   assert.match(baseCss, /\.server-pill\s*\{[^}]*left:\s*50%;[^}]*transform:\s*translate\(-50%,\s*-50%\)/s);
+});
+
+test('desktop cart utility shares the toolbar row and does not wrap below navigation', async () => {
+  const commerceCss = await read('apps/web/app/commerce/store.css');
+  assert.match(commerceCss, /\.cart-status-link\s*\{[^}]*grid-column:\s*5;/s);
 });
 
 test('footer becomes a centered stack on tablet and mobile widths', async () => {

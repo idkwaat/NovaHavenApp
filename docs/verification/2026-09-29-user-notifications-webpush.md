@@ -3,6 +3,8 @@
 Date: 2026-09-29  
 Scope: local Nova Haven source only. SQL Server remains the only application database provider; no SQLite provider was added and no database was migrated by this batch.
 
+> **Cập nhật cùng ngày:** Báo cáo này ghi lại lần chạy đầu khi LocalDB/Flutter chưa khả dụng. Kết quả nghiệm thu mới hơn đã chạy LocalDB disposable và Flutter SDK: integration 58/58, Flutter test 30/30, analyze và APK build đạt. Migration chỉ chạy trong database fixture; `NovaHaven_Local` vẫn ở 11/12 migration và không bị thay đổi. Dùng [`2026-09-29-local-platform-hardening.md`](2026-09-29-local-platform-hardening.md) làm bằng chứng mới nhất.
+
 ## Implemented
 
 - Identity player registration, email confirmation, resend confirmation, login, current-user and logout endpoints. Login requires confirmed email; new accounts are never assigned the Admin role.

@@ -1,5 +1,7 @@
 using NovaHaven.Application.Common.Results;
 using NovaHaven.Application.Common.Transactions;
+using NovaHaven.Application.Common.Concurrency;
+using NovaHaven.Application.Features.Notifications;
 using NovaHaven.Application.Features.Wiki.Repositories;
 using NovaHaven.Application.Features.Wiki.Results;
 using NovaHaven.Application.Wiki;
@@ -7,7 +9,10 @@ using NovaHaven.Domain.Wiki.Entities;
 
 namespace NovaHaven.Application.Features.Wiki.Services;
 
-public sealed class WikiArticleService(IWikiArticleRepository repository, IUnitOfWork unitOfWork)
+public sealed class WikiArticleService(
+    IWikiArticleRepository repository,
+    IUnitOfWork unitOfWork,
+    IUserNotificationPublisher notificationPublisher)
 {
     public async Task<ApplicationResult<IReadOnlyList<WikiArticleAdminListItemResult>>> ListAsync(
         CancellationToken cancellationToken)
@@ -66,7 +71,7 @@ public sealed class WikiArticleService(IWikiArticleRepository repository, IUnitO
                     new { article.Slug, mediaCount = mediaIds.Length });
                 await unitOfWork.SaveChangesAsync(transactionToken);
                 return ApplicationResult<WikiArticleWriteResult>.Success(
-                    new WikiArticleWriteResult(article.Id, article.Slug, article.RowVersion));
+                    new WikiArticleWriteResult(article.Id, article.Slug, ConcurrencyVersion.ToBytes(article.RowVersion)));
             },
             result => result.IsSuccess,
             TransactionIsolation.Serializable,
@@ -114,18 +119,21 @@ public sealed class WikiArticleService(IWikiArticleRepository repository, IUnitO
                 new { article.Slug, mediaCount = mediaIds.Length });
             await unitOfWork.SaveChangesAsync(transactionToken);
             return ApplicationResult<WikiArticleWriteResult>.Success(
-                new WikiArticleWriteResult(article.Id, article.Slug, article.RowVersion));
+                new WikiArticleWriteResult(article.Id, article.Slug, ConcurrencyVersion.ToBytes(article.RowVersion)));
         },
         result => result.IsSuccess,
         TransactionIsolation.Serializable,
         cancellationToken);
 
-    public Task<ApplicationResult<WikiArticlePublishedResult>> PublishAsync(
+    public async Task<ApplicationResult<WikiArticlePublishedResult>> PublishAsync(
         Guid id,
         byte[]? expectedVersion,
         Guid publisherId,
         Guid? actorId,
-        CancellationToken cancellationToken) => unitOfWork.ExecuteInTransactionAsync(
+        CancellationToken cancellationToken)
+    {
+        NotificationBatch? notification = null;
+        var result = await unitOfWork.ExecuteInTransactionAsync(
         async transactionToken =>
         {
             var article = await repository.FindForUpdateAsync(id, transactionToken);
@@ -155,13 +163,19 @@ public sealed class WikiArticleService(IWikiArticleRepository repository, IUnitO
             article.UpdatedAt = revision.PublishedAt;
             repository.AddAudit(actorId, "article.published", article.Id,
                 new { revisionId = revision.Id, revision = revision.Number });
+            notification = await notificationPublisher.StageForAllUsersAsync(
+                $"Wiki mới: {article.DraftTitle}", article.DraftSummary, $"/wiki/{article.Slug}", transactionToken);
             await unitOfWork.SaveChangesAsync(transactionToken);
             return ApplicationResult<WikiArticlePublishedResult>.Success(new WikiArticlePublishedResult(
-                article.Id, article.Slug, revision.Id, revision.Number, article.RowVersion));
+                article.Id, article.Slug, revision.Id, revision.Number, ConcurrencyVersion.ToBytes(article.RowVersion)));
         },
         result => result.IsSuccess,
         TransactionIsolation.Serializable,
         cancellationToken);
+        if (result.IsSuccess && notification is not null)
+            await notificationPublisher.DeliverPushAsync(notification, cancellationToken);
+        return result;
+    }
 
     public Task<ApplicationResult<bool>> UnpublishAsync(
         Guid id,
@@ -214,7 +228,7 @@ public sealed class WikiArticleService(IWikiArticleRepository repository, IUnitO
                 new { revisionId, revision = revision.Number });
             await unitOfWork.SaveChangesAsync(transactionToken);
             return ApplicationResult<WikiArticleWriteResult>.Success(
-                new WikiArticleWriteResult(article.Id, article.Slug, article.RowVersion));
+                new WikiArticleWriteResult(article.Id, article.Slug, ConcurrencyVersion.ToBytes(article.RowVersion)));
         },
         result => result.IsSuccess,
         TransactionIsolation.Serializable,
@@ -240,11 +254,11 @@ public sealed class WikiArticleService(IWikiArticleRepository repository, IUnitO
         return ApplicationResult<bool>.Success(true);
     }
 
-    private static ApplicationError? CheckPrecondition(byte[] rowVersion, byte[]? expectedVersion)
+    private static ApplicationError? CheckPrecondition(uint rowVersion, byte[]? expectedVersion)
     {
         if (expectedVersion is null)
             return new ApplicationError("http.precondition-required", "If-Match is required.");
-        if (!rowVersion.AsSpan().SequenceEqual(expectedVersion))
+        if (!ConcurrencyVersion.Matches(rowVersion, expectedVersion))
             return new ApplicationError("http.precondition-failed", "Article changed; reload before editing.");
         return null;
     }

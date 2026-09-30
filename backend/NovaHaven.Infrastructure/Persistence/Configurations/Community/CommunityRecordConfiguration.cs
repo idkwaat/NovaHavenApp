@@ -14,7 +14,7 @@ public sealed class CommunityRecordConfiguration : IEntityTypeConfiguration<Comm
         entity.Property(x => x.Slug).HasMaxLength(160).IsRequired();
         entity.Property(x => x.DraftName).HasMaxLength(160).IsRequired();
         entity.Property(x => x.DraftSummary).HasMaxLength(500).IsRequired();
-        entity.Property(x => x.DraftMarkdown).HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.DraftMarkdown).HasColumnType("text").IsRequired();
         entity.Property(x => x.Kind).HasConversion<string>().HasMaxLength(20);
         entity.Property(x => x.State).HasConversion<string>().HasMaxLength(20);
         entity.Property(x => x.DraftMotto).HasMaxLength(300).IsRequired();
@@ -23,7 +23,7 @@ public sealed class CommunityRecordConfiguration : IEntityTypeConfiguration<Comm
         entity.Property(x => x.DraftBio).HasMaxLength(2_000).IsRequired();
         entity.Property(x => x.DraftAvatarUrl).HasMaxLength(500).IsRequired();
         entity.Property(x => x.DraftOwnerDisplayName).HasMaxLength(120).IsRequired();
-        entity.Property(x => x.DraftGalleryMarkdown).HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.DraftGalleryMarkdown).HasColumnType("text").IsRequired();
         entity.Property(x => x.DraftLeaderboardCategory).HasMaxLength(120).IsRequired();
         entity.Property(x => x.RowVersion).IsRowVersion();
         entity.HasOne<GameKnowledgeEntry>().WithMany().HasForeignKey(x => x.DraftLocationEntryId).OnDelete(DeleteBehavior.Restrict);

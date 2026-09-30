@@ -12,14 +12,14 @@ export default function NotificationManager({mutate,errorFor,onStatus,disabled}:
   const [sending,setSending]=useState(false);
   async function send(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
-    if(!window.confirm('Gửi thông báo tới tất cả tài khoản đã xác nhận email? Thao tác này không thể thu hồi.'))return;
+    if(!window.confirm('Gửi thông báo vào hộp thư tất cả tài khoản người chơi? Thao tác này không thể thu hồi.'))return;
     setSending(true);
     try{
       const response=await mutate('/api/v1/admin/notifications','POST',{title,body,href:href.trim()||null});
       if(!response.ok)throw new Error(await errorFor(response));
-      const result=await response.json() as {recipientCount:number;pushAttemptCount:number};
+      const result=await response.json() as {recipientCount:number;pushAttemptCount:number;pushSentCount:number};
       setTitle('');setBody('');setHref('');
-      onStatus(`Đã lưu thông báo cho ${result.recipientCount} tài khoản; đã thử gửi Web Push tới ${result.pushAttemptCount} thiết bị.`);
+      onStatus(`Đã lưu thông báo cho ${result.recipientCount} tài khoản; Web Push đã gửi ${result.pushSentCount}/${result.pushAttemptCount} thiết bị.`);
     }catch(error){onStatus(error instanceof Error?error.message:'Không gửi được thông báo.');}
     finally{setSending(false);}
   }
@@ -29,7 +29,7 @@ export default function NotificationManager({mutate,errorFor,onStatus,disabled}:
       <label>Tiêu đề<input required maxLength={120} value={title} onChange={event=>setTitle(event.target.value)}/></label>
       <label>Nội dung<textarea required maxLength={500} rows={4} value={body} onChange={event=>setBody(event.target.value)}/></label>
       <label>Đường dẫn nội bộ (tuỳ chọn)<input type="text" maxLength={200} placeholder="/news" value={href} onChange={event=>setHref(event.target.value)}/></label>
-      <p>Người nhận: tài khoản có email đã xác nhận. Email không được dùng làm kênh gửi thông báo quản trị.</p>
+      <p>Người nhận: tài khoản người chơi đã đăng ký. Thông báo trong hộp thư vẫn lưu nếu thiết bị chưa bật Web Push.</p>
       <button type="submit" disabled={disabled||sending}>{sending?'Đang gửi…':'Gửi thông báo'}</button>
     </form>
   </section>;

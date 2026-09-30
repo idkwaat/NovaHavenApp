@@ -4,4 +4,4 @@ export type CommerceDetail=CommerceSummary&{markdown:string;displayPrice:string;
 export type CommercePage={items:CommerceSummary[];page:number;pageSize:number;total:number};
 const origin=process.env.NOVA_API_ORIGIN??'http://localhost:5080';
 async function get<T>(path:string):Promise<T>{const response=await fetch(new URL(path,origin),{cache:'no-store'});if(!response.ok)throw Error(`Commerce API ${response.status}`);return response.json() as Promise<T>;}
-export const commerceApi={list:()=>get<CommercePage>('/api/v1/commerce/offers?page=1&pageSize=50'),detail:(slug:string)=>get<CommerceDetail>(`/api/v1/commerce/offers/${encodeURIComponent(slug)}`)};
+export const commerceApi={list:(page=1)=>get<CommercePage>(`/api/v1/commerce/offers?page=${page}&pageSize=20`),detail:(slug:string)=>get<CommerceDetail>(`/api/v1/commerce/offers/${encodeURIComponent(slug)}`)};

@@ -1,8 +1,8 @@
 using NovaHaven.Application.Commerce;
-using NovaHaven.Application.Rewards;
+using NovaHaven.Application.Features.Rewards.Commands;
+using NovaHaven.Application.Features.Rewards.Validators;
 using NovaHaven.Domain.Commerce;
 using NovaHaven.Domain.Commerce.Entities;
-using NovaHaven.Domain.Rewards;
 using NovaHaven.Domain.Rewards.Entities;
 using Xunit;
 

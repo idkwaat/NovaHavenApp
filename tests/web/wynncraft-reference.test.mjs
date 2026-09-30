@@ -55,7 +55,7 @@ test('Wiki and item guide have distinct, readable visual surfaces', async () => 
   assert.match(theme, /\.wiki-results \.article-grid\s*\{[^}]*grid-template-columns:\s*1fr/s);
   assert.match(lastRule(theme, String.raw`\.wiki-results \.article-card`), /background:\s*var\(--nh-paper-light\)/i);
   assert.match(lastRule(theme, String.raw`body\s*>\s*main\s*>\s*\.content\.catalog-page`), /background:\s*var\(--nh-sage\)/i);
-  assert.match(lastRule(theme, String.raw`(?:\.wiki-filters,\s*)?\.catalog-filters`), /background:\s*#393126/i);
+  assert.match(lastRule(theme, String.raw`(?:\.wiki-filters,\s*)?\.catalog-filters`), /background:\s*var\(--nh-paper-light\)/i);
   assert.match(lastRule(theme, String.raw`\.catalog-layout`), /grid-template-columns:\s*minmax\(240px,\s*290px\)/s);
   assert.match(theme, /\.catalog-results \.article-grid\s*\{[^}]*grid-template-columns:\s*1fr/s);
 });
@@ -176,7 +176,18 @@ test('public screens use distinct dark-earth surfaces with crisp readable text',
   assert.match(lastRule(theme, String.raw`\.content\.quote-panel h2`), /color:\s*var\(--nh-ink\)/s);
   assert.match(lastRule(theme, String.raw`\.content\.quote-panel > p:not\(\.eyebrow\)`), /color:\s*var\(--nh-page-muted\)/s);
   assert.match(lastRule(theme, String.raw`\.news-card`), /background:\s*var\(--nh-paper-light\)/s);
-  assert.match(lastRule(theme, String.raw`\.site-nav-drawer`), /background:\s*#28221c/s);
+  assert.match(lastRule(theme, String.raw`\.site-nav-drawer`), /background:\s*var\(--nh-paper\)/s);
+});
+
+test('web and companion share a charcoal-olive-teal palette instead of brown cards', async () => {
+  const theme = await read('apps/web/app/wynn-parity.css');
+  const mobile = await read('apps/mobile/lib/nova_theme.dart');
+  assert.match(theme, /--nh-paper:\s*#252d2a/i);
+  assert.match(theme, /--nh-paper-light:\s*#303b35/i);
+  assert.match(theme, /--nh-sage:\s*#2b3530/i);
+  assert.match(theme, /--nh-sky:\s*#293a3b/i);
+  assert.match(mobile, /static const paper = Color\(0xFF252D2A\)/);
+  assert.match(mobile, /static const raisedPaper = Color\(0xFF303B35\)/);
 });
 
 test('the shared palette uses dark soil, timber, olive and restrained harvest tones accessibly', async () => {

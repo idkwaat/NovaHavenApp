@@ -7,5 +7,5 @@ public sealed class WikiTag
     public string NormalizedName { get; set; } = "";
     public string Slug { get; set; } = "";
     public bool IsActive { get; set; } = true;
-    public byte[] RowVersion { get; set; } = [];
+    public uint RowVersion { get; set; }
 }

@@ -48,8 +48,10 @@ test('Admin category controls require a version token and confirmation before de
 
 test('category deletion catches only foreign-key races instead of hiding unrelated database errors',()=>{
  const filter=readFileSync(new URL('../../backend/NovaHaven.Api/Filters/PersistenceConflictExceptionFilter.cs',import.meta.url),'utf8');
+ const postgres=readFileSync(new URL('../../backend/NovaHaven.Api/Infrastructure/PostgreSqlConflict.cs',import.meta.url),'utf8');
  const service=readFileSync(new URL('../../backend/NovaHaven.Application/Features/Wiki/Services/WikiCategoryService.cs',import.meta.url),'utf8');
- assert.match(filter,/DbUpdateException databaseException when SqlErrorNumber\(databaseException\) == 547/);
+ assert.match(filter,/DbUpdateException databaseException when PostgreSqlConflict\.IsForeignKeyViolation\(databaseException\)/);
+ assert.match(postgres,/PostgresErrorCodes\.ForeignKeyViolation/);
  assert.match(filter,/if \(statusCode == 0\) return/);
  assert.match(service,/WikiCategoryPolicy\.CheckDelete/);
  assert.match(service,/TransactionIsolation\.Serializable/);

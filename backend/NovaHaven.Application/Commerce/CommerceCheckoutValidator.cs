@@ -20,8 +20,12 @@ public static class CommerceCheckoutValidator
         }
 
         if (items.Any(item => item is null || string.IsNullOrWhiteSpace(item.Slug)) ||
-            items.Select(item => item.Slug).Distinct(StringComparer.OrdinalIgnoreCase).Count() != items.Count)
+            items.Where(item => item is not null).Select(item => item.Slug)
+                .Distinct(StringComparer.OrdinalIgnoreCase).Count() != items.Count)
+        {
             errors["items"] = ["Cart offers must be present and have distinct slugs."];
+            return errors;
+        }
 
         if (items.Any(item => item is not null && (item.Slug.Length is < 3 or > 120 || !Slug.IsMatch(item.Slug))))
             errors["slug"] = ["Offer slugs must be 3–120 lowercase letters, digits or single hyphens."];

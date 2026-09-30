@@ -1,13 +1,13 @@
 # Nova Haven — UI Design System
 
 Status: active local UI baseline  
-Updated: 2026-09-28
+Updated: 2026-09-29
 
-This file records the owner-approved homepage direction and the shared editorial system for the public site. It is a **manual baseline**, not a generated design-system artifact. UI/UX Pro Max local searches were run on 2026-09-28; the generic blue/Swiss recommendations did not fit Nova, so only the useful accessibility, responsive and typography guidance was applied.
+This file records the owner-approved homepage direction and the shared editorial system for the public site. It is a **manual baseline**, not a generated design-system artifact. UI/UX Pro Max palette searches returned generic or mismatched results; Nova-specific decisions therefore follow the approved direction and contrast checks.
 
 ## Product and art direction
 
-Nova Haven is a Vietnamese Minecraft RPG world and community portal. The public site should feel like a lived-in game world with editorial content, not a generic SaaS dashboard or bright NPC menu. Keep the homepage's landscape photograph, centered timber Nova sign, clear Vietnamese heading, server address, and two real destinations. Grade the photo toward muted soil/olive tones without replacing it; the wordmark green should be restrained rather than neon. Credit Einar Storsul / Unsplash in the footer. Credit the separate News Minecraft image to Xbox México / CC BY 3.0. Use layered dark soil and timber surfaces, warm readable cream text, olive as the primary accent, muted teal as a secondary accent, and restrained copper/harvest details. Wiki, item catalog and news may vary subtly in hue, but the whole system remains dark and earthy. Do not use generated art, Wynncraft-owned assets/logos, invented gameplay claims, or generic gradient/glass dashboard styling.
+Nova Haven is a Vietnamese Minecraft RPG world and community portal. The public site should feel like a lived-in game world with editorial content, not a generic SaaS dashboard or bright NPC menu. Keep the homepage's landscape photograph, centered timber Nova sign, clear Vietnamese heading, and real destinations. Show a Minecraft server address only when configured; never imply an online state without a live check. Grade the photo toward muted soil/olive tones without replacing it; the wordmark green should be restrained rather than neon. Credit Einar Storsul / Unsplash in the footer. Credit the separate News Minecraft image to Xbox México / CC BY 3.0. Use charcoal/forest surfaces with a slight olive cast, warm readable cream text, olive as the primary accent, muted teal as a secondary accent, and restrained copper/harvest details. Avoid making every card brown: separate surfaces with charcoal, forest-green and blue-green tones; reserve wood colors for borders and small details. Wiki, item catalog and news may vary subtly in hue, but the whole system remains dark and earthy. Do not use generated art, Wynncraft-owned assets/logos, invented gameplay claims, or generic gradient/glass dashboard styling.
 
 Keep the current page compositions and component conventions. This baseline guides polish and new UI; it does not authorize a wholesale visual redesign or behavior/API changes.
 
@@ -19,23 +19,23 @@ Use the CSS custom properties in `apps/web/app/wynn-parity.css` rather than intr
 | --- | --- | --- |
 | Main text on dark surfaces | `--nh-text` / `--nh-ink` | `#efe2ca` |
 | Secondary text on dark surfaces | `--nh-muted` | `#d4c3a7` |
-| Dark soil / reading surface | `--nh-paper` | `#30271f` |
-| Raised timber card surface | `--nh-paper-light` | `#3b3026` |
+| Charcoal-green reading surface | `--nh-paper` | `#252d2a` |
+| Raised forest card surface | `--nh-paper-light` | `#303b35` |
 | Muted olive accent | `--nh-green` | `#9a9b70` |
 | Deep olive accent | `--nh-green-dark` | `#83845d` |
 | Olive CTA | `--nh-cta-green` | `#5c6845` |
 | Muted teal CTA | `--nh-cta-blue` | `#4b6159` |
 | Soft teal accent | `--nh-blue` | `#91a499` |
-| Timber outline | `--nh-line` | `#80664a` |
-| Deep soil frame | `--nh-forest` | `#211d19` |
-| Olive-brown / library surface | `--nh-sage` | `#312b22` |
-| Teal-brown / news surface | `--nh-sky` | `#332d26` |
+| Muted sage outline | `--nh-line` | `#66776b` |
+| Deep forest frame | `--nh-forest` | `#1d2422` |
+| Forest / library surface | `--nh-sage` | `#2b3530` |
+| Blue-green / news surface | `--nh-sky` | `#293a3b` |
 | Secondary text on dark surfaces | `--nh-page-muted` | `#cbbb9f` |
 | Copper editorial accent | `--nh-copper` | `#c18d64` |
 | Harvest-gold accent | `--nh-harvest` | `#d1ae71` |
 | Muted berry/rust accent | `--nh-berry` | `#bf816a` |
 
-The toolbar and footer use deep soil with warm timber outlines. Cards and filters use adjacent but distinguishable dark-brown/olive/teal surfaces; harvest and rust are accents, not large luminous blocks. Keep text/background contrast at WCAG AA (4.5:1 for normal text), including muted text and hover states. Avoid neon green, bright blue, full-screen near-black slabs with no tonal variation, or decorative gold as small body text.
+The toolbar and footer use deep forest with muted sage outlines. Cards and filters use adjacent but distinguishable charcoal/olive/blue-green surfaces; harvest and rust are accents, not large luminous blocks. Keep text/background contrast at WCAG AA (4.5:1 for normal text), including muted text and hover states. Avoid neon green, bright blue, full-screen near-black slabs with no tonal variation, or decorative gold as small body text.
 
 ## Type and content
 

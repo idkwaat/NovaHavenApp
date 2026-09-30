@@ -38,6 +38,7 @@ public static class ApplicationProblemDetailsMapper
         {
             "validation.failed" => StatusCodes.Status400BadRequest,
             "wiki.media.invalid" => StatusCodes.Status400BadRequest,
+            "notifications.push.unavailable" => StatusCodes.Status503ServiceUnavailable,
             "http.precondition-required" => StatusCodes.Status428PreconditionRequired,
             "http.precondition-failed" => StatusCodes.Status412PreconditionFailed,
             _ when error.Code.EndsWith(".not-found", StringComparison.Ordinal) => StatusCodes.Status404NotFound,

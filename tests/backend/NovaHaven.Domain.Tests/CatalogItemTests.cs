@@ -1,5 +1,5 @@
-using NovaHaven.Application.Catalog;
-using NovaHaven.Domain.Catalog;
+using NovaHaven.Application.Features.Catalog.Commands;
+using NovaHaven.Application.Features.Catalog.Validators;
 using NovaHaven.Domain.Catalog.Entities;
 using Xunit;
 

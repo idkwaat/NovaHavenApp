@@ -1,7 +1,11 @@
+using NovaHaven.Application.Common.Concurrency;
+
 namespace NovaHaven.Api.Http;
 
 public static class RowVersionEtag
 {
+    public static string Format(uint rowVersion) => Format(ConcurrencyVersion.ToBytes(rowVersion));
+
     public static string Format(byte[] rowVersion)
     {
         ArgumentNullException.ThrowIfNull(rowVersion);

@@ -13,7 +13,7 @@ public sealed class CommerceOfferConfiguration : IEntityTypeConfiguration<Commer
         entity.Property(x => x.Slug).HasMaxLength(120).IsRequired();
         entity.Property(x => x.DraftName).HasMaxLength(160).IsRequired();
         entity.Property(x => x.DraftSummary).HasMaxLength(500).IsRequired();
-        entity.Property(x => x.DraftMarkdown).HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.DraftMarkdown).HasColumnType("text").IsRequired();
         entity.Property(x => x.DraftKind).HasConversion<string>().HasMaxLength(20);
         entity.Property(x => x.DraftDisplayPrice).HasMaxLength(80).IsRequired();
         entity.Property(x => x.DraftProviderProductCode).HasMaxLength(120);

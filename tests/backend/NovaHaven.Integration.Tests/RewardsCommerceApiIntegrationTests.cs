@@ -20,9 +20,37 @@ public sealed class RewardsCommerceApiIntegrationTests : IClassFixture<LocalApiF
         using var admin = await client.GetAsync($"/api/v1/admin/rewards/{id}"); admin.EnsureSuccessStatusCode();
         csrf = await LocalApiFactory.GetCsrfAsync(client);
         using var publish = await LocalApiFactory.SendJsonAsync(client, HttpMethod.Post, $"/api/v1/admin/rewards/{id}/publish", new { }, csrf, admin.Headers.ETag?.ToString()); publish.EnsureSuccessStatusCode();
-        using var publicList = await client.GetAsync($"/api/v1/rewards?q=Starter"); publicList.EnsureSuccessStatusCode();
+        var slug = $"starter-pack-{suffix}";
+        using var publishedDetail = await client.GetAsync($"/api/v1/rewards/{slug}"); publishedDetail.EnsureSuccessStatusCode();
+        using var originalJson = JsonDocument.Parse(await publishedDetail.Content.ReadAsStreamAsync());
+        Assert.Equal("Starter Pack", originalJson.RootElement.GetProperty("name").GetString());
+
+        using var latestAdmin = await client.GetAsync($"/api/v1/admin/rewards/{id}"); latestAdmin.EnsureSuccessStatusCode();
+        csrf = await LocalApiFactory.GetCsrfAsync(client);
+        using var draftEdit = await LocalApiFactory.SendJsonAsync(client, HttpMethod.Patch,
+            $"/api/v1/admin/rewards/{id}", new
+            {
+                name = "Hidden Draft Name", slug, summary = "Unpublished draft edit.",
+                markdown = "# Hidden draft", kind = "item", deliveryDescription = "Still requires external acknowledgement."
+            }, csrf, latestAdmin.Headers.ETag?.ToString());
+        draftEdit.EnsureSuccessStatusCode();
+
+        using var unchangedPublicDetail = await client.GetAsync($"/api/v1/rewards/{slug}"); unchangedPublicDetail.EnsureSuccessStatusCode();
+        using var unchangedJson = JsonDocument.Parse(await unchangedPublicDetail.Content.ReadAsStreamAsync());
+        Assert.Equal("Starter Pack", unchangedJson.RootElement.GetProperty("name").GetString());
+        using var publicList = await client.GetAsync("/api/v1/rewards?q=Starter"); publicList.EnsureSuccessStatusCode();
         using var json = JsonDocument.Parse(await publicList.Content.ReadAsStreamAsync());
         Assert.True(json.RootElement.GetProperty("items")[0].GetProperty("externalAcknowledgementRequired").GetBoolean());
+        Assert.Equal("Starter Pack", json.RootElement.GetProperty("items")[0].GetProperty("name").GetString());
+        using var hiddenDraftSearch = await client.GetAsync("/api/v1/rewards?q=Hidden+Draft"); hiddenDraftSearch.EnsureSuccessStatusCode();
+        using var hiddenDraftJson = JsonDocument.Parse(await hiddenDraftSearch.Content.ReadAsStreamAsync());
+        Assert.Equal(0, hiddenDraftJson.RootElement.GetProperty("total").GetInt32());
+
+        csrf = await LocalApiFactory.GetCsrfAsync(client);
+        using var unpublish = await LocalApiFactory.SendJsonAsync(client, HttpMethod.Post,
+            $"/api/v1/admin/rewards/{id}/unpublish", new { }, csrf, draftEdit.Headers.ETag?.ToString());
+        Assert.Equal(HttpStatusCode.NoContent, unpublish.StatusCode);
+        Assert.NotNull(unpublish.Headers.ETag);
     }
 
     [Fact]

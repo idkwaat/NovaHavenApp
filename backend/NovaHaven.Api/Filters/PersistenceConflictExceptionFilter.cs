@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NovaHaven.Api.Infrastructure;
 
@@ -15,11 +14,12 @@ public sealed class PersistenceConflictExceptionFilter : ExceptionFilterAttribut
         {
             DbUpdateConcurrencyException => (StatusCodes.Status412PreconditionFailed,
                 "Resource changed; reload before editing."),
-            DbUpdateException databaseException when SqlErrorNumber(databaseException) is 2601 or 2627 =>
+            DbUpdateException databaseException when PostgreSqlConflict.IsUniqueViolation(databaseException) =>
                 (StatusCodes.Status409Conflict, "A record with the same unique value already exists."),
-            DbUpdateException databaseException when SqlErrorNumber(databaseException) == 547 =>
+            DbUpdateException databaseException when PostgreSqlConflict.IsForeignKeyViolation(databaseException) =>
                 (StatusCodes.Status409Conflict, "The record is still referenced and cannot be deleted."),
-            var exception when SqlServerConflict.IsDeadlock(exception) =>
+            var exception when PostgreSqlConflict.IsDeadlock(exception)
+                || PostgreSqlConflict.IsSerializationFailure(exception) =>
                 (StatusCodes.Status409Conflict, "Concurrent update conflict. Reload and retry."),
             _ => (0, string.Empty)
         };
@@ -36,15 +36,5 @@ public sealed class PersistenceConflictExceptionFilter : ExceptionFilterAttribut
             ContentTypes = { "application/problem+json" }
         };
         context.ExceptionHandled = true;
-    }
-
-    private static int? SqlErrorNumber(Exception exception)
-    {
-        for (Exception? current = exception; current is not null; current = current.InnerException)
-        {
-            if (current is SqlException sqlException) return sqlException.Number;
-        }
-
-        return null;
     }
 }

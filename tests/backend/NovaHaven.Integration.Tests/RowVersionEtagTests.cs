@@ -1,10 +1,24 @@
 using NovaHaven.Api.Http;
+using NovaHaven.Application.Common.Concurrency;
 using Xunit;
 
 namespace NovaHaven.Integration.Tests;
 
 public sealed class RowVersionEtagTests
 {
+    [Fact]
+    public void PostgreSql_transaction_version_keeps_a_stable_base64_etag_encoding()
+    {
+        const uint version = 0x12345678;
+
+        var etag = RowVersionEtag.Format(version);
+
+        Assert.Equal("\"EjRWeA==\"", etag);
+        Assert.Equal(ConcurrencyVersion.ToBytes(version), RowVersionEtag.ParseExpectedVersion(etag));
+        Assert.True(ConcurrencyVersion.Matches(version, RowVersionEtag.ParseExpectedVersion(etag)));
+        Assert.False(ConcurrencyVersion.Matches(version + 1, RowVersionEtag.ParseExpectedVersion(etag)));
+    }
+
     [Fact]
     public void Format_and_parse_round_trip_the_exact_row_version()
     {

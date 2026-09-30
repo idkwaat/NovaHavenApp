@@ -7,8 +7,7 @@
       "launchBrowser": false,
       "applicationUrl": "http://0.0.0.0:5080",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__NovaDb": "Server=(localdb)\\MSSQLLocalDB;Database=NovaHaven_Local;Integrated Security=true;TrustServerCertificate=True"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

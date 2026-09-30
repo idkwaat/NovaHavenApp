@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 /// Shared native palette adapted from design-system/nova-haven/MASTER.md.
 abstract final class NovaPalette {
-  static const soil = Color(0xFF211D19);
-  static const paper = Color(0xFF30271F);
-  static const raisedPaper = Color(0xFF3B3026);
+  static const soil = Color(0xFF1D2422);
+  static const paper = Color(0xFF252D2A);
+  static const raisedPaper = Color(0xFF303B35);
   static const cream = Color(0xFFEFE2CA);
   static const mutedCream = Color(0xFFD4C3A7);
   static const olive = Color(0xFF9A9B70);
   static const teal = Color(0xFF91A499);
-  static const timber = Color(0xFF80664A);
+  static const timber = Color(0xFF66776B);
   static const harvest = Color(0xFFD1AE71);
   static const rust = Color(0xFFBF816A);
 }

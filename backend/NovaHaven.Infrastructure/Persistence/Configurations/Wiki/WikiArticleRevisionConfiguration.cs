@@ -12,7 +12,7 @@ public sealed class WikiArticleRevisionConfiguration : IEntityTypeConfiguration<
         entity.HasIndex(x => new { x.ArticleId, x.Number }).IsUnique();
         entity.Property(x => x.Title).HasMaxLength(120).IsRequired();
         entity.Property(x => x.Summary).HasMaxLength(300).IsRequired();
-        entity.Property(x => x.Markdown).HasColumnType("nvarchar(max)").IsRequired();
+        entity.Property(x => x.Markdown).HasColumnType("text").IsRequired();
         entity.HasOne<WikiArticle>().WithMany().HasForeignKey(x => x.ArticleId).OnDelete(DeleteBehavior.Restrict);
         entity.HasOne<WikiCategory>().WithMany().HasForeignKey(x => x.CategoryId).OnDelete(DeleteBehavior.Restrict);
     

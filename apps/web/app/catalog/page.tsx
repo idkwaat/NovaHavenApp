@@ -1,20 +1,22 @@
 import Link from 'next/link';
 import {catalogApi,catalogKindLabels,type CatalogKind} from '@/lib/catalog-api';
 import DemoDataNotice from '@/components/DemoDataNotice';
+import PageNavigation, {parsePublicPage} from '../PageNavigation';
 
-type Props={searchParams:Promise<{q?:string;kind?:string}>};
+type Props={searchParams:Promise<{q?:string;kind?:string;page?:string}>};
 const kinds=Object.keys(catalogKindLabels) as CatalogKind[];
 
 export default async function Catalog({searchParams}:Props){
   const params=await searchParams;
   const q=(params.q??'').trim().slice(0,100);
   const kind=kinds.includes(params.kind as CatalogKind)?params.kind as CatalogKind:'';
+  const page=parsePublicPage(params.page);
   const retryQuery=new URLSearchParams();
   if(q)retryQuery.set('q',q);
   if(kind)retryQuery.set('kind',kind);
   const retryHref=`/catalog${retryQuery.size?`?${retryQuery.toString()}`:''}`;
   try{
-    const result=await catalogApi.items(q,kind);
+    const result=await catalogApi.items(q,kind,page);
     return <section className="content catalog-page"><header className="page-heading"><p className="eyebrow">NOVA HAVEN · VẬT PHẨM</p><h1>Danh mục vật phẩm</h1><p>Tra cứu những vật phẩm đã được biên tập và xuất bản.</p></header><DemoDataNotice/>
       <div className="catalog-layout">
         <aside className="catalog-filters" aria-label="Lọc vật phẩm">
@@ -29,6 +31,7 @@ export default async function Catalog({searchParams}:Props){
         <section className="catalog-results" aria-labelledby="catalog-results-title">
           <div className="results-heading"><h2 id="catalog-results-title">Kết quả</h2><span>{result.total} vật phẩm</span></div>
           {result.items.length?<div className="article-grid">{result.items.map(item=><Link className="article-card" key={item.id} href={`/catalog/${item.slug}`}><small>{catalogKindLabels[item.kind as CatalogKind]??item.kind} · r{item.revision}</small><h2>{item.name}</h2><p>{item.summary}</p><span>Xem chi tiết →</span></Link>)}</div>:<div className="notice">Chưa có vật phẩm đã xuất bản phù hợp.</div>}
+          <PageNavigation page={result.page} pageSize={result.pageSize} total={result.total} href={retryHref}/>
         </section>
       </div>
     </section>;

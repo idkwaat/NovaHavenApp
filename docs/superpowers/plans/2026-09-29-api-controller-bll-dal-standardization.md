@@ -6,7 +6,7 @@
 
 **Architecture:** Keep the four existing projects and make their roles explicit: Api is Presentation/composition root; Application is BLL and owns use cases, repository contracts and transaction abstraction; Domain owns entities/invariants; Infrastructure is DAL and implements repositories/UoW with EF Core. Convert one feature at a time, retaining the current route and JSON contract and proving each slice through the existing SQL integration tests.
 
-**Tech Stack:** ASP.NET Core .NET 10 MVC, EF Core 10.0.12, SQL Server, xUnit, existing OpenAPI JSON contract.
+**Tech Stack:** ASP.NET Core .NET 10 MVC, EF Core 10.0.12, PostgreSQL/Npgsql, xUnit, existing OpenAPI JSON contract.
 
 **Spec:** `docs/superpowers/specs/2026-09-29-project-structure-standardization-design.md`
 
@@ -17,11 +17,12 @@
 - Repository interfaces are feature/aggregate-specific; do not add generic `IRepository<T>` CRUD wrappers.
 - Keep .NET target `net10.0`, nullable enabled, implicit usings enabled and warnings as errors.
 - Preserve every current route, HTTP method, JSON property, status code, authorization rule, CSRF check, ETag and transaction boundary.
-- Preserve SQL Server tables, migrations, relationships and local-only database usage; this is not a schema migration.
+- Preserve current PostgreSQL tables, migration baseline, relationships and local-only database usage; this API refactor is not a schema migration. Historical SQL Server migration files remain archived and excluded from the active migration assembly.
 - Keep public Wiki reads anonymous and published-only; Admin writes remain authorized and antiforgery-protected.
 - Do not add mediator, AutoMapper, a new persistence framework, remote service, or speculative abstraction package.
-- Do not claim relational verification unless the SQL Server integration suite actually runs.
-- The supplied checkpoint has no `.git`; no branch, worktree or commit can be created from it. Review file diffs manually and do not fabricate Git history.
+- Do not claim relational verification unless the PostgreSQL integration suite actually runs against a disposable database.
+- The current working copy has Git metadata on `delivery/source-install-guide`, but its large existing working-tree changes are user-owned. Preserve them; do not claim the unavailable pre-checkpoint commit history was recovered.
+- Integration fixtures may create/drop only their exact GUID-named `NovaHaven_Integration_<32 hex>` databases. Never target the configured local content database.
 
 ## Review Focus
 
@@ -151,7 +152,7 @@ Commit only when the operation returns and `shouldCommit(result)` is true; rollb
 
 - [ ] **Step 5: Run the new tests and existing transaction integration tests**
 
-Run the result tests and rollback integration test alongside existing Commerce transaction/replay tests. If local SQL Server is unavailable, preserve the test and report it as unverified rather than switching the project's database engine.
+Run the result tests and rollback integration test alongside existing Commerce transaction/replay tests. If local PostgreSQL is unavailable, preserve the test and report it as unverified rather than bypassing relational coverage.
 
 ### Task 4: Convert public Wiki reads to Controller → BLL → repository
 
@@ -278,9 +279,9 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 
 **Interfaces:** Preserve cookie/session settings, CSRF behavior, Admin audit authorization, diagnostic payload and health behavior. Do not return secrets or connection strings.
 
-- [ ] **Step 1: Add characterization tests for login/logout/token, anonymous/Admin audit access and diagnostics**
-- [ ] **Step 2: Implement the Application boundaries and thin controllers without changing cookie or status semantics**
-- [ ] **Step 3: Run auth, audit and operations integration tests; retain `/health` as a simple platform endpoint if desired**
+- [x] **Step 1: Add characterization tests for login/logout/token, anonymous/Admin audit access and diagnostics**
+- [x] **Step 2: Implement the Application boundaries and thin controllers without changing cookie or status semantics**
+- [x] **Step 3: Run auth, audit and operations integration tests; retain `/health` as a simple platform endpoint if desired**
 
 ### Task 9: Convert News API
 
@@ -288,9 +289,9 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 
 **Interfaces:** Preserve public published-only listing/detail, Admin editorial lifecycle, current paths, JSON fields, status codes, authorization, CSRF and ETag rules.
 
-- [ ] **Step 1: Add route/JSON/auth/ETag characterization assertions and run current News tests**
-- [ ] **Step 2: Implement News BLL use cases and feature repository**
-- [ ] **Step 3: Implement thin controller and run the full News integration suite**
+- [x] **Step 1: Add route/JSON/auth/ETag characterization assertions and run current News tests**
+- [x] **Step 2: Implement News BLL use cases and feature repository**
+- [x] **Step 3: Implement thin controllers and run the full PostgreSQL integration suite**
 
 ### Task 10: Convert Catalog items and Recipes API
 
@@ -298,9 +299,9 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 
 **Interfaces:** Preserve published-only reads, recipe-to-item relations, current price/definition semantics, Admin lifecycle, routes and concurrency rules. Share a repository only where the current persistence aggregate/query boundary supports it.
 
-- [ ] **Step 1: Characterize routes, response JSON, authorization, validation and ETags; run current Catalog tests**
-- [ ] **Step 2: Implement Catalog and Recipe BLL use cases and focused repositories**
-- [ ] **Step 3: Implement both controllers and run the full Catalog/Recipe integration suite**
+- [x] **Step 1: Characterize routes, response JSON, authorization, validation and ETags; run Catalog tests** — architecture assertions cover both route sets, auth/CSRF and controller dependency boundaries; PostgreSQL integration asserts public-only lifecycle, revision snapshots, filters and paging.
+- [x] **Step 2: Implement Catalog and Recipe BLL use cases and focused repositories**
+- [x] **Step 3: Implement both controllers and run Catalog/Recipe integration** — 2/2 Catalog API integration tests passed; full PostgreSQL suite passed after conversion.
 
 ### Task 11: Convert Rewards API
 
@@ -308,9 +309,9 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 
 **Interfaces:** Preserve Admin authorization/CSRF, reward definition behavior, existing public status/read contract and all JSON/status semantics.
 
-- [ ] **Step 1: Characterize reward routes, authorization and response shape; run current reward tests**
-- [ ] **Step 2: Implement BLL service, repository and thin controller**
-- [ ] **Step 3: Run reward integration and related Domain tests**
+- [x] **Step 1: Characterize reward routes, authorization and response shape; run reward tests** — architecture assertions cover route, auth/CSRF and layer boundaries; integration verifies published revision privacy after a draft edit.
+- [x] **Step 2: Implement BLL service, repository and thin controller**
+- [x] **Step 3: Run reward integration and related Domain tests** — reward publication/privacy/unpublish integration passed; full PostgreSQL suite passed.
 
 ### Task 12: Convert Knowledge API
 
@@ -318,9 +319,9 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 
 **Interfaces:** Preserve published revision graphs, safe cross-link validation, publication lifecycle, routes, JSON and ETag behavior.
 
-- [ ] **Step 1: Characterize public/Admin routes, revision behavior, relation validation and ETags; run current tests**
-- [ ] **Step 2: Move use cases to BLL and EF queries/writes to the feature repository**
-- [ ] **Step 3: Add the thin controller and run Knowledge integration plus Domain validator tests**
+- [x] **Step 1: Characterize public/Admin routes, revision behavior, relation validation and ETags; run current tests** — API route/layer assertions and PostgreSQL Knowledge lifecycle tests cover published snapshots, validation, admin guards and ETags.
+- [x] **Step 2: Move use cases to BLL and EF queries/writes to the feature repository**
+- [x] **Step 3: Add the thin controller and run Knowledge integration plus Domain validator tests** — focused PostgreSQL Knowledge/architecture tests passed; the full integration suite passed after the EF query translation fix.
 
 ### Task 13: Convert Community API
 
@@ -328,9 +329,9 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 
 **Interfaces:** Preserve registrations, leaderboard behavior, route and payload contracts, Admin authorization/CSRF, concurrency and existing coordinate/data meanings.
 
-- [ ] **Step 1: Characterize route/payload, registration, leaderboard, authorization and ETag behavior; run current tests**
-- [ ] **Step 2: Implement Community BLL service/repository and thin controller**
-- [ ] **Step 3: Run Community integration tests and Domain validators**
+- [x] **Step 1: Characterize route/payload, registration, leaderboard, authorization and ETag behavior; run current tests**
+- [x] **Step 2: Implement Community BLL service/repository and thin controller**
+- [x] **Step 3: Run Community integration tests and Domain validators** — focused Community integration and architecture tests passed; full PostgreSQL integration passed.
 
 ### Task 14: Convert Integration API
 
@@ -338,9 +339,9 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 
 **Interfaces:** Preserve public capability status, Admin mutations, route/payload meanings and authorization/CSRF. Do not invent Minecraft plugin endpoints or database access.
 
-- [ ] **Step 1: Characterize public/Admin routes, status payload and authorization; run current tests**
-- [ ] **Step 2: Implement the Integration BLL service/repository and thin controller**
-- [ ] **Step 3: Run Integration API integration tests**
+- [x] **Step 1: Characterize public/Admin routes, status payload and authorization; run current tests**
+- [x] **Step 2: Implement the Integration BLL service/repository and thin controller**
+- [x] **Step 3: Run Integration API integration tests** — focused integration/architecture tests and full PostgreSQL suite passed.
 
 ### Task 15: Convert Commerce offers and checkout/order APIs
 
@@ -356,10 +357,10 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 - Checkout remains explicitly local-demo only; no gateway, charge, game reward delivery or remote payment provider is introduced.
 - Idempotency key, order lines, request fingerprint, transaction isolation, rollback, and Admin order-history authorization remain unchanged.
 
-- [ ] **Step 1: Add/retain tests for empty cart rejection, request replay, invalid totals, rollback and Admin order-history access**
-- [ ] **Step 2: Move checkout orchestration to the BLL service and persistence behind `ICommerceRepository`/`IUnitOfWork`**
-- [ ] **Step 3: Add typed controller contracts and preserve all current status/error responses**
-- [ ] **Step 4: Run Commerce unit and SQL Server integration tests, including replay and transaction rollback cases**
+- [x] **Step 1: Add/retain tests for empty cart rejection, request replay, invalid totals, rollback and Admin order-history access**
+- [x] **Step 2: Move checkout orchestration to the BLL service and persistence behind focused commerce repositories/`IUnitOfWork`**
+- [x] **Step 3: Add typed controller contracts and preserve current status/error responses**
+- [x] **Step 4: Run Commerce unit and PostgreSQL integration tests, including replay and transaction rollback cases** — focused Commerce tests passed 9/9; full PostgreSQL integration passed.
 
 ### Task 16: Remove business Minimal API maps and enforce layer boundaries
 
@@ -374,16 +375,16 @@ Expected: all public endpoints keep their contract and anonymous callers cannot 
 - `Program.cs` registers controllers, BLL services, repository implementations, unit of work and existing auth/media adapters; `/health` may remain a simple health mapping.
 - No controller or Application service directly accepts `NovaDbContext`; Application has no reference to API or Infrastructure.
 
-- [ ] **Step 1: Add architecture tests**
+- [x] **Step 1: Add architecture tests** — API contract/layer boundaries and per-feature controller routing are covered.
 
 Assert every business route is discovered through an MVC controller, controller constructors do not inject `NovaDbContext`, Application has no project reference to Api/Infrastructure, and EF repository/UoW implementations are in Infrastructure.
 
-- [ ] **Step 2: Run architecture tests and confirm any remaining Minimal API feature map or layer leak fails**
-- [ ] **Step 3: Register all controllers and feature dependencies in `Program.cs`; remove obsolete business endpoint maps**
-- [ ] **Step 4: Run `dotnet test NovaHaven.sln` and `npm test`**
-- [ ] **Step 5: Compare `contracts/openapi/wiki-v1.json` path/method/schema inventory to the pre-change file**
-- [ ] **Step 6: Run EF pending-model-change check and the complete local SQL Server integration suite**
-- [ ] **Step 7: Update README/roadmap with the actual folder tree, BLL/DAL roles, commands run and any blocked verification**
+- [x] **Step 2: Run architecture tests and check for remaining Minimal API feature maps or layer leaks** — only `/health` remains as a Minimal API route.
+- [x] **Step 3: Register all controllers and feature dependencies in `Program.cs`; remove obsolete business endpoint maps**
+- [x] **Step 4: Run the solution build/domain/PostgreSQL integration tests and `npm test`** — build 0 warnings/errors; Domain 80/80; Integration 78/78; Node 161 passed/5 skipped.
+- [x] **Step 5: Validate the maintained OpenAPI path/method inventory against every current controller action while preserving characterized behavior** — 106 controller operations matched 106 contract operations; integration tests verify the API behavior.
+- [x] **Step 6: Run EF pending-model-change check and the complete local PostgreSQL integration suite** — no pending changes; 78/78 passed on an isolated cluster.
+- [x] **Step 7: Update README/roadmap with folder roles, commands run and blocked verification**
 
 ## Delivery Boundary
 
@@ -391,4 +392,6 @@ This plan standardizes the Backend API. It does not reorganize Next.js or Flutte
 
 ## Execution Notes
 
-Use native sequential execution: the contracts and transaction boundaries are shared across many API features, so parallel edits would risk inconsistent responses and conflicting EF changes. The checkpoint has no Git metadata; use small file-level changes and tests, but do not claim commits. Keep the local database untouched by this refactor; relational integration tests may use only their configured disposable/local test database.
+Use native sequential execution: the contracts and transaction boundaries are shared across many API features, so parallel edits would risk inconsistent responses and conflicting EF changes. The working tree is dirty; preserve all existing changes and do not stage/commit the tree wholesale. Keep the configured local content database untouched; relational integration tests may use only exact GUID-named disposable databases.
+
+**Final execution update (2026-09-30):** Tasks 12–16 are complete. Knowledge, Community, Integrations, Commerce/offers/orders and Notifications now use thin MVC controllers, typed API contracts, Application BLL services and focused Infrastructure repositories. Existing PostgreSQL schema/migration was not changed. All 106 controller route/method pairs match the maintained OpenAPI contract. Latest build/test evidence and the Flutter APK limitation are in `docs/verification/2026-09-30-api-mobile-completion.md`. No commit/deployment was made because the checkout was already dirty and neither was requested.

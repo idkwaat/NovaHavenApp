@@ -22,7 +22,7 @@ export const catalogApi = {
     return publicGet<CatalogPage>(`/api/v1/catalog/items?${query}`);
   },
   item:(slug:string)=>publicGet<CatalogItem>(`/api/v1/catalog/items/${encodeURIComponent(slug)}`),
-  recipes:()=>publicGet<{items:CatalogRecipeSummary[];page:number;pageSize:number;total:number}>('/api/v1/catalog/recipes?page=1&pageSize=50'),
+  recipes:(page=1)=>publicGet<{items:CatalogRecipeSummary[];page:number;pageSize:number;total:number}>(`/api/v1/catalog/recipes?page=${page}&pageSize=20`),
   recipe:(slug:string)=>publicGet<CatalogRecipe>(`/api/v1/catalog/recipes/${encodeURIComponent(slug)}`),
 };
 

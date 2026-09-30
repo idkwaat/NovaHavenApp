@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import ArticlePreview from './ArticlePreview';
-import CopyIpButton from './CopyIpButton';
 import SiteIcon from './SiteIcon';
 import {articlePreviewFor, extractMarkdownPreview} from '@/lib/article-previews';
 import {catalogApi, type CatalogSummary} from '@/lib/catalog-api';
 import {communityApi, communityKindLabels, type CommunitySummary} from '@/lib/community-api';
+import {commerceApi} from '@/lib/commerce-api';
 import {knowledgeApi, knowledgeKindLabels, type KnowledgeSummary} from '@/lib/knowledge-api';
 import {wikiApi, type WikiArticleSummary} from '@/lib/wiki-api';
+import {discordInviteUrl, minecraftServerAddress} from '@/lib/public-site-config';
 
 type HomeNewsSummary={id:string;slug:string;title:string;summary:string;markdown:string;publishedAt:string};
 type HomePage<T>={items:T[];page:number;pageSize:number;total:number};
@@ -20,13 +21,14 @@ export default async function Home(){
   return response.json() as Promise<HomePage<HomeNewsSummary>>;
  });
 
- const [categoriesResult,wikiResult,newsResult,knowledgeResult,catalogResult,communityResult]=await Promise.allSettled([
+ const [categoriesResult,wikiResult,newsResult,knowledgeResult,catalogResult,communityResult,commerceResult]=await Promise.allSettled([
   wikiApi.categories(),
   wikiApi.articles(),
   newsRequest,
   knowledgeApi.list(),
   catalogApi.items(),
   communityApi.list(),
+  commerceApi.list(),
  ]);
 
  const categories=categoriesResult.status==='fulfilled'?categoriesResult.value:[];
@@ -39,6 +41,7 @@ export default async function Home(){
  const knowledgeItems=knowledgePage?.items.slice(0,3)??[];
  const catalogPage=catalogResult.status==='fulfilled'?catalogResult.value:null;
  const communityPage=communityResult.status==='fulfilled'?communityResult.value:null;
+ const commercePage=commerceResult.status==='fulfilled'?commerceResult.value:null;
 
  const destinations=[
   {href:'/wiki',number:'01',title:'Thư viện Wiki',description:'Cẩm nang và bài viết đã xuất bản.',total:wikiPage?.total??null},
@@ -46,7 +49,7 @@ export default async function Home(){
   {href:'/catalog',number:'03',title:'Vật phẩm',description:'Danh mục nội dung được biên tập.',total:catalogPage?.total??null},
   {href:'/community',number:'04',title:'Cộng đồng',description:'Sự kiện, bang hội và hoạt động cộng đồng.',total:communityPage?.total??null},
   {href:'/news',number:'05',title:'Bản tin',description:'Tin tức và cập nhật dự án.',total:newsPage?.total??null},
-  {href:'/commerce',number:'06',title:'Cửa hàng',description:'Vật phẩm, trang bị và gói hỗ trợ máy chủ.',total:null},
+  {href:'/commerce',number:'06',title:'Cửa hàng demo',description:'Danh mục và quy trình tạo đơn mô phỏng.',total:commercePage?.total??null},
  ];
 
  return <>
@@ -56,33 +59,31 @@ export default async function Home(){
     <div className="hero-signboard"><p className="hero-brand">NOVA HAVEN</p></div>
     <h1 id="home-title">Thế giới Minecraft nhập vai</h1>
     <p className="hero-tagline">KHÁM PHÁ · CHIẾN ĐẤU · PHIÊU LƯU</p>
-    <p className="hero-server"><span className="online-dot" aria-hidden="true"/> play.novahaven.net <span>· Máy chủ chính thức</span><CopyIpButton ip="play.novahaven.net" /></p>
+    <p className="hero-server">{minecraftServerAddress ? <>Địa chỉ máy chủ: <strong>{minecraftServerAddress}</strong> <span>· Chưa có trạng thái kết nối trực tiếp</span></> : <>Bản xem trước local <span>· Địa chỉ máy chủ Minecraft chưa được cấu hình</span></>}</p>
     <div className="actions">
       <Link className="button button-green" href="/wiki">ĐỌC CẨM NANG</Link>
       <Link className="button button-blue" href="/map">BẢN ĐỒ THẾ GIỚI</Link>
-      <Link className="button button-blue" href="/community">CỘNG ĐỒNG</Link>
-      <Link className="button button-coral" href="/commerce">GIAN HÀNG</Link>
     </div>
    </div>
   </section>
 
-  <div className="home-telemetry-band" aria-label="Thông số thế giới Nova Haven">
+  <div className="home-telemetry-band" aria-label="Số lượng nội dung đã xuất bản">
    <div className="content home-telemetry-grid">
     <div className="telemetry-item">
-     <span className="telemetry-number">4</span>
-     <span className="telemetry-label">Hệ Phái Chiến Đấu</span>
+     <span className="telemetry-number">{wikiPage?.total ?? '—'}</span>
+     <span className="telemetry-label">Bài Wiki công khai</span>
     </div>
     <div className="telemetry-item">
-     <span className="telemetry-number">40+</span>
-     <span className="telemetry-label">Trùm & Quái Vật</span>
+     <span className="telemetry-number">{knowledgePage?.total ?? '—'}</span>
+     <span className="telemetry-label">Hồ sơ Atlas</span>
     </div>
     <div className="telemetry-item">
-     <span className="telemetry-number">{wikiPage?.total ? `${wikiPage.total}` : '500+'}</span>
-     <span className="telemetry-label">Nhiệm Vụ & Cẩm Nang</span>
+     <span className="telemetry-number">{catalogPage?.total ?? '—'}</span>
+     <span className="telemetry-label">Mục danh mục</span>
     </div>
     <div className="telemetry-item">
-     <span className="telemetry-number">100%</span>
-     <span className="telemetry-label">Nhập Vai Miễn Phí</span>
+     <span className="telemetry-number">{communityPage?.total ?? '—'}</span>
+     <span className="telemetry-label">Bài cộng đồng</span>
     </div>
    </div>
   </div>
@@ -102,57 +103,57 @@ export default async function Home(){
    <div className="home-section-inner">
     <header className="home-section-heading">
      <div>
-      <p className="eyebrow">ĐẶC SẮC MÁY CHỦ</p>
-      <h2 id="home-features-title">Trải nghiệm nhập vai hoàn chỉnh & khác biệt</h2>
-      <p>Thế giới Nova Haven được xây dựng thủ công với lối chơi nhập vai đậm nét, tự do tùy biến nhân vật và khám phá không giới hạn.</p>
+      <p className="eyebrow">CÔNG CỤ KHÁM PHÁ</p>
+      <h2 id="home-features-title">Những gì bạn có thể làm trên Nova Haven</h2>
+      <p>Tra cứu nội dung đã xuất bản, xem bản đồ địa hình local và theo dõi cập nhật. Những tính năng phụ thuộc máy chủ sẽ chỉ được giới thiệu khi có tích hợp được xác nhận.</p>
      </div>
     </header>
     <div className="home-feature-grid">
      <div className="home-feature-card">
       <div className="feature-card-header">
-       <span className="feature-icon" aria-hidden="true"><SiteIcon name="swords" /></span>
-       <span className="feature-badge">4 Hệ Phái</span>
+       <span className="feature-icon" aria-hidden="true"><SiteIcon name="book" /></span>
+       <span className="feature-badge">Nội dung xuất bản</span>
       </div>
-      <h3>Hệ Thống Nghề & Kỹ Năng Độc Bản</h3>
-      <p>Lựa chọn giữa Chiến Binh, Pháp Sư, Xạ Thủ và Du Hiệp. Mở khóa hàng chục kỹ năng chủ động, nội tại và xây dựng bảng thuộc tính theo phong cách riêng của bạn.</p>
+      <h3>Wiki và cẩm nang</h3>
+      <p>Đọc các bài viết đã được quản trị viên xuất bản. Bản nháp không xuất hiện trong thư viện công khai.</p>
       <div className="feature-card-footer">
-       <Link className="feature-card-link" href="/wiki?category=classes">Tìm hiểu chức nghiệp <span aria-hidden="true">→</span></Link>
+       <Link className="feature-card-link" href="/wiki">Mở thư viện Wiki <span aria-hidden="true">→</span></Link>
       </div>
      </div>
 
      <div className="home-feature-card">
       <div className="feature-card-header">
-       <span className="feature-icon" aria-hidden="true"><SiteIcon name="shield" /></span>
-       <span className="feature-badge">Thử Thách Lớn</span>
+       <span className="feature-icon" aria-hidden="true"><SiteIcon name="map" /></span>
+       <span className="feature-badge">Bản xem trước</span>
       </div>
-      <h3>Hầm Ngục & Trùm Thế Giới Sử Thi</h3>
-      <p>Thám hiểm các dungeon bí ẩn theo cấp độ, đối đầu Boss sở hữu cơ chế tấn công đặc biệt đòi hỏi kỹ năng di chuyển và sự phối hợp ăn ý của cả tổ đội.</p>
+      <h3>Atlas địa hình</h3>
+      <p>Xem ảnh địa hình của world đã nhập. Đây là dữ liệu local, chưa theo dõi vị trí người chơi hay trạng thái máy chủ trực tiếp.</p>
       <div className="feature-card-footer">
-       <Link className="feature-card-link" href="/wiki">Xem cẩm nang chiến đấu <span aria-hidden="true">→</span></Link>
+       <Link className="feature-card-link" href="/map">Mở bản đồ <span aria-hidden="true">→</span></Link>
       </div>
      </div>
 
      <div className="home-feature-card">
       <div className="feature-card-header">
-       <span className="feature-icon" aria-hidden="true"><SiteIcon name="compass" /></span>
-       <span className="feature-badge">Thế Giới Mở</span>
+       <span className="feature-icon" aria-hidden="true"><SiteIcon name="news" /></span>
+       <span className="feature-badge">Bản tin</span>
       </div>
-      <h3>Bản Đồ Rộng Lớn & Cốt Truyện Sâu</h3>
-      <p>Từ Thung Lũng Sao trù phú đến những miền đất hoang sơ kỳ bí. Gặp gỡ các NPC có câu chuyện riêng, chuỗi nhiệm vụ phong phú hé lộ bí mật ngàn năm.</p>
+      <h3>Tin tức dự án</h3>
+      <p>Theo dõi thông báo và bài viết mới do đội ngũ quản trị đăng tải trên website.</p>
       <div className="feature-card-footer">
-       <Link className="feature-card-link" href="/map">Xem bản đồ thế giới <span aria-hidden="true">→</span></Link>
+       <Link className="feature-card-link" href="/news">Mở bản tin <span aria-hidden="true">→</span></Link>
       </div>
      </div>
 
      <div className="home-feature-card">
       <div className="feature-card-header">
-       <span className="feature-icon" aria-hidden="true"><SiteIcon name="alchemy" /></span>
-       <span className="feature-badge">Tự Do Giao Thương</span>
+       <span className="feature-icon" aria-hidden="true"><SiteIcon name="community" /></span>
+       <span className="feature-badge">Cộng đồng</span>
       </div>
-      <h3>Khai Khoáng, Chế Tác & Bang Hội</h3>
-      <p>Thu thập tài nguyên độc nhất, rèn trang bị cổ xưa có chỉ số ngẫu nhiên, lập bang hội cùng anh em gây dựng thanh danh và thâu tóm lãnh địa.</p>
+      <h3>Không gian cộng đồng</h3>
+      <p>Xem bang hội, sự kiện và nội dung cộng đồng đã được xuất bản; website không hiển thị trạng thái người chơi trực tiếp.</p>
       <div className="feature-card-footer">
-       <Link className="feature-card-link" href="/community">Khám phá bang hội <span aria-hidden="true">→</span></Link>
+       <Link className="feature-card-link" href="/community">Mở cộng đồng <span aria-hidden="true">→</span></Link>
       </div>
      </div>
     </div>
@@ -163,38 +164,36 @@ export default async function Home(){
    <div className="home-section-inner">
     <header className="home-section-heading">
      <div>
-      <p className="eyebrow">HƯỚNG DẪN THAM GIA</p>
-      <h2 id="home-guide-title">Bắt đầu hành trình trong 3 bước</h2>
-      <p>Chỉ cần bản game Minecraft Java Edition tiêu chuẩn, không yêu cầu cài đặt mod phức tạp.</p>
+      <p className="eyebrow">BẮT ĐẦU TỪ ĐÂU</p>
+      <h2 id="home-guide-title">Khám phá Nova Haven trong 3 bước</h2>
+      <p>Các bước dưới đây dùng được ngay trên bản web local; chưa yêu cầu tài khoản hoặc máy chủ Minecraft đang chạy.</p>
      </div>
     </header>
     <div className="home-guide-grid">
      <div className="home-guide-step">
       <span className="step-number">01</span>
       <div className="step-content">
-       <h3>Khởi động Minecraft</h3>
-       <p>Mở Minecraft Java Edition phiên bản <strong>1.20.4 – 1.21.x</strong> (khuyến nghị dùng OptiFine hoặc Iris Shader để có trải nghiệm đồ họa tối ưu).</p>
+       <h3>Đọc cẩm nang</h3>
+       <p>Bắt đầu với các bài Wiki đã xuất bản để hiểu nội dung đang có.</p>
+       <Link className="step-action-link" href="/wiki">Mở Wiki <span aria-hidden="true">→</span></Link>
       </div>
      </div>
 
      <div className="home-guide-step">
       <span className="step-number">02</span>
       <div className="step-content">
-       <h3>Thêm Máy Chủ</h3>
-       <p>Vào mục <strong>Chơi Mạng (Multiplayer)</strong> → <strong>Thêm Máy Chủ (Add Server)</strong> rồi nhập địa chỉ:</p>
-       <div className="step-ip-box">
-        <code>play.novahaven.net</code>
-        <CopyIpButton ip="play.novahaven.net" label="Chép" />
-       </div>
+       <h3>Xem Atlas</h3>
+       <p>Mở bản đồ để xem ảnh địa hình local. Trang hiện chưa có theo dõi người chơi hoặc máy chủ trực tiếp.</p>
+       <Link className="step-action-link" href="/map">Mở Atlas <span aria-hidden="true">→</span></Link>
       </div>
      </div>
 
      <div className="home-guide-step">
       <span className="step-number">03</span>
       <div className="step-content">
-       <h3>Hòa Mình Vào Thế Giới</h3>
-       <p>Tham gia máy chủ, lựa chọn chức nghiệp ban đầu và nhận chuỗi nhiệm vụ tân thủ tại Thung Lũng Sao.</p>
-       <Link className="step-action-link" href="/wiki">Đọc cẩm nang người mới <span aria-hidden="true">→</span></Link>
+       <h3>Theo dõi cập nhật</h3>
+       <p>Xem tin tức mới hoặc nội dung cộng đồng để biết các thay đổi đã được công bố.</p>
+       <Link className="step-action-link" href="/news">Mở bản tin <span aria-hidden="true">→</span></Link>
       </div>
      </div>
     </div>
@@ -205,21 +204,21 @@ export default async function Home(){
    <div className="home-section-inner">
     <div className="home-map-spotlight-card">
      <div className="map-spotlight-content">
-      <p className="eyebrow">BẢN ĐỒ VÙNG ĐẤT TƯƠNG TÁC</p>
-      <h2 id="home-map-title">Tra cứu địa hình & Tọa độ X/Z thời gian thực</h2>
-      <p>Thế giới Nova Haven được mô phỏng chi tiết với đầy đủ địa hình núi non, sông suối và các khu định cư. Sử dụng bản đồ trực tuyến để định vị các điểm then chốt trên hành trình.</p>
+      <p className="eyebrow">BẢN ĐỒ THẾ GIỚI</p>
+      <h2 id="home-map-title">Bản xem trước từ world local</h2>
+      <p>Trang bản đồ hiện dùng ảnh địa hình làm atlas dự phòng. Chưa có dữ liệu vị trí người chơi hoặc đồng bộ trực tiếp với một Minecraft server.</p>
       <div className="map-key-stats">
        <div className="map-stat-badge">
-        <strong>Tọa độ Spawn</strong>
-        <span>X: 191 · Z: -71</span>
+        <strong>Nguồn dữ liệu</strong>
+        <span>World đã lưu local</span>
        </div>
        <div className="map-stat-badge">
-        <strong>Độ cao địa hình</strong>
-        <span>Y: 46 đến 309</span>
+        <strong>Hiển thị</strong>
+        <span>Ảnh địa hình dự phòng</span>
        </div>
        <div className="map-stat-badge">
-        <strong>Ranh giới thế giới</strong>
-        <span>3,200 × 2,304 Blocks</span>
+        <strong>Trạng thái</strong>
+        <span>Không phải dữ liệu live</span>
        </div>
       </div>
       <div className="map-spotlight-actions">
@@ -230,10 +229,6 @@ export default async function Home(){
      <div className="map-spotlight-visual">
       <div className="map-frame">
        <img src="/maps/nova-haven/terrain.png" alt="Bản đồ địa hình thế giới Nova Haven" className="map-preview-img" width="600" height="375" loading="lazy" />
-       <div className="map-spawn-pin" title="Điểm xuất hiện (X: 191, Z: -71)">
-        <span className="pin-pulse" aria-hidden="true" />
-        <span className="pin-label">Điểm Xuất Hiện</span>
-       </div>
       </div>
      </div>
     </div>
@@ -285,14 +280,12 @@ export default async function Home(){
        <div className="discord-box-header">
         <SiteIcon name="discord" className="discord-icon" />
         <div>
-         <strong>Kênh Discord Cộng Đồng</strong>
-         <small>Hơn 1,200 người chơi đồng hành</small>
+         <strong>{discordInviteUrl?'Kênh Discord Nova Haven':'Cộng đồng Nova Haven'}</strong>
+         <small>Nội dung cộng đồng đã xuất bản</small>
         </div>
        </div>
-       <p>Trao đổi lối build, lập tổ đội săn Boss và nhận thông báo bảo trì, sự kiện sớm nhất.</p>
-       <a className="button button-blue discord-join-btn" href="https://discord.gg" target="_blank" rel="noreferrer">
-        GIA NHẬP DISCORD <span aria-hidden="true">↗</span>
-       </a>
+       <p>Xem các bài viết và hoạt động cộng đồng được đăng trên Nova Haven.</p>
+       {discordInviteUrl ? <a className="button button-blue discord-join-btn" href={discordInviteUrl} target="_blank" rel="noreferrer">GIA NHẬP DISCORD <span aria-hidden="true">↗</span></a> : <Link className="button button-blue discord-join-btn" href="/community">MỞ TRANG CỘNG ĐỒNG <span aria-hidden="true">→</span></Link>}
       </div>
       <Link className="home-community-link" href="/community">Khám phá cộng đồng <span aria-hidden="true">→</span></Link>
      </aside>
@@ -306,7 +299,7 @@ export default async function Home(){
     <nav className="home-destination-grid" aria-label="Khám phá các khu vực Nova Haven">
      {destinations.map(destination=><Link className="home-destination-card" href={destination.href} key={destination.href}><span className="home-destination-number">{destination.number}</span><strong>{destination.title}</strong><span className="home-destination-description">{destination.description}</span><span className="home-destination-status">{destination.total===null?'Tạm thời chưa tải được':destination.total===0?'Chưa có nội dung công khai':`${destination.total} mục đã xuất bản`}</span><span className="home-destination-arrow" aria-hidden="true">↗</span></Link>)}
     </nav>
-    <p className="home-editorial-note">Hệ thống cẩm nang và tài liệu thế giới chính thức từ đội ngũ quản trị Nova Haven.</p>
+    <p className="home-editorial-note">Các nội dung trên website được đội ngũ Nova Haven biên tập và xuất bản.</p>
    </div>
   </section>
  </>;
